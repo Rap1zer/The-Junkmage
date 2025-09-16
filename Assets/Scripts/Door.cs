@@ -1,18 +1,25 @@
 using UnityEngine;
 
-public class Door
+public class Door : MonoBehaviour
 {
     public Room FromRoom { get; private set; }
     public Room ToRoom { get; private set; }
 
     private GameObject doorObj;
-
-    public Door(Room fromRoom, Room toRoom, GameObject doorObj)
+    public bool HasEntered { get; private set; } = false;
+    
+    public void Initialize(Room fromRoom, Room toRoom, GameObject doorObj)
     {
-        this.FromRoom = fromRoom;
-        this.ToRoom = toRoom;
+        FromRoom = fromRoom;
+        ToRoom = toRoom;
         this.doorObj = doorObj;
+
         doorObj.SetActive(true);
+
+        // Rename the GameObject in the hierarchy
+        string fromIndex = (fromRoom == null) ? "null" : fromRoom.Index.ToString();
+        string toIndex = (toRoom == null) ? "null" : toRoom.Index.ToString();
+        doorObj.name = $"Door{fromIndex}to{toIndex}";
     }
 
     public void OpenDoor()
@@ -22,6 +29,17 @@ public class Door
             Debug.LogWarning("Cannot open door: fromRoom is not cleared.");
             return;
         }
-        doorObj.SetActive(false);
+
+        doorObj.GetComponent<SpriteRenderer>().enabled = false;
+        doorObj.GetComponent<BoxCollider2D>().isTrigger = true;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            HasEntered = true;
+            Debug.Log("Player entered the door!");
+        }
     }
 }

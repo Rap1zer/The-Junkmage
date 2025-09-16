@@ -2,19 +2,19 @@ using UnityEngine;
 
 public class Room
 {
+    public int Index { get; private set; }
     public bool Cleared { get; private set; } = false;
     private Door exitDoor = null;
 
-    public Room(Door entryDoor) { this.exitDoor = entryDoor; }
-
-    public Room(bool cleared, Room nextRoom, GameObject exitDoor)
+    public Room(bool cleared, int index, Room nextRoom, GameObject exitDoor)
     {
         Cleared = cleared;
-        if (exitDoor) this.exitDoor = new Door(this, nextRoom, exitDoor);
-
-        if (Cleared)
+        Index = index;
+        if (exitDoor)
         {
-            this.exitDoor.OpenDoor();
+            this.exitDoor = exitDoor.GetComponent<Door>();
+            this.exitDoor.Initialize(this, nextRoom, exitDoor);
+            if (Cleared) this.exitDoor.OpenDoor();
         }
     }
 }
