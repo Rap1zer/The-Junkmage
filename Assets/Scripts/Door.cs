@@ -6,7 +6,6 @@ public class Door : MonoBehaviour
     public Room ToRoom { get; private set; }
 
     private GameObject doorObj;
-    public bool HasEntered { get; private set; } = false;
     
     public void Initialize(Room fromRoom, Room toRoom, GameObject doorObj)
     {
@@ -38,7 +37,7 @@ public class Door : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            HasEntered = true;
+            other.GetComponent<PlayerController>().inRoomIndex = ToRoom.Index;
             Debug.Log("Player entered the door!");
         }
     }

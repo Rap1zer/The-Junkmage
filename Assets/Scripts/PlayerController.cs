@@ -3,6 +3,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
+    public int inRoomIndex = 0;
+
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
 
