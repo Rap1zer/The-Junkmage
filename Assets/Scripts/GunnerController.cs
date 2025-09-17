@@ -1,12 +1,12 @@
 using UnityEngine;
 
-public class Gunner : MonoBehaviour, IEnemy
+public class GunnerController : MonoBehaviour, IEnemy
 {
     public int roomIndex;
     private Room spawnRoom;
     private PlayerController player;
     private GameManager gameManager;
-    public int Health { get; set; } = 8;
+    public int Health { get; set; } = 6;
     public int AttackDmg { get; set; } = 2;
     public float AttackCooldown { get; set; } = 1.7f;
     public float Speed { get; set; } = 2f;
@@ -14,12 +14,18 @@ public class Gunner : MonoBehaviour, IEnemy
 
     private float lastAttackTime = -Mathf.Infinity;
 
+    [Header("Shooting Settings")]
+    public GameObject bulletPrefab;
+    public float bulletSpeed = 9f;
+    private Transform firePoint;
+
     Rigidbody2D rb;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        firePoint = transform.Find("Fire Point");
         player = GameObject.Find("Player").GetComponent<PlayerController>();
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         CurrentState = EnemyState.Idle;
@@ -31,11 +37,9 @@ public class Gunner : MonoBehaviour, IEnemy
     {
         CurrentState = roomIndex == player.inRoomIndex ? EnemyState.Attacking : EnemyState.Idle;
 
-        if (AttackCooled()) Attack();
-
-        // Inch away from the player if Attacking
         if (CurrentState == EnemyState.Attacking)
         {
+            // Inch away from the player
             Vector2 direction = -(player.transform.position - transform.position).normalized;
             rb.linearVelocity = direction * Speed;
 
@@ -43,6 +47,8 @@ public class Gunner : MonoBehaviour, IEnemy
             direction = (transform.position - player.transform.position).normalized;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f; // -90 if your sprite faces up
             transform.rotation = Quaternion.Euler(0f, 0f, angle);
+
+            if (AttackCooled()) Attack();
         }
     }
 
@@ -53,6 +59,18 @@ public class Gunner : MonoBehaviour, IEnemy
 
     public void Attack()
     {
+        if (bulletPrefab == null || firePoint == null) return;
+
+        // Spawn bullet
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        bullet.GetComponent<Bullet>().SetDmg(1, false);
+
+        // Apply velocity
+        Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
+        if (bulletRb != null)
+        {
+            bulletRb.linearVelocity = firePoint.up * bulletSpeed;
+        }
         lastAttackTime = Time.time;
     }
 

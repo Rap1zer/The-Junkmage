@@ -23,9 +23,9 @@ public class PlayerController : MonoBehaviour
     private Vector2 dashDirection;
 
     [Header("Shooting Settings")]
-    public GameObject bulletPrefab;   // assign your ball prefab here
+    public GameObject bulletPrefab;
     public float bulletSpeed = 14f;
-    public Transform firePoint;       // empty child object at gun/barrel tip
+    public Transform firePoint;
 
     void Awake()
     {
