@@ -1,19 +1,18 @@
 using UnityEngine;
 
-public class SpikeController : MonoBehaviour, IEnemy
+public class Gunner : MonoBehaviour, IEnemy
 {
     public int roomIndex;
     private Room spawnRoom;
     private PlayerController player;
     private GameManager gameManager;
-    public int Health { get; set; } = 12;
-    public int AttackDmg { get; set; } = 3;
-    public float AttackCooldown { get; set; } = 0.5f;
-    public float Speed { get; set; } = 5f;
+    public int Health { get; set; } = 8;
+    public int AttackDmg { get; set; } = 2;
+    public float AttackCooldown { get; set; } = 1.7f;
+    public float Speed { get; set; } = 2f;
     public EnemyState CurrentState { get; set; }
 
     private float lastAttackTime = -Mathf.Infinity;
-    public bool playerInRange = false;
 
     Rigidbody2D rb;
 
@@ -32,13 +31,18 @@ public class SpikeController : MonoBehaviour, IEnemy
     {
         CurrentState = roomIndex == player.inRoomIndex ? EnemyState.Attacking : EnemyState.Idle;
 
-        if (AttackCooled() && playerInRange) Attack();
+        if (AttackCooled()) Attack();
 
         // Blindly beeline towards the player if Attacking
         if (CurrentState == EnemyState.Attacking)
         {
-            Vector2 direction = (player.transform.position - transform.position).normalized;
+            Vector2 direction = -(player.transform.position - transform.position).normalized;
             rb.linearVelocity = direction * Speed;
+
+            // Rotate to face player
+            direction = (transform.position - player.transform.position).normalized;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f; // -90 if your sprite faces up
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
     }
 
@@ -54,7 +58,7 @@ public class SpikeController : MonoBehaviour, IEnemy
 
     public void Die()
     {
-        Debug.Log("Spike ded");
+        Debug.Log("Gunner ded");
         spawnRoom.EnemyCount--;
         Destroy(gameObject);
     }

@@ -487,6 +487,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5454916174721836411, guid: 0a505e1b7ff664423ae600e41597f68b, type: 3}
+      propertyPath: roomIndex
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -661,6 +665,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 4997672305662813601, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
+      propertyPath: roomIndex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5339866365424909854, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.547351
@@ -772,6 +780,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5454916174721836411, guid: 0a505e1b7ff664423ae600e41597f68b, type: 3}
+      propertyPath: roomIndex
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -859,6 +871,10 @@ PrefabInstance:
     - target: {fileID: 2489771570938699428, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
       propertyPath: m_TagString
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 4997672305662813601, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
+      propertyPath: roomIndex
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5339866365424909854, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1012,6 +1028,10 @@ PrefabInstance:
     - target: {fileID: 2489771570938699428, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
       propertyPath: m_TagString
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 4997672305662813601, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
+      propertyPath: roomIndex
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5339866365424909854, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3813,7 +3833,7 @@ MonoBehaviour:
   - {fileID: 1255354062}
   - {fileID: 1528031452}
   - {fileID: 1897052660}
-  enemyCounts: 000000000300000000000000050000000000000002000000
+  enemyCounts: 000000000400000000000000050000000000000002000000
 --- !u!4 &2098540416
 Transform:
   m_ObjectHideFlags: 0

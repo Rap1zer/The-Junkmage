@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3053763183505412473}
   - component: {fileID: 516204937276225170}
   - component: {fileID: 5025293364500038380}
+  - component: {fileID: 4997672305662813601}
   m_Layer: 0
   m_Name: Gunner
   m_TagString: Untagged
@@ -163,6 +164,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &4997672305662813601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2489771570938699428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95f9c0546e264447c8489dbf1554181f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomIndex: 0
 --- !u!1 &7948844636265260797
 GameObject:
   m_ObjectHideFlags: 0
