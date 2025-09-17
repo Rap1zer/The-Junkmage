@@ -24,6 +24,9 @@ public class PlayerController : MonoBehaviour
 
     [Header("Shooting Settings")]
     public GameObject bulletPrefab;
+    public int bulletDmg = 1;
+    public float critChance = 0.1f;
+    public int critMultiplier = 2;
     public float bulletSpeed = 14f;
     public Transform firePoint;
 
@@ -105,7 +108,8 @@ public class PlayerController : MonoBehaviour
 
         // Spawn bullet
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-        bullet.GetComponent<Bullet>().SetDmg(1, true);
+        int dmg = UnityEngine.Random.value < critChance ? bulletDmg * critMultiplier : bulletDmg;
+        bullet.GetComponent<Bullet>().SetDmg(bulletDmg, true);
 
         // Apply velocity
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
@@ -125,5 +129,11 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Player ded :(");
         this.enabled = false;
+    }
+
+    public void Heal(int healAmount)
+    {
+        health += healAmount;
+        if (health > 20) health = 20;
     }
 }
