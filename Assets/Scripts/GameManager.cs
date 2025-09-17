@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
     public int[] enemyCounts = new int[6];
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         // Initialise the room classes and their doors.
         for (int i = rooms.Length - 1; i >= 0; i--)

@@ -3,7 +3,9 @@ using UnityEngine;
 public class SpikeController : MonoBehaviour, IEnemy
 {
     public int roomIndex;
+    private Room spawnRoom;
     private PlayerController player;
+    private GameManager gameManager;
     public int Health { get; set; } = 13;
     public int AttackDmg { get; set; } = 3;
     public float AttackCooldown { get; set; } = 0.5f;
@@ -16,11 +18,13 @@ public class SpikeController : MonoBehaviour, IEnemy
     Rigidbody2D rb;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Awake()
+    void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         player = GameObject.Find("Player").GetComponent<PlayerController>();
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         CurrentState = EnemyState.Idle;
+        spawnRoom = gameManager.rooms[roomIndex];
     }
 
     // Update is called once per frame
@@ -28,11 +32,7 @@ public class SpikeController : MonoBehaviour, IEnemy
     {
         CurrentState = roomIndex == player.inRoomIndex ? EnemyState.Chasing : EnemyState.Idle;
 
-        if (AttackCooled() && playerInRange)
-        {
-            Attack();
-            Debug.Log("I'm attacking!!!");
-        }
+        if (AttackCooled() && playerInRange) Attack();
 
         // Blindly beeline towards the player if chasing
         if (CurrentState == EnemyState.Chasing)
@@ -55,6 +55,7 @@ public class SpikeController : MonoBehaviour, IEnemy
     public void Die()
     {
         Debug.Log("Spike ded");
+        spawnRoom.EnemyCount--;
         Destroy(gameObject);
     }
 
