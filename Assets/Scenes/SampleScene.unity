@@ -443,6 +443,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Spike (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3360943659272257181, guid: 0a505e1b7ff664423ae600e41597f68b, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 4485212449166856687, guid: 0a505e1b7ff664423ae600e41597f68b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.5175905
@@ -504,6 +508,10 @@ PrefabInstance:
     - target: {fileID: 2304953029719872978, guid: 554b04c022afe4a439d7ab218a2b3e10, type: 3}
       propertyPath: m_Name
       value: Mortar (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2304953029719872978, guid: 554b04c022afe4a439d7ab218a2b3e10, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 3258947447144499473, guid: 554b04c022afe4a439d7ab218a2b3e10, type: 3}
       propertyPath: m_LocalPosition.x
@@ -649,6 +657,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gunner (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2489771570938699428, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 5339866365424909854, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.547351
@@ -715,6 +727,10 @@ PrefabInstance:
     - target: {fileID: 3360943659272257181, guid: 0a505e1b7ff664423ae600e41597f68b, type: 3}
       propertyPath: m_Name
       value: Spike (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3360943659272257181, guid: 0a505e1b7ff664423ae600e41597f68b, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 4485212449166856687, guid: 0a505e1b7ff664423ae600e41597f68b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -839,6 +855,10 @@ PrefabInstance:
     - target: {fileID: 2489771570938699428, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
       propertyPath: m_Name
       value: Gunner
+      objectReference: {fileID: 0}
+    - target: {fileID: 2489771570938699428, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 5339866365424909854, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -988,6 +1008,10 @@ PrefabInstance:
     - target: {fileID: 2489771570938699428, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
       propertyPath: m_Name
       value: Gunner (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2489771570938699428, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 5339866365424909854, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1306,6 +1330,37 @@ Transform:
   - {fileID: 1259987202}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
+--- !u!1 &581900707
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 581900708}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &581900708
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 581900707}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.499, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1680841006}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &619260897
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1792,9 +1847,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 63221224}
     m_Modifications:
+    - target: {fileID: -7433060929719527418, guid: 0a505e1b7ff664423ae600e41597f68b, type: 3}
+      propertyPath: roomIndex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3360943659272257181, guid: 0a505e1b7ff664423ae600e41597f68b, type: 3}
       propertyPath: m_Name
       value: Spike
+      objectReference: {fileID: 0}
+    - target: {fileID: 3360943659272257181, guid: 0a505e1b7ff664423ae600e41597f68b, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 4485212449166856687, guid: 0a505e1b7ff664423ae600e41597f68b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1835,6 +1898,10 @@ PrefabInstance:
     - target: {fileID: 4485212449166856687, guid: 0a505e1b7ff664423ae600e41597f68b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5454916174721836411, guid: 0a505e1b7ff664423ae600e41597f68b, type: 3}
+      propertyPath: roomIndex
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2687,6 +2754,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gunner (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 2489771570938699428, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 5339866365424909854, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.8336082
@@ -2834,7 +2905,7 @@ GameObject:
   - component: {fileID: 1680841007}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2952,7 +3023,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 581900708}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1680841007
@@ -2994,10 +3066,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe76251d678f418b95e6ba01b4a49aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inRoomIndex: 0
   moveSpeed: 8
   dashSpeed: 28
   dashDuration: 0.2
   dashCooldown: 0.8
+  bulletPrefab: {fileID: 6446100217759873899, guid: c5a4515b58995430ab73ec8f3734c0a1, type: 3}
+  bulletSpeed: 14
+  firePoint: {fileID: 581900708}
 --- !u!1001 &1690145397
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3149,7 +3225,7 @@ GameObject:
   - component: {fileID: 1703941804}
   m_Layer: 0
   m_Name: Boss
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3240,6 +3316,10 @@ PrefabInstance:
     - target: {fileID: 2304953029719872978, guid: 554b04c022afe4a439d7ab218a2b3e10, type: 3}
       propertyPath: m_Name
       value: Mortar (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2304953029719872978, guid: 554b04c022afe4a439d7ab218a2b3e10, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 3258947447144499473, guid: 554b04c022afe4a439d7ab218a2b3e10, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3394,6 +3474,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mortar
       objectReference: {fileID: 0}
+    - target: {fileID: 2304953029719872978, guid: 554b04c022afe4a439d7ab218a2b3e10, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 3258947447144499473, guid: 554b04c022afe4a439d7ab218a2b3e10, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.8435225
@@ -3543,6 +3627,10 @@ PrefabInstance:
     - target: {fileID: 5178027503922317958, guid: 85e95ca0f5016454494021d15e6fa71e, type: 3}
       propertyPath: m_Name
       value: Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 5178027503922317958, guid: 85e95ca0f5016454494021d15e6fa71e, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 5520219220503245451, guid: 85e95ca0f5016454494021d15e6fa71e, type: 3}
       propertyPath: m_LocalScale.y

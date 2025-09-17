@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -19,6 +20,11 @@ public class PlayerController : MonoBehaviour
     private float dashTimeLeft = 0f;
     private float dashCooldownTimer = 0f;
     private Vector2 dashDirection;
+
+    [Header("Shooting Settings")]
+    public GameObject bulletPrefab;   // assign your ball prefab here
+    public float bulletSpeed = 14f;
+    public Transform firePoint;       // empty child object at gun/barrel tip
 
     void Awake()
     {
@@ -56,6 +62,9 @@ public class PlayerController : MonoBehaviour
 
         // --- Rotate player to face mouse ---
         RotateToMouse();
+
+        // --- Shooting with left mouse button ---
+        if (Input.GetMouseButtonDown(0)) Shoot();
     }
 
     void FixedUpdate()
@@ -87,5 +96,22 @@ public class PlayerController : MonoBehaviour
         Vector2 direction = (mousePos - transform.position).normalized;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f; // -90 if your sprite faces up
         transform.rotation = Quaternion.Euler(0f, 0f, angle);
+    }
+
+    void Shoot()
+    {
+        Debug.Log("Shooting!");
+        if (bulletPrefab == null || firePoint == null) return;
+
+        // Spawn bullet
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        bullet.GetComponent<Bullet>().SetDmg(1, true);
+
+        // Apply velocity
+        Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
+        if (bulletRb != null)
+        {
+            bulletRb.linearVelocity = firePoint.up * bulletSpeed; 
+        }
     }
 }
