@@ -33,7 +33,7 @@ public class Gunner : MonoBehaviour, IEnemy
 
         if (AttackCooled()) Attack();
 
-        // Blindly beeline towards the player if Attacking
+        // Inch away from the player if Attacking
         if (CurrentState == EnemyState.Attacking)
         {
             Vector2 direction = -(player.transform.position - transform.position).normalized;

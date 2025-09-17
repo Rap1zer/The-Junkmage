@@ -7,7 +7,7 @@ public class SpikeController : MonoBehaviour, IEnemy
     private PlayerController player;
     private GameManager gameManager;
     public int Health { get; set; } = 12;
-    public int AttackDmg { get; set; } = 3;
+    public int AttackDmg { get; set; } = 5;
     public float AttackCooldown { get; set; } = 0.5f;
     public float Speed { get; set; } = 5f;
     public EnemyState CurrentState { get; set; }
@@ -49,6 +49,7 @@ public class SpikeController : MonoBehaviour, IEnemy
 
     public void Attack()
     {
+        player.TakeDamage(AttackDmg);
         lastAttackTime = Time.time;
     }
 
@@ -59,9 +60,9 @@ public class SpikeController : MonoBehaviour, IEnemy
         Destroy(gameObject);
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int dmg)
     {
-        Health -= damage;
+        Health -= dmg;
         if (Health <= 0) Die();
     }
     

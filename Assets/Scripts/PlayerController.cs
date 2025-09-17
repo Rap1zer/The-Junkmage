@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     public int inRoomIndex = 0;
 
     [Header("Player Stats")]
-    public int health = 25;
+    public int health = 20;
     public float moveSpeed = 5f;
 
     [Header("Dash Settings")]
