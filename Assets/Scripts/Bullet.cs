@@ -22,17 +22,26 @@ public class Bullet : MonoBehaviour
     {
 
     }
-    
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if (!isPlayerBullet && other.CompareTag("Player"))
         {
             PlayerController player = other.GetComponent<PlayerController>();
+            player.TakeDamage(dmg);
         }
         else if (isPlayerBullet && other.CompareTag("Enemy"))
         {
+            Debug.Log("hit an enemy");
             IEnemy enemy = other.GetComponent<IEnemy>();
-            if (enemy != null) enemy.TakeDamage(1);
+            if (enemy != null) enemy.TakeDamage(dmg);
         }
+
+        // Destroy the bullet after it hits something
+        if (isPlayerBullet && !other.CompareTag("Player") || !isPlayerBullet && !other.CompareTag("Enemy"))
+        {
+            Destroy(gameObject, 0.1f);
+        }
+        
     }
 }

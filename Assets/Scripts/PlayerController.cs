@@ -6,7 +6,8 @@ public class PlayerController : MonoBehaviour
 {
     public int inRoomIndex = 0;
 
-    [Header("Movement Settings")]
+    [Header("Player Stats")]
+    public int health = 25;
     public float moveSpeed = 5f;
 
     [Header("Dash Settings")]
@@ -100,7 +101,6 @@ public class PlayerController : MonoBehaviour
 
     void Shoot()
     {
-        Debug.Log("Shooting!");
         if (bulletPrefab == null || firePoint == null) return;
 
         // Spawn bullet
@@ -111,7 +111,19 @@ public class PlayerController : MonoBehaviour
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
         if (bulletRb != null)
         {
-            bulletRb.linearVelocity = firePoint.up * bulletSpeed; 
+            bulletRb.linearVelocity = firePoint.up * bulletSpeed;
         }
+    }
+
+    public void TakeDamage(int dmg)
+    {
+        health -= dmg;
+        if (health <= 0) Die();
+    }
+
+    private void Die()
+    {
+        Debug.Log("Player ded :(");
+        this.enabled = false;
     }
 }

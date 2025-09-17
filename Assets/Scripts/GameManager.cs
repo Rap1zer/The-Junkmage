@@ -4,6 +4,7 @@ public class GameManager : MonoBehaviour
 {
     public Room[] rooms = new Room[6];
     public GameObject[] doorObjs = new GameObject[5];
+    public int[] enemyCounts = new int[6];
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -13,15 +14,15 @@ public class GameManager : MonoBehaviour
         {
             if (i == rooms.Length - 1)
             {
-                rooms[i] = new Room(false, i, null, null);
+                rooms[i] = new Room(false, i, enemyCounts[i], null, null);
             }
             else if (i == 0)
             {
-                rooms[0] = new Room(true, i, rooms[1], doorObjs[0]);
+                rooms[0] = new Room(true, i, enemyCounts[i], rooms[1], doorObjs[0]);
             }
             else
             {
-                rooms[i] = new Room(false, i, rooms[i + 1], doorObjs[i]);
+                rooms[i] = new Room(false, i, enemyCounts[i], rooms[i + 1], doorObjs[i]);
             }
         }
     }
