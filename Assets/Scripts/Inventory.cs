@@ -19,20 +19,13 @@ public class Inventory : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
 
         gridContainer = canvas.transform.Find("Inventory Grid");
 
         InventoryData = new IItem[width, height];
         ChestItemsData = new ItemData[3];
-        InventoryUI.Instance.DrawGrid(gridContainer);
     }
 
     // Update is called once per frame

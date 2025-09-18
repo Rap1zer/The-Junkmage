@@ -1,5 +1,6 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Chest : MonoBehaviour
 {
@@ -10,6 +11,12 @@ public class Chest : MonoBehaviour
     private GameObject itemDropsContainer;
 
     private bool inPlayerRange = false;
+    private bool chestOpened = false;
+
+    public ItemData[] itemsInChest;
+
+    // Event fired when chest opens
+    public event Action<ItemData[]> OnChestOpened;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -18,36 +25,43 @@ public class Chest : MonoBehaviour
 
         Transform canvas = GameObject.Find("Canvas").transform;
         itemDropsContainer = canvas.Find("Item Drops").gameObject;
+
+        InventoryUI.Instance.RegisterChest(this);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && inPlayerRange)
         {
-            if (inPlayerRange) OpenChest();
+            if (chestOpened) // ADD SECOND CHECK TO SEE IF ONE ITEM HAS BEEN TAKEN
+                CloseChest();
+            else
+                OpenChest();
         }
     }
 
     private void OpenChest()
     {
-        if (!inPlayerRange) return;
-        int itemCount = Mathf.Min(itemPoolCount, itemDatabase.items.Length);
-        Inventory.Instance.ChestItemsData = new ItemData[itemCount];
+        if (!inPlayerRange) return; // Too far away to open chest
+        int itemCount = Mathf.Min(itemPoolCount, itemDatabase.items.Length); // Limit number of items
+        Inventory.Instance.ChestItemsData = new ItemData[itemCount]; // Reset Chest
 
+        // Randomly select items from database
         for (int i = 0; i < itemCount; i++)
         {
-            int random = Random.Range(0, itemDatabase.items.Length);
-            Inventory.Instance.ChestItemsData[i] = itemDatabase.items[random];
+            int random = UnityEngine.Random.Range(0, itemDatabase.items.Length);
+            itemsInChest[i] = itemDatabase.items[random];
         }
 
-        InventoryUI.Instance.RenderItems();
+        OnChestOpened?.Invoke(itemsInChest);
         inventory.OpenInventory();
+        chestOpened = true;
     }
 
     private void CloseChest()
     {
-        itemDropsContainer.SetActive(false);
+        OnChestOpened?.Invoke(null);
         inventory.CloseInventory();
     }
 
