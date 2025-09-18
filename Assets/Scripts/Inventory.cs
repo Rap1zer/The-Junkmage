@@ -7,10 +7,12 @@ public class Inventory : MonoBehaviour
     public int width = 3;
     public int height = 3;
     public bool isInventoryOpen = false;
-    private int[,] data;
+
+    public IItem[,] InventoryData { get; set; }
+    public ItemData[] ChestItemsData { get; set; }
 
     [Header("UI Settings")]
-    public Canvas canvas;
+    [SerializeField] private Canvas canvas;
     Transform gridContainer;
 
 
@@ -28,7 +30,8 @@ public class Inventory : MonoBehaviour
 
         gridContainer = canvas.transform.Find("Inventory Grid");
 
-        data = new int[width, height];
+        InventoryData = new IItem[width, height];
+        ChestItemsData = new ItemData[3];
         InventoryUI.Instance.DrawGrid(gridContainer);
     }
 

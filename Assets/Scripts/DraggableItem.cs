@@ -1,18 +1,24 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(CanvasGroup))]
+[RequireComponent(typeof(RectTransform))]
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] private ItemUIType itemType = ItemUIType.Chest;
     public ItemUIType ItemType => itemType;
 
+    public Vector2Int Index { get; set; }
+
     private RectTransform rt;
+    private CanvasGroup canvasGroup;
     private Canvas canvas;
 
     private void Awake()
     {
         rt = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
+        canvasGroup = GetComponent<CanvasGroup>();
     }
 
     public void SetItemUIType(ItemUIType type)
@@ -22,7 +28,9 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        InventoryUI.Instance.BeginDrag(eventData, this, ItemType);
+        InventoryUI.Instance.BeginDrag(eventData, ItemType);
+        canvasGroup.alpha = 0.7f;
+        canvasGroup.blocksRaycasts = false;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -34,6 +42,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnEndDrag(PointerEventData eventData)
     {
         InventoryUI.Instance.EndDrag(eventData);
+        canvasGroup.alpha = 1f;
+        canvasGroup.blocksRaycasts = true;
     }
 }
 

@@ -5,7 +5,6 @@ public class Chest : MonoBehaviour
 {
     public ItemDatabase itemDatabase;
     private Inventory inventory;
-    private RectTransform[] chestItemPos;
     private GameObject itemDropsContainer;
 
     private bool inPlayerRange = false;
@@ -17,11 +16,6 @@ public class Chest : MonoBehaviour
 
         Transform canvas = GameObject.Find("Canvas").transform;
         itemDropsContainer = canvas.Find("Item Drops").gameObject;
-        chestItemPos = new RectTransform[3];
-        for (int i = 0; i < chestItemPos.Length; i++)
-        {
-            chestItemPos[i] = itemDropsContainer.transform.GetChild(i).GetComponent<RectTransform>();
-        }
     }
 
     // Update is called once per frame
@@ -43,9 +37,10 @@ public class Chest : MonoBehaviour
         {
             int random = Random.Range(0, itemDatabase.items.Length);
             items[i] = itemDatabase.items[random];
+            Inventory.Instance.ChestItemsData[i] = items[i];
         }
 
-        RenderItems(items);
+        InventoryUI.Instance.RenderItems(items);
         inventory.OpenInventory();
     }
 
@@ -53,17 +48,6 @@ public class Chest : MonoBehaviour
     {
         itemDropsContainer.SetActive(false);
         inventory.CloseInventory();
-    }
-
-    private void RenderItems(ItemData[] items)
-    {
-        for (int i = 0; i < items.Length; i++)
-        {
-            GameObject item = Instantiate(items[i].prefab, chestItemPos[i]);
-            item.GetComponent<DraggableItem>().SetItemUIType(ItemUIType.Chest);
-        }
-
-        itemDropsContainer.SetActive(true);
     }
 
     void OnTriggerEnter2D(Collider2D other)
