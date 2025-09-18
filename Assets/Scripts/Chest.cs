@@ -5,7 +5,7 @@ public class Chest : MonoBehaviour
 {
     public ItemDatabase itemDatabase;
     private Inventory inventory;
-    private GameObject[] itemDropsUI;
+    private RectTransform[] chestItemPos;
     private GameObject itemDropsContainer;
 
     private bool inPlayerRange = false;
@@ -17,10 +17,10 @@ public class Chest : MonoBehaviour
 
         Transform canvas = GameObject.Find("Canvas").transform;
         itemDropsContainer = canvas.Find("Item Drops").gameObject;
-        itemDropsUI = new GameObject[3];
-        for (int i = 0; i < itemDropsUI.Length; i++)
+        chestItemPos = new RectTransform[3];
+        for (int i = 0; i < chestItemPos.Length; i++)
         {
-            itemDropsUI[i] = itemDropsContainer.transform.GetChild(i).gameObject;
+            chestItemPos[i] = itemDropsContainer.transform.GetChild(i).GetComponent<RectTransform>();
         }
     }
 
@@ -59,8 +59,7 @@ public class Chest : MonoBehaviour
     {
         for (int i = 0; i < items.Length; i++)
         {
-            Image image = itemDropsUI[i].GetComponent<Image>();
-            image.sprite = items[i].icon;
+            Instantiate(items[i].prefab, chestItemPos[i]);
         }
 
         itemDropsContainer.SetActive(true);

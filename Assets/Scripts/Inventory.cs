@@ -2,9 +2,12 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
+    public static Inventory Instance { get; private set; }
+
     public int width = 3;
     public int height = 3;
-    private int[,] inventory;
+    public bool isInventoryOpen = false;
+    private int[,] data;
 
     [Header("UI Settings")]
     public Canvas canvas;
@@ -13,11 +16,20 @@ public class Inventory : MonoBehaviour
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         gridContainer = canvas.transform.Find("Inventory Grid");
 
-        inventory = new int[width, height];
+        data = new int[width, height];
         DrawGrid();
     }
 
@@ -29,16 +41,19 @@ public class Inventory : MonoBehaviour
 
     private void ToggleInventory()
     {
+        isInventoryOpen = !isInventoryOpen;
         gridContainer.gameObject.SetActive(!gridContainer.gameObject.activeSelf);
     }
 
     public void OpenInventory()
     {
+        isInventoryOpen = true;
          gridContainer.gameObject.SetActive(true);
     }
-    
+
     public void CloseInventory()
     {
+        isInventoryOpen = false;
         gridContainer.gameObject.SetActive(false);
     }
 

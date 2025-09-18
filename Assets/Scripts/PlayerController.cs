@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public int inRoomIndex = 0;
+    public Inventory inventory;
 
     [Header("Player Stats")]
     public int health = 20;
@@ -104,7 +105,7 @@ public class PlayerController : MonoBehaviour
 
     void Shoot()
     {
-        if (bulletPrefab == null || firePoint == null) return;
+        if (bulletPrefab == null || firePoint == null || inventory.isInventoryOpen) return;
 
         // Spawn bullet
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
