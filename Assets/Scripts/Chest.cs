@@ -45,13 +45,14 @@ public class Chest : MonoBehaviour
     {
         if (!inPlayerRange) return; // Too far away to open chest
         int itemCount = Mathf.Min(itemPoolCount, itemDatabase.items.Length); // Limit number of items
-        Inventory.Instance.ChestItemsData = new ItemData[itemCount]; // Reset Chest
+        itemsInChest = new ItemData[itemCount]; // Reset Chest
 
         // Randomly select items from database
         for (int i = 0; i < itemCount; i++)
         {
             int random = UnityEngine.Random.Range(0, itemDatabase.items.Length);
             itemsInChest[i] = itemDatabase.items[random];
+            Inventory.Instance.ChestItemsData[i] = itemsInChest[i];
         }
 
         OnChestOpened?.Invoke(itemsInChest);

@@ -26,7 +26,8 @@ public class InventoryUI : MonoBehaviour
 
     private RectTransform[] chestSlots;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    
+
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -40,8 +41,11 @@ public class InventoryUI : MonoBehaviour
         }
 
         invRenderer = new InventoryRenderer(canvas, chestSlots);
-
         grid = new InventoryGrid();
+    }
+
+    void Start()
+    {
         grid.DrawGrid(gridContainer, cellPrefab);
     }
 

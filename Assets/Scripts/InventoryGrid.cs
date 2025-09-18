@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
 public class InventoryGrid
 {
     private GameObject[,] cells;
@@ -8,10 +9,9 @@ public class InventoryGrid
     float cellSize = 100f;
     float margin = 10f;
 
-    Inventory inventory = Inventory.Instance;
-
     public void DrawGrid(Transform gridContainer, GameObject cellPrefab)
     {
+        Inventory inventory = Inventory.Instance;
         cells = new GameObject[inventory.width, inventory.height];
 
         float offsetW = ((cellSize * inventory.width) + (margin * (inventory.width - 1))) / 2;
@@ -71,6 +71,7 @@ public class InventoryGrid
 
     public void HighlightCells(Vector2Int nearestCell, Vector2Int shape, bool canPlace)
     {
+        Inventory inventory = Inventory.Instance;
         for (int y = 0; y < shape.y; y++)
         {
             for (int x = 0; x < shape.x; x++)
