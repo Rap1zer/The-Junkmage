@@ -10,11 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 61b35fac736fc4e77b63e7ff43f9af9e, type: 3}
-  m_Name: Scope
+  m_Name: WoodenShield
   m_EditorClassIdentifier: 
-  itemName: Scope
-  icon: {fileID: -9190675311735184628, guid: 3c690c26e44ba4db1a3e8526c4deb200, type: 3}
-  size: {x: 2, y: 1}
-  description: Gives 3 Crit for every attack that hits an enemy until 30. Crit from
-    scope gets reset when you miss.
-  prefab: {fileID: 6983380330852312643, guid: 58e6f08af6c0145f4ae56e334d45c398, type: 3}
+  itemName: Wooden Shield
+  icon: {fileID: -7464024602411179035, guid: 7c16b469a1cbf4fec9dabbc0528e6c3e, type: 3}
+  size: {x: 2, y: 2}
+  description: "On hit: 40% chance to block 2 \u2694\uFE0F. "
+  prefab: {fileID: 5410237761881617018, guid: fb37a320c784d48b184d7045dbc47bae, type: 3}

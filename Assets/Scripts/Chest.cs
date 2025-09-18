@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class Chest : MonoBehaviour
 {
+    public static int itemPoolCount = 3;
+
     public ItemDatabase itemDatabase;
     private Inventory inventory;
     private GameObject itemDropsContainer;
@@ -30,17 +32,16 @@ public class Chest : MonoBehaviour
     private void OpenChest()
     {
         if (!inPlayerRange) return;
-        int itemPoolCount = 3;
-        ItemData[] items = new ItemData[Mathf.Min(itemPoolCount, itemDatabase.items.Length)];
+        int itemCount = Mathf.Min(itemPoolCount, itemDatabase.items.Length);
+        Inventory.Instance.ChestItemsData = new ItemData[itemCount];
 
-        for (int i = 0; i < items.Length; i++)
+        for (int i = 0; i < itemCount; i++)
         {
             int random = Random.Range(0, itemDatabase.items.Length);
-            items[i] = itemDatabase.items[random];
-            Inventory.Instance.ChestItemsData[i] = items[i];
+            Inventory.Instance.ChestItemsData[i] = itemDatabase.items[random];
         }
 
-        InventoryUI.Instance.RenderItems(items);
+        InventoryUI.Instance.RenderItems();
         inventory.OpenInventory();
     }
 

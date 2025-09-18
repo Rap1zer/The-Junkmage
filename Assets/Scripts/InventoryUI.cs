@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -42,7 +43,7 @@ public class InventoryUI : MonoBehaviour
 
         raycaster = canvas.GetComponent<GraphicRaycaster>();
         itemDropsContainer = canvas.transform.Find("Item Drops").gameObject;
-        chestItemPos = new RectTransform[3];
+        chestItemPos = new RectTransform[Chest.itemPoolCount];
         for (int i = 0; i < chestItemPos.Length; i++)
         {
             chestItemPos[i] = itemDropsContainer.transform.GetChild(i).GetComponent<RectTransform>();
@@ -73,7 +74,7 @@ public class InventoryUI : MonoBehaviour
         // Debug.Log(localMousePos);
 
         RectTransform canvasRT = canvas.GetComponent<RectTransform>();
-        RectTransform itemRT = currentItem.GetComponent<RectTransform>();
+        RectTransform itemRT = currentItem.transform.Find("Pivot").GetComponent<RectTransform>();
 
         Vector3 itemPos = canvasRT.InverseTransformPoint(itemRT.position);
         Debug.Log(itemPos);
@@ -132,11 +133,16 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    public void RenderItems(ItemData[] items)
+    public void RenderItems()
     {
-        for (int i = 0; i < items.Length; i++)
+        ItemData[] items = Inventory.Instance.ChestItemsData;
+
+        for (int i = 0; i < Inventory.Instance.ChestItemsData.Length; i++)
         {
-            GameObject item = Instantiate(items[i].prefab, chestItemPos[i]);
+            if (items[i] == null) continue;
+            GameObject item = Instantiate(items[i].prefab, canvas.transform);
+            item.GetComponent<RectTransform>().anchoredPosition = chestItemPos[i].anchoredPosition;
+
             DraggableItem draggableItem = item.GetComponent<DraggableItem>();
             draggableItem.SetItemUIType(ItemUIType.Chest);
             draggableItem.Index = new Vector2Int(0, i);
