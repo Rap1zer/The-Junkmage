@@ -59,7 +59,8 @@ public class Chest : MonoBehaviour
     {
         for (int i = 0; i < items.Length; i++)
         {
-            Instantiate(items[i].prefab, chestItemPos[i]);
+            GameObject item = Instantiate(items[i].prefab, chestItemPos[i]);
+            item.GetComponent<DraggableItem>().SetItemUIType(ItemUIType.Chest);
         }
 
         itemDropsContainer.SetActive(true);

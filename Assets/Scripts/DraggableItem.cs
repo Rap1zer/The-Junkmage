@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    [SerializeField] private ItemUIType itemType;
+    [SerializeField] private ItemUIType itemType = ItemUIType.Chest;
     public ItemUIType ItemType => itemType;
 
     private RectTransform rt;
@@ -13,6 +13,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         rt = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
+    }
+
+    public void SetItemUIType(ItemUIType type)
+    {
+        itemType = type;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
