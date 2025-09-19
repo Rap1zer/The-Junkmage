@@ -63,8 +63,7 @@ public class InventoryUI : MonoBehaviour
 
         Vector2 itemPos = GetCurrentItemPosition();
         Vector2Int nearestCell = grid.GetNearestGridPosition(itemPos);
-
-        // UPDATE THIS CLUNKY CODE
+        
         Vector2Int itemSize = currentChest.ItemsInChest[currentIndex.y].size;
 
         bool canPlace = grid.CanPlaceItem(itemSize, nearestCell);
