@@ -8,7 +8,7 @@ public class Inventory : MonoBehaviour
     public int height = 3;
     public bool isInventoryOpen = false;
 
-    public IItem[,] InventoryData { get; set; }
+    public IItem[,] InventoryData { get; private set; }
 
     [Header("UI Settings")]
     [SerializeField] private Canvas canvas;
@@ -41,12 +41,17 @@ public class Inventory : MonoBehaviour
     public void OpenInventory()
     {
         isInventoryOpen = true;
-         gridContainer.gameObject.SetActive(true);
+        gridContainer.gameObject.SetActive(true);
     }
 
     public void CloseInventory()
     {
         isInventoryOpen = false;
         gridContainer.gameObject.SetActive(false);
+    }
+
+    public void PlaceItem(ItemData data, Vector2Int startingCell)
+    {
+        
     }
 }

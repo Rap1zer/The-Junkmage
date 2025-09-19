@@ -22,7 +22,6 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private Transform gridContainer;
     [SerializeField] private Transform itemDropsContainer;
 
-    private InventoryGrid grid;
     private InventoryRenderer invRenderer;
 
     private RectTransform[] chestSlots;
@@ -42,12 +41,11 @@ public class InventoryUI : MonoBehaviour
         }
 
         invRenderer = new InventoryRenderer(canvas, chestSlots);
-        grid = new InventoryGrid();
     }
 
     void Start()
     {
-        grid.DrawGrid(gridContainer, cellPrefab);
+        InventoryGrid.DrawGrid(gridContainer, cellPrefab);
     }
 
     public void BeginDrag(PointerEventData eventData, ItemUIType type, Vector2Int index)
@@ -59,21 +57,41 @@ public class InventoryUI : MonoBehaviour
 
     public void Drag(PointerEventData eventData)
     {
-        grid.ClearHighlights();
+        InventoryGrid.ClearHighlights();
 
-        Vector2 itemPos = GetCurrentItemPosition();
-        Vector2Int nearestCell = grid.GetNearestGridPosition(itemPos);
-        
-        Vector2Int itemSize = currentChest.ItemsInChest[currentIndex.y].size;
-
-        bool canPlace = grid.CanPlaceItem(itemSize, nearestCell);
-        grid.HighlightCells(nearestCell, itemSize, canPlace);
+        var (nearestCell, canPlace, itemSize) = CalculateDragPlacement();
+        InventoryGrid.HighlightCells(nearestCell, itemSize, canPlace);
     }
 
     public void EndDrag(PointerEventData eventData)
     {
         currentItem = null;
         currentType = null;
+        // IF CAN PLACE
+        // Inventory must update internal state to store object
+        // Item must snap to grid
+
+        // IF CAN'T PLACE
+        // Item snap back to original position
+
+        // var (nearestCell, canPlace, itemSize) = CalculateDragPlacement();
+        // if (canPlace)
+        // {
+
+        //     Inventory.Instance.InventoryData[nearestCell.x, nearestCell.y] = currentChest.ItemsInChest[currentIndex.y];
+        // }
+    }
+
+    // Calculate if dragged item can be placed on grid in its current position
+    private (Vector2Int nearestCell, bool canPlace, Vector2Int itemSize) CalculateDragPlacement()
+    {
+        Vector2 itemPos = GetCurrentItemPosition();
+        Vector2Int nearestCell = InventoryGrid.GetNearestGridPosition(itemPos);
+
+        Vector2Int itemSize = currentChest.ItemsInChest[currentIndex.y].size;
+        bool canPlace = InventoryGrid.CanPlaceItem(itemSize, nearestCell);
+
+        return (nearestCell, canPlace, itemSize);
     }
 
     private Vector2 GetCurrentItemPosition()

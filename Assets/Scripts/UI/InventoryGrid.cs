@@ -2,14 +2,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [System.Serializable]
-public class InventoryGrid
+public static class InventoryGrid
 {
-    private GameObject[,] cells;
+    static private GameObject[,] cells;
 
-    float cellSize = 100f;
-    float margin = 10f;
+    static float cellSize = 100f;
+    static float margin = 10f;
 
-    public void DrawGrid(Transform gridContainer, GameObject cellPrefab)
+    public static void DrawGrid(Transform gridContainer, GameObject cellPrefab)
     {
         Inventory inventory = Inventory.Instance;
         cells = new GameObject[inventory.width, inventory.height];
@@ -31,7 +31,7 @@ public class InventoryGrid
         }
     }
 
-    public Vector2Int GetNearestGridPosition(Vector2 mousePos)
+    public static Vector2Int GetNearestGridPosition(Vector2 mousePos)
     {
         int width = cells.GetLength(0);
         int height = cells.GetLength(1);
@@ -49,7 +49,7 @@ public class InventoryGrid
         return new Vector2Int(gridX, gridY);
     }
 
-    public bool CanPlaceItem(Vector2Int shape, Vector2Int nearestCell)
+    public static bool CanPlaceItem(Vector2Int shape, Vector2Int nearestCell)
     {
         for (int y = 0; y < shape.y; y++)
         {
@@ -69,7 +69,7 @@ public class InventoryGrid
         return true;
     }
 
-    public void HighlightCells(Vector2Int nearestCell, Vector2Int shape, bool canPlace)
+    public static void HighlightCells(Vector2Int nearestCell, Vector2Int shape, bool canPlace)
     {
         Inventory inventory = Inventory.Instance;
         for (int y = 0; y < shape.y; y++)
@@ -89,7 +89,7 @@ public class InventoryGrid
         }
     }
 
-    public void ClearHighlights()
+    public static void ClearHighlights()
     {
         foreach (var cell in cells)
         {
