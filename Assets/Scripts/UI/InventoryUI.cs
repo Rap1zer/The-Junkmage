@@ -70,10 +70,8 @@ public class InventoryUI
     // Snap item's position to grid
     public void PlaceItem(GameObject itemObj, Vector2Int startingCell)
     {
-        Vector3 anchorWorldPos = itemObj.GetComponent<IItem>().AnchorWorldPos;
+        Vector3 anchorWorldPos = itemObj.GetComponent<IItem>().AnchorPos;
         Vector3 targetCellPos = InventoryGrid.CellObjs[startingCell.x, startingCell.y].transform.position;
-        Debug.Log(itemObj.GetComponent<IItem>().AnchorLocalPos);
-        Debug.Log(anchorWorldPos);
 
         // compute how far off the item is
         Vector3 offset = anchorWorldPos - itemObj.transform.position;
@@ -85,9 +83,7 @@ public class InventoryUI
     public Vector2 GetCurrentItemPosition()
     {
         RectTransform canvasRT = canvas.GetComponent<RectTransform>();
-        RectTransform itemRT = InventoryManager.Instance.CurrentObj.transform.Find("Pivot").GetComponent<RectTransform>();
-
-        return canvasRT.InverseTransformPoint(itemRT.position);
+        return canvasRT.InverseTransformPoint(InventoryManager.Instance.CurrentObj.GetComponent<IItem>().AnchorPos);
     }
 
     public void HandleChestOpened(Chest chest)

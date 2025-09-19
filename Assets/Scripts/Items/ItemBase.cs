@@ -31,36 +31,34 @@ public abstract class ItemBase : MonoBehaviour, IItem
         else CurrentShape = new Vector2Int(ItemData.shape.y, ItemData.shape.x);
     }
 
-public Vector2 AnchorLocalPos
-{
-    get
-    {
-        // Total size of one cell including margin
-        float cellStep = InventoryGrid.CellSize + InventoryGrid.Margin;
-
-        // Center offset for items larger than 1 cell
-        float xCenterOffset = ItemData.shape.x > 1 ? cellStep / 2f : 0f;
-        float yCenterOffset = ItemData.shape.y > 1 ? cellStep / 2f : 0f;
-
-        // Number of cells to shift from the origin to reach the center
-        float xCellOffset = Mathf.Ceil(ItemData.shape.x / 2f - 1);
-        float yCellOffset = Mathf.Ceil(ItemData.shape.y / 2f - 1);
-
-        // Convert cell offset to local position
-        float xPos = xCenterOffset + xCellOffset * cellStep;
-        float yPos = yCenterOffset + yCellOffset * cellStep;
-
-        // Return negative because anchor moves left/up from origin
-        return new Vector2(-xPos, -yPos);
-    }
-}
-
-
-    public Vector3 AnchorWorldPos
+    private Vector2 AnchorOffset
     {
         get
         {
-            return transform.position + transform.rotation * (Vector3)AnchorLocalPos;
+            float cellStep = InventoryGrid.CellSize + InventoryGrid.Margin;
+
+            // Offset by half cell for items with more than one cell
+            float xCenterOffset = CurrentShape.x > 1 ? cellStep / 2f : 0f;
+            float yCenterOffset = CurrentShape.y > 1 ? cellStep / 2f : 0f;
+
+            // Number of cells to shift from the origin to reach the center (not including first cell)
+            float xCellOffset = Mathf.Ceil(CurrentShape.x / 2f - 1);
+            float yCellOffset = Mathf.Ceil(CurrentShape.y / 2f - 1);
+
+            float xPos = xCenterOffset + xCellOffset * cellStep;
+            float yPos = yCenterOffset + yCellOffset * cellStep;
+
+            // Return negative because anchor moves left/up from origin
+            return new Vector2(-xPos, -yPos);
+        }
+    }
+
+
+    public Vector3 AnchorPos
+    {
+        get
+        {
+            return transform.position + (Vector3)AnchorOffset;
         }
     }
 
@@ -69,7 +67,7 @@ public Vector2 AnchorLocalPos
         get
         {
             // rotate local anchor into world space and add to item position
-            return transform.position + transform.rotation * (Vector3)AnchorLocalPos;
+            return transform.position + transform.rotation * (Vector3)AnchorOffset;
         }
     }
 
