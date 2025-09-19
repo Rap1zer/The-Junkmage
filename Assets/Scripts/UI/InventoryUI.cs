@@ -42,7 +42,7 @@ public class InventoryUI
 
     public void BeginDrag(PointerEventData eventData, ItemUIType type, Vector2Int index)
     {
-        InventoryManager.Instance.CurrentItem = eventData.pointerDrag;
+        InventoryManager.Instance.CurrentObj = eventData.pointerDrag;
         InventoryManager.Instance.CurrentIndex = index;
         currentType = type;
     }
@@ -59,18 +59,17 @@ public class InventoryUI
     {
         // TODO: place logic here (snap to grid or reset)
         Vector2Int nearestCell = InventoryGrid.GetNearestGridPosition(GetCurrentItemPosition());
-        bool placed = InventoryManager.Instance.TryPlaceItem(nearestCell, InventoryManager.Instance.CurrentItem);
+        bool placed = InventoryManager.Instance.TryPlaceItem(nearestCell, InventoryManager.Instance.CurrentObj);
 
         // TODO: reset item position if cannot place
 
-        InventoryManager.Instance.CurrentItem = null;
+        InventoryManager.Instance.CurrentObj = null;
         currentType = null;
     }
 
     // Snap item's position to grid
     public void PlaceItem(GameObject itemObj, Vector2Int startingCell)
     {
-        Debug.Log("Place item onto grid!");
         Transform pivot = itemObj.transform.Find("Pivot");
         Vector3 pivotOffset = pivot.localPosition;
 
@@ -80,7 +79,7 @@ public class InventoryUI
     public Vector2 GetCurrentItemPosition()
     {
         RectTransform canvasRT = canvas.GetComponent<RectTransform>();
-        RectTransform itemRT = InventoryManager.Instance.CurrentItem.transform.Find("Pivot").GetComponent<RectTransform>();
+        RectTransform itemRT = InventoryManager.Instance.CurrentObj.transform.Find("Pivot").GetComponent<RectTransform>();
 
         return canvasRT.InverseTransformPoint(itemRT.position);
     }

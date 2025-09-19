@@ -5,9 +5,11 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(RectTransform))]
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    [SerializeField] private ItemUIType itemType = ItemUIType.Chest;
-    public ItemUIType ItemType => itemType;
+    public static bool IsDragging { get; private set; } = false;
 
+    [SerializeField] private ItemUIType itemType = ItemUIType.Chest;
+    
+    public ItemUIType ItemType => itemType;
     public Vector2Int Index { get; set; }
 
     private RectTransform rt;
@@ -30,7 +32,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         InventoryManager.UI.BeginDrag(eventData, ItemType, Index);
         canvasGroup.alpha = 0.7f;
-        canvasGroup.blocksRaycasts = false;
+        canvasGroup.blocksRaycasts = false; // UNNECESSARY CODE RIGHT NOW
+        IsDragging = true;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -43,7 +46,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         InventoryManager.UI.EndDrag(eventData);
         canvasGroup.alpha = 1f;
-        canvasGroup.blocksRaycasts = true;
+        canvasGroup.blocksRaycasts = true; // UNNECESSARY CODE RIGHT NOW
+        IsDragging = false;
     }
 }
 

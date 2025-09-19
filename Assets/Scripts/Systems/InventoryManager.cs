@@ -14,7 +14,7 @@ public class InventoryManager : MonoBehaviour
     public static int Height { get; private set; } = 3;
 
     public Chest CurrentChest { get; set; }
-    public GameObject CurrentItem { get; set; }
+    public GameObject CurrentObj { get; set; }
     public Vector2Int CurrentIndex { get; set; }
     public bool isInventoryOpen { get; set; } = false;
 
@@ -45,8 +45,19 @@ public class InventoryManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.V))
-            ToggleInventory();
+        if (Input.GetKeyDown(KeyCode.V)) ToggleInventory();
+
+        if (DraggableItem.IsDragging && Input.GetKeyDown(KeyCode.R))
+            RotateItem();
+    }
+
+    private void RotateItem()
+    {
+        IItem item = CurrentObj.GetComponent<IItem>();
+        RectTransform rt = CurrentObj.transform as RectTransform;
+
+        rt.localEulerAngles = new Vector3(0f, 0f, item.RotationState * 90f);
+
     }
 
     private void ToggleInventory()
