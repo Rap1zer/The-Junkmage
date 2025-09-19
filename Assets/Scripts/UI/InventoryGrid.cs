@@ -11,15 +11,16 @@ public static class InventoryGrid
 
     public static void DrawGrid(Transform gridContainer, GameObject cellPrefab)
     {
-        Inventory inventory = Inventory.Instance;
-        cells = new GameObject[inventory.width, inventory.height];
+        int width = InventoryManager.Width;
+        int height = InventoryManager.Height;
+        cells = new GameObject[width, height];
 
-        float offsetW = ((cellSize * inventory.width) + (margin * (inventory.width - 1))) / 2;
-        float offsetH = ((cellSize * inventory.width) + (margin * (inventory.height - 1))) / 2;
+        float offsetW = ((cellSize * width) + (margin * (width - 1))) / 2;
+        float offsetH = ((cellSize * width) + (margin * (height - 1))) / 2;
 
-        for (int y = 0; y < inventory.height; y++)
+        for (int y = 0; y < height; y++)
         {
-            for (int x = 0; x < inventory.width; x++)
+            for (int x = 0; x < width; x++)
             {
                 GameObject gridCell = Object.Instantiate(cellPrefab, gridContainer);
                 cells[x, y] = gridCell;
@@ -71,7 +72,8 @@ public static class InventoryGrid
 
     public static void HighlightCells(Vector2Int nearestCell, Vector2Int shape, bool canPlace)
     {
-        Inventory inventory = Inventory.Instance;
+        int width = InventoryManager.Width;
+        int height = InventoryManager.Height;
         for (int y = 0; y < shape.y; y++)
         {
             for (int x = 0; x < shape.x; x++)
@@ -81,7 +83,7 @@ public static class InventoryGrid
                     cells[cellPos.x, cellPos.y].GetComponent<Image>().color = Color.green;
                 else
                 {
-                    if (cellPos.x < inventory.width && cellPos.y < inventory.height)
+                    if (cellPos.x < width && cellPos.y < height)
                         cells[cellPos.x, cellPos.y].GetComponent<Image>().color = Color.red;
                 }
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Inventory : MonoBehaviour
+public class Inventory
 {
     public static Inventory Instance { get; private set; }
 
@@ -10,29 +10,18 @@ public class Inventory : MonoBehaviour
 
     public IItem[,] InventoryData { get; private set; }
 
-    [Header("UI Settings")]
-    [SerializeField] private Canvas canvas;
     Transform gridContainer;
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Awake()
+    public Inventory(Transform gridContainer, int width, int height)
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-
-        gridContainer = canvas.transform.Find("Inventory Grid");
-
+        this.gridContainer = gridContainer;
         InventoryData = new IItem[width, height];
+        this.width = width;
+        this.height = height;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.V)) ToggleInventory();
-    }
-
-    private void ToggleInventory()
+    public void ToggleInventory()
     {
         isInventoryOpen = !isInventoryOpen;
         gridContainer.gameObject.SetActive(!gridContainer.gameObject.activeSelf);
@@ -52,6 +41,15 @@ public class Inventory : MonoBehaviour
 
     public void PlaceItem(ItemData data, Vector2Int startingCell)
     {
-        
+
+    }
+    
+    // Calculate if dragged item can be placed on grid in its current position
+    public (Vector2Int nearestCell, bool canPlace, Vector2Int itemSize) CalculateDragPlacement(Vector2 itemPos, Vector2Int itemSize)
+    {
+        Vector2Int nearestCell = InventoryGrid.GetNearestGridPosition(itemPos);
+        bool canPlace = InventoryGrid.CanPlaceItem(itemSize, nearestCell);
+
+        return (nearestCell, canPlace, itemSize);
     }
 }

@@ -21,7 +21,7 @@ public class Chest : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        inventory = GameObject.Find("Game Manager").GetComponent<Inventory>();
+        inventory = GameObject.Find("Game Manager").GetComponent<InventoryManager>().Inventory;
 
         Transform canvas = GameObject.Find("Canvas").transform;
         itemDropsContainer = canvas.Find("Item Drops").gameObject;

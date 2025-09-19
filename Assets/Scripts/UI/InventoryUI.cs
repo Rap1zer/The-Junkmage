@@ -43,7 +43,7 @@ public class InventoryUI : MonoBehaviour
         invRenderer = new InventoryRenderer(canvas, chestSlots);
     }
 
-    void Start()
+    public void DrawGrid()
     {
         InventoryGrid.DrawGrid(gridContainer, cellPrefab);
     }
@@ -93,6 +93,7 @@ public class InventoryUI : MonoBehaviour
 
         return (nearestCell, canPlace, itemSize);
     }
+
 
     private Vector2 GetCurrentItemPosition()
     {
