@@ -2092,7 +2092,6 @@ GameObject:
   - component: {fileID: 1069548162}
   - component: {fileID: 1069548161}
   - component: {fileID: 1069548160}
-  - component: {fileID: 1069548164}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2184,22 +2183,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1069548164
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1069548159}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1c314c2ab8b441efb0a955ffc1ddc51, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canvas: {fileID: 1069548162}
-  cellPrefab: {fileID: 4760301150829493137, guid: 92dcc5a3aa4a7430cada717b8371e599, type: 3}
-  gridContainer: {fileID: 505470389}
-  itemDropsContainer: {fileID: 2070882153}
 --- !u!1001 &1073540271
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4324,7 +4307,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a03b5d5dba9fc486583596af8f9ba5f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 1069548162}
+  cellPrefab: {fileID: 4760301150829493137, guid: 92dcc5a3aa4a7430cada717b8371e599, type: 3}
   gridContainer: {fileID: 505470389}
+  itemDropsContainer: {fileID: 2070882153}
 --- !u!1 &2139774361
 GameObject:
   m_ObjectHideFlags: 0

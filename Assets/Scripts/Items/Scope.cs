@@ -1,27 +1,18 @@
 using System;
 using UnityEngine;
 
-public class Scope : MonoBehaviour, IOnHit, IItemBehaviour, IOnMiss, IItem
+public class Scope : MonoBehaviour, IOnHit, IOnMiss, IItem
 {
     public ItemData ItemData { get; private set; }
     private PlayerController Player { get; set; }
-    public GameObject ScopeObj { get; set; }
     int critChanceStack = 0;
     int maxCritChanceStack = 30;
 
-    public void Initialise (ItemData itemData, PlayerController player, GameObject scopeObj)
+    public void Initialise (ItemData itemData, PlayerController player)
     {
         ItemData = itemData;
         Player = player;
-        ScopeObj = scopeObj;
     }
-
-    public virtual void OnEquip()
-    {
-
-    }
-
-    public virtual void OnUnequip() { }
 
     public void OnHit()
     {

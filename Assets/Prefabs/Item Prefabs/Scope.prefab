@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5504515940822559583}
   - component: {fileID: 2267698610056741778}
   - component: {fileID: 6119763323293716793}
+  - component: {fileID: 5489148203546906465}
   m_Layer: 5
   m_Name: Scope
   m_TagString: Untagged
@@ -103,6 +104,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemType: 0
+--- !u!114 &5489148203546906465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6983380330852312643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1ba6497816664374a7db7b7a10edd70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7351960820819635585
 GameObject:
   m_ObjectHideFlags: 0
