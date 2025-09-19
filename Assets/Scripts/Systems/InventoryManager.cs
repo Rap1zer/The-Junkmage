@@ -13,6 +13,8 @@ public class InventoryManager : MonoBehaviour
     public static int Width { get; private set; } = 3;
     public static int Height { get; private set; } = 3;
 
+    public Chest CurrentChest { get; set; }
+
     [Header("UI Settings")]
     [SerializeField] private Canvas canvas;
     [SerializeField] private GameObject cellPrefab;
@@ -40,7 +42,18 @@ public class InventoryManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.V)) 
+        if (Input.GetKeyDown(KeyCode.V))
             Inventory.ToggleInventory();
+    }
+
+    public void RegisterChest(Chest chest)
+    {
+        chest.OnChestOpened += HandleChestOpened;
+    }
+
+    private void HandleChestOpened(Chest chest)
+    {
+        CurrentChest = chest;
+        UI.HandleChestOpened(chest);
     }
 }

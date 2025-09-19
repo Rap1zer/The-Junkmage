@@ -26,7 +26,7 @@ public class Chest : MonoBehaviour
         Transform canvas = GameObject.Find("Canvas").transform;
         itemDropsContainer = canvas.Find("Item Drops").gameObject;
 
-        InventoryManager.UI.RegisterChest(this);
+        InventoryManager.Instance.RegisterChest(this);
     }
 
     // Update is called once per frame

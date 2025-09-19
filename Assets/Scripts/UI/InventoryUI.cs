@@ -12,7 +12,6 @@ public class InventoryUI
     private GameObject currentItem;
     private Vector2Int currentIndex;
     private ItemUIType? currentType;
-    private Chest currentChest;
 
     private Canvas canvas;
     private GameObject cellPrefab;
@@ -70,7 +69,7 @@ public class InventoryUI
         Vector2 itemPos = GetCurrentItemPosition();
         Vector2Int nearestCell = InventoryGrid.GetNearestGridPosition(itemPos);
 
-        Vector2Int itemSize = currentChest.ItemsInChest[currentIndex.y].size;
+        Vector2Int itemSize = InventoryManager.Instance.CurrentChest.ItemsInChest[currentIndex.y].size;
         bool canPlace = InventoryGrid.CanPlaceItem(itemSize, nearestCell);
 
         return (nearestCell, canPlace, itemSize);
@@ -84,16 +83,10 @@ public class InventoryUI
         return canvasRT.InverseTransformPoint(itemRT.position);
     }
 
-    public void RegisterChest(Chest chest)
-    {
-        chest.OnChestOpened += HandleChestOpened;
-    }
-
-    private void HandleChestOpened(Chest chest)
+    public void HandleChestOpened(Chest chest)
     {
         if (chest == null || chest.ItemsInChest == null) return;
 
-        currentChest = chest;
         invRenderer.RenderChestItems(chest.ItemsInChest);
         itemDropsContainer.gameObject.SetActive(true);
     }
