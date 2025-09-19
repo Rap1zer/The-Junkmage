@@ -28,20 +28,20 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        InventoryUI.Instance.BeginDrag(eventData, ItemType, Index);
+        InventoryManager.UI.BeginDrag(eventData, ItemType, Index);
         canvasGroup.alpha = 0.7f;
         canvasGroup.blocksRaycasts = false;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        InventoryUI.Instance.Drag(eventData);
+        InventoryManager.UI.Drag(eventData);
         rt.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        InventoryUI.Instance.EndDrag(eventData);
+        InventoryManager.UI.EndDrag(eventData);
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
     }

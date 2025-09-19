@@ -7,37 +7,32 @@ public enum ItemUIType
     Inventory
 }
 
-
-public class InventoryUI : MonoBehaviour
+public class InventoryUI
 {
-    public static InventoryUI Instance { get; private set; }
-
     private GameObject currentItem;
     private Vector2Int currentIndex;
     private ItemUIType? currentType;
     private Chest currentChest;
 
-    [SerializeField] private Canvas canvas;
-    [SerializeField] private GameObject cellPrefab;
-    [SerializeField] private Transform gridContainer;
-    [SerializeField] private Transform itemDropsContainer;
+    private Canvas canvas;
+    private GameObject cellPrefab;
+    private Transform gridContainer;
+    private Transform itemDropsContainer;
 
     private InventoryRenderer invRenderer;
-
     private RectTransform[] chestSlots;
 
-    
-
-    void Awake()
+    public InventoryUI(Canvas canvas, GameObject cellPrefab, Transform gridContainer, Transform itemDropsContainer)
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-
+        this.canvas = canvas;
+        this.cellPrefab = cellPrefab;
+        this.gridContainer = gridContainer;
+        this.itemDropsContainer = itemDropsContainer;
 
         chestSlots = new RectTransform[Chest.itemPoolCount];
         for (int i = 0; i < chestSlots.Length; i++)
         {
-            chestSlots[i] = itemDropsContainer.transform.GetChild(i).GetComponent<RectTransform>();
+            chestSlots[i] = itemDropsContainer.GetChild(i).GetComponent<RectTransform>();
         }
 
         invRenderer = new InventoryRenderer(canvas, chestSlots);
@@ -67,22 +62,9 @@ public class InventoryUI : MonoBehaviour
     {
         currentItem = null;
         currentType = null;
-        // IF CAN PLACE
-        // Inventory must update internal state to store object
-        // Item must snap to grid
-
-        // IF CAN'T PLACE
-        // Item snap back to original position
-
-        // var (nearestCell, canPlace, itemSize) = CalculateDragPlacement();
-        // if (canPlace)
-        // {
-
-        //     Inventory.Instance.InventoryData[nearestCell.x, nearestCell.y] = currentChest.ItemsInChest[currentIndex.y];
-        // }
+        // TODO: place logic here (snap to grid or reset)
     }
 
-    // Calculate if dragged item can be placed on grid in its current position
     private (Vector2Int nearestCell, bool canPlace, Vector2Int itemSize) CalculateDragPlacement()
     {
         Vector2 itemPos = GetCurrentItemPosition();
@@ -93,7 +75,6 @@ public class InventoryUI : MonoBehaviour
 
         return (nearestCell, canPlace, itemSize);
     }
-
 
     private Vector2 GetCurrentItemPosition()
     {
@@ -117,4 +98,3 @@ public class InventoryUI : MonoBehaviour
         itemDropsContainer.gameObject.SetActive(true);
     }
 }
-
