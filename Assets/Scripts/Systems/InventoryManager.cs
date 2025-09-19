@@ -56,8 +56,7 @@ public class InventoryManager : MonoBehaviour
         IItem item = CurrentObj.GetComponent<IItem>();
         RectTransform rt = CurrentObj.transform as RectTransform;
 
-        rt.localEulerAngles = new Vector3(0f, 0f, item.RotationState * 90f);
-
+        rt.localEulerAngles = new Vector3(0f, 0f, item.Rotate());
     }
 
     private void ToggleInventory()
@@ -80,7 +79,7 @@ public class InventoryManager : MonoBehaviour
 
     public bool TryPlaceItem(Vector2Int startingCell, GameObject itemObj)
     {
-        Vector2Int itemSize = CurrentChest.ItemsInChest[CurrentIndex.y].size;
+        Vector2Int itemSize = CurrentObj.GetComponent<IItem>().CurrentShape;
         bool canPlace = InventoryGrid.CanPlaceItem(itemSize, startingCell);
 
         if (canPlace)
@@ -106,7 +105,7 @@ public class InventoryManager : MonoBehaviour
         Vector2 itemPos = UI.GetCurrentItemPosition();
         Vector2Int nearestCell = InventoryGrid.GetNearestGridPosition(itemPos);
 
-        Vector2Int itemSize = CurrentChest.ItemsInChest[CurrentIndex.y].size;
+        Vector2Int itemSize = CurrentObj.GetComponent<IItem>().CurrentShape;
         bool canPlace = InventoryGrid.CanPlaceItem(itemSize, nearestCell);
 
         return (nearestCell, canPlace, itemSize);

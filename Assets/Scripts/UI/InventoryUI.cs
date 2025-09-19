@@ -70,10 +70,16 @@ public class InventoryUI
     // Snap item's position to grid
     public void PlaceItem(GameObject itemObj, Vector2Int startingCell)
     {
-        Transform pivot = itemObj.transform.Find("Pivot");
-        Vector3 pivotOffset = pivot.localPosition;
+        Vector3 anchorWorldPos = itemObj.GetComponent<IItem>().AnchorWorldPos;
+        Vector3 targetCellPos = InventoryGrid.CellObjs[startingCell.x, startingCell.y].transform.position;
+        Debug.Log(itemObj.GetComponent<IItem>().AnchorLocalPos);
+        Debug.Log(anchorWorldPos);
 
-        itemObj.transform.position = InventoryGrid.CellObjs[startingCell.x, startingCell.y].transform.position - pivotOffset;
+        // compute how far off the item is
+        Vector3 offset = anchorWorldPos - itemObj.transform.position;
+
+        // move item so pivot lands exactly on target cell
+        itemObj.transform.position = targetCellPos - offset;
     }
 
     public Vector2 GetCurrentItemPosition()

@@ -18,6 +18,7 @@ public class InventoryRenderer
             if (chestItems[i] == null) continue;
 
             GameObject item = Object.Instantiate(chestItems[i].prefab, canvas.transform);
+            item.GetComponent<ItemBase>().Initialise(chestItems[i]);
             item.GetComponent<RectTransform>().anchoredPosition = chestSlots[i].anchoredPosition;
 
             DraggableItem draggable = item.GetComponent<DraggableItem>();

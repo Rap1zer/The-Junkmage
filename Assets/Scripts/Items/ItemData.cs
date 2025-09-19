@@ -5,7 +5,7 @@ public class ItemData : ScriptableObject
 {
     public string itemName;
     public Sprite icon;
-    public Vector2Int size;
+    public Vector2Int shape;
     public string description;
     public GameObject prefab;
 }

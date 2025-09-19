@@ -6,8 +6,8 @@ public static class InventoryGrid
 {
     static public GameObject[,] CellObjs;
 
-    static float cellSize = 100f;
-    static float margin = 10f;
+    static public float CellSize = 100f;
+    static public float Margin = 10f;
 
     public static void DrawGrid(Transform gridContainer, GameObject cellPrefab)
     {
@@ -15,8 +15,8 @@ public static class InventoryGrid
         int height = InventoryManager.Height;
         CellObjs = new GameObject[width, height];
 
-        float offsetW = ((cellSize * width) + (margin * (width - 1))) / 2 - (cellSize / 2);
-        float offsetH = ((cellSize * width) + (margin * (height - 1))) / 2 - (cellSize / 2);
+        float offsetW = ((CellSize * width) + (Margin * (width - 1))) / 2 - (CellSize / 2);
+        float offsetH = ((CellSize * width) + (Margin * (height - 1))) / 2 - (CellSize / 2);
 
         for (int y = 0; y < height; y++)
         {
@@ -26,8 +26,8 @@ public static class InventoryGrid
                 CellObjs[x, y] = gridCell;
 
                 RectTransform rt = gridCell.GetComponent<RectTransform>();
-                rt.anchoredPosition = new Vector3(((cellSize + margin) * x) - offsetW,
-                ((cellSize + margin) * y) - offsetH, 0);
+                rt.anchoredPosition = new Vector3(((CellSize + Margin) * x) - offsetW,
+                ((CellSize + Margin) * y) - offsetH, 0);
             }
         }
     }
@@ -38,14 +38,14 @@ public static class InventoryGrid
         int height = CellObjs.GetLength(1);
 
         // Calculate offset (same as in DrawGrid)
-        float offsetW = ((cellSize * width) + (margin * (width - 1))) / 2;
-        float offsetH = ((cellSize * height) + (margin * (height - 1))) / 2;
+        float offsetW = ((CellSize * width) + (Margin * (width - 1))) / 2;
+        float offsetH = ((CellSize * height) + (Margin * (height - 1))) / 2;
 
         float localX = mousePos.x + offsetW;
         float localY = mousePos.y + offsetH;
 
-        int gridX = Mathf.Clamp(Mathf.RoundToInt(localX / (cellSize + margin)), 0, width - 1);
-        int gridY = Mathf.Clamp(Mathf.RoundToInt(localY / (cellSize + margin)), 0, height - 1);
+        int gridX = Mathf.Clamp(Mathf.RoundToInt(localX / (CellSize + Margin)), 0, width - 1);
+        int gridY = Mathf.Clamp(Mathf.RoundToInt(localY / (CellSize + Margin)), 0, height - 1);
 
         return new Vector2Int(gridX, gridY);
     }
