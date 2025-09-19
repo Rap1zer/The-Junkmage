@@ -2198,6 +2198,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 1069548162}
   cellPrefab: {fileID: 4760301150829493137, guid: 92dcc5a3aa4a7430cada717b8371e599, type: 3}
+  gridContainer: {fileID: 505470389}
+  itemDropsContainer: {fileID: 2070882153}
 --- !u!1001 &1073540271
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4183,7 +4185,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2070882153
 Transform:
   m_ObjectHideFlags: 0

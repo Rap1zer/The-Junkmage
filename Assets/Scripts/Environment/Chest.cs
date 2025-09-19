@@ -52,7 +52,7 @@ public class Chest : MonoBehaviour
         {
             int random = UnityEngine.Random.Range(0, itemDatabase.items.Length);
             itemsInChest[i] = itemDatabase.items[random];
-            Inventory.Instance.ChestItemsData[i] = itemsInChest[i];
+            Inventory.Instance.ChestItemsData[i] = itemsInChest[i]; // UPDATE THIS CLUNKY CODE
         }
 
         OnChestOpened?.Invoke(itemsInChest);
