@@ -15,8 +15,8 @@ public static class InventoryGrid
         int height = InventoryManager.Height;
         CellObjs = new GameObject[width, height];
 
-        float offsetW = ((cellSize * width) + (margin * (width - 1))) / 2;
-        float offsetH = ((cellSize * width) + (margin * (height - 1))) / 2;
+        float offsetW = ((cellSize * width) + (margin * (width - 1))) / 2 - (cellSize / 2);
+        float offsetH = ((cellSize * width) + (margin * (height - 1))) / 2 - (cellSize / 2);
 
         for (int y = 0; y < height; y++)
         {

@@ -57,21 +57,24 @@ public class InventoryUI
 
     public void EndDrag(PointerEventData eventData)
     {
+        // TODO: place logic here (snap to grid or reset)
+        Vector2Int nearestCell = InventoryGrid.GetNearestGridPosition(GetCurrentItemPosition());
+        bool placed = InventoryManager.Instance.TryPlaceItem(nearestCell, InventoryManager.Instance.CurrentItem);
+
+        // TODO: reset item position if cannot place
+
         InventoryManager.Instance.CurrentItem = null;
         currentType = null;
-
-        // TODO: place logic here (snap to grid or reset)
-        bool placed = InventoryManager.Instance.TryPlaceItem(
-            InventoryManager.Instance.CurrentIndex,
-            InventoryManager.Instance.CurrentItem);
-
-        if (!placed) return; // TODO: reset item position
     }
 
     // Snap item's position to grid
     public void PlaceItem(GameObject itemObj, Vector2Int startingCell)
     {
-        itemObj.transform.Find("Pivot").position = InventoryGrid.CellObjs[startingCell.x, startingCell.y].transform.position;
+        Debug.Log("Place item onto grid!");
+        Transform pivot = itemObj.transform.Find("Pivot");
+        Vector3 pivotOffset = pivot.localPosition;
+
+        itemObj.transform.position = InventoryGrid.CellObjs[startingCell.x, startingCell.y].transform.position - pivotOffset;
     }
 
     public Vector2 GetCurrentItemPosition()

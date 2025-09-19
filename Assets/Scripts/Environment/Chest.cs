@@ -55,14 +55,14 @@ public class Chest : MonoBehaviour
         }
 
         OnChestOpened?.Invoke(this);
-        inventory.OpenInventory();
+        InventoryManager.Instance.OpenInventory();
         chestOpened = true;
     }
 
     private void CloseChest()
     {
         OnChestOpened?.Invoke(null);
-        inventory.CloseInventory();
+        InventoryManager.Instance.CloseInventory();
     }
 
     void OnTriggerEnter2D(Collider2D other)
