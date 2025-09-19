@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Inventory
@@ -8,7 +9,7 @@ public class Inventory
     public int height = 3;
     public bool isInventoryOpen = false;
 
-    public IItem[,] InventoryData { get; private set; }
+    public IItem[,] Data { get; private set; }
 
     Transform gridContainer;
 
@@ -16,7 +17,7 @@ public class Inventory
     public Inventory(Transform gridContainer, int width, int height)
     {
         this.gridContainer = gridContainer;
-        InventoryData = new IItem[width, height];
+        Data = new IItem[width, height];
         this.width = width;
         this.height = height;
     }
@@ -38,11 +39,6 @@ public class Inventory
         isInventoryOpen = false;
         gridContainer.gameObject.SetActive(false);
     }
-
-    public void PlaceItem(ItemData data, Vector2Int startingCell)
-    {
-
-    }
     
     // Calculate if dragged item can be placed on grid in its current position
     public (Vector2Int nearestCell, bool canPlace, Vector2Int itemSize) CalculateDragPlacement(Vector2 itemPos, Vector2Int itemSize)
@@ -51,5 +47,17 @@ public class Inventory
         bool canPlace = InventoryGrid.CanPlaceItem(itemSize, nearestCell);
 
         return (nearestCell, canPlace, itemSize);
+    }
+
+    internal void PlaceItem(GameObject itemObj, Vector2Int startingCell, Vector2Int itemSize)
+    {
+        IItem item = itemObj.GetComponent<IItem>();
+        for (int y = 0; y < itemSize.y; y++)
+        {
+            for (int x = 0; x < itemSize.x; x++)
+            {
+                Data[startingCell.x + x, startingCell.y + y] = item;
+            }
+        }
     }
 }

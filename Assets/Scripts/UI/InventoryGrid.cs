@@ -4,7 +4,7 @@ using UnityEngine.UI;
 [System.Serializable]
 public static class InventoryGrid
 {
-    static private GameObject[,] cells;
+    static public GameObject[,] CellObjs;
 
     static float cellSize = 100f;
     static float margin = 10f;
@@ -13,7 +13,7 @@ public static class InventoryGrid
     {
         int width = InventoryManager.Width;
         int height = InventoryManager.Height;
-        cells = new GameObject[width, height];
+        CellObjs = new GameObject[width, height];
 
         float offsetW = ((cellSize * width) + (margin * (width - 1))) / 2;
         float offsetH = ((cellSize * width) + (margin * (height - 1))) / 2;
@@ -23,7 +23,7 @@ public static class InventoryGrid
             for (int x = 0; x < width; x++)
             {
                 GameObject gridCell = Object.Instantiate(cellPrefab, gridContainer);
-                cells[x, y] = gridCell;
+                CellObjs[x, y] = gridCell;
 
                 RectTransform rt = gridCell.GetComponent<RectTransform>();
                 rt.anchoredPosition = new Vector3(((cellSize + margin) * x) - offsetW,
@@ -34,8 +34,8 @@ public static class InventoryGrid
 
     public static Vector2Int GetNearestGridPosition(Vector2 mousePos)
     {
-        int width = cells.GetLength(0);
-        int height = cells.GetLength(1);
+        int width = CellObjs.GetLength(0);
+        int height = CellObjs.GetLength(1);
 
         // Calculate offset (same as in DrawGrid)
         float offsetW = ((cellSize * width) + (margin * (width - 1))) / 2;
@@ -59,7 +59,7 @@ public static class InventoryGrid
                 int cellX = nearestCell.x + x;
                 int cellY = nearestCell.y + y;
 
-                if (cellX >= cells.GetLength(0) || cellY >= cells.GetLength(1))
+                if (cellX >= CellObjs.GetLength(0) || cellY >= CellObjs.GetLength(1))
                     return false;
 
                 // Optional: check if the cell is already occupied
@@ -80,11 +80,11 @@ public static class InventoryGrid
             {
                 Vector2Int cellPos = new Vector2Int(nearestCell.x + x, nearestCell.y + y);
                 if (canPlace)
-                    cells[cellPos.x, cellPos.y].GetComponent<Image>().color = Color.green;
+                    CellObjs[cellPos.x, cellPos.y].GetComponent<Image>().color = Color.green;
                 else
                 {
                     if (cellPos.x < width && cellPos.y < height)
-                        cells[cellPos.x, cellPos.y].GetComponent<Image>().color = Color.red;
+                        CellObjs[cellPos.x, cellPos.y].GetComponent<Image>().color = Color.red;
                 }
 
             }
@@ -93,7 +93,7 @@ public static class InventoryGrid
 
     public static void ClearHighlights()
     {
-        foreach (var cell in cells)
+        foreach (var cell in CellObjs)
         {
             cell.GetComponent<Image>().color = Color.white;
         }

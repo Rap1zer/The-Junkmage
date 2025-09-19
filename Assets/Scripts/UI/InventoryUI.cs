@@ -9,8 +9,6 @@ public enum ItemUIType
 
 public class InventoryUI
 {
-    private GameObject currentItem;
-    private Vector2Int currentIndex;
     private ItemUIType? currentType;
 
     private Canvas canvas;
@@ -44,8 +42,8 @@ public class InventoryUI
 
     public void BeginDrag(PointerEventData eventData, ItemUIType type, Vector2Int index)
     {
-        currentItem = eventData.pointerDrag;
-        currentIndex = index;
+        InventoryManager.Instance.CurrentItem = eventData.pointerDrag;
+        InventoryManager.Instance.CurrentIndex = index;
         currentType = type;
     }
 
@@ -53,32 +51,33 @@ public class InventoryUI
     {
         InventoryGrid.ClearHighlights();
 
-        var (nearestCell, canPlace, itemSize) = CalculateDragPlacement();
+        var (nearestCell, canPlace, itemSize) = InventoryManager.Instance.CalculateDragPlacement();
         InventoryGrid.HighlightCells(nearestCell, itemSize, canPlace);
     }
 
     public void EndDrag(PointerEventData eventData)
     {
-        currentItem = null;
+        InventoryManager.Instance.CurrentItem = null;
         currentType = null;
+
         // TODO: place logic here (snap to grid or reset)
+        bool placed = InventoryManager.Instance.TryPlaceItem(
+            InventoryManager.Instance.CurrentIndex,
+            InventoryManager.Instance.CurrentItem);
+
+        if (!placed) return; // TODO: reset item position
     }
 
-    private (Vector2Int nearestCell, bool canPlace, Vector2Int itemSize) CalculateDragPlacement()
+    // Snap item's position to grid
+    public void PlaceItem(GameObject itemObj, Vector2Int startingCell)
     {
-        Vector2 itemPos = GetCurrentItemPosition();
-        Vector2Int nearestCell = InventoryGrid.GetNearestGridPosition(itemPos);
-
-        Vector2Int itemSize = InventoryManager.Instance.CurrentChest.ItemsInChest[currentIndex.y].size;
-        bool canPlace = InventoryGrid.CanPlaceItem(itemSize, nearestCell);
-
-        return (nearestCell, canPlace, itemSize);
+        itemObj.transform.Find("Pivot").position = InventoryGrid.CellObjs[startingCell.x, startingCell.y].transform.position;
     }
 
-    private Vector2 GetCurrentItemPosition()
+    public Vector2 GetCurrentItemPosition()
     {
         RectTransform canvasRT = canvas.GetComponent<RectTransform>();
-        RectTransform itemRT = currentItem.transform.Find("Pivot").GetComponent<RectTransform>();
+        RectTransform itemRT = InventoryManager.Instance.CurrentItem.transform.Find("Pivot").GetComponent<RectTransform>();
 
         return canvasRT.InverseTransformPoint(itemRT.position);
     }
