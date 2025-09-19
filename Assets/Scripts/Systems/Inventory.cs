@@ -9,7 +9,6 @@ public class Inventory : MonoBehaviour
     public bool isInventoryOpen = false;
 
     public IItem[,] InventoryData { get; set; }
-    public ItemData[] ChestItemsData { get; set; }
 
     [Header("UI Settings")]
     [SerializeField] private Canvas canvas;
@@ -25,7 +24,6 @@ public class Inventory : MonoBehaviour
         gridContainer = canvas.transform.Find("Inventory Grid");
 
         InventoryData = new IItem[width, height];
-        ChestItemsData = new ItemData[3];
     }
 
     // Update is called once per frame

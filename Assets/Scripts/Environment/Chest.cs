@@ -13,10 +13,10 @@ public class Chest : MonoBehaviour
     private bool inPlayerRange = false;
     private bool chestOpened = false;
 
-    public ItemData[] itemsInChest;
+    public ItemData[] ItemsInChest { get; private set; }
 
     // Event fired when chest opens
-    public event Action<ItemData[]> OnChestOpened;
+    public event Action<Chest> OnChestOpened;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -45,17 +45,16 @@ public class Chest : MonoBehaviour
     {
         if (!inPlayerRange) return; // Too far away to open chest
         int itemCount = Mathf.Min(itemPoolCount, itemDatabase.items.Length); // Limit number of items
-        itemsInChest = new ItemData[itemCount]; // Reset Chest
+        ItemsInChest = new ItemData[itemCount]; // Reset Chest
 
         // Randomly select items from database
         for (int i = 0; i < itemCount; i++)
         {
             int random = UnityEngine.Random.Range(0, itemDatabase.items.Length);
-            itemsInChest[i] = itemDatabase.items[random];
-            Inventory.Instance.ChestItemsData[i] = itemsInChest[i]; // UPDATE THIS CLUNKY CODE
+            ItemsInChest[i] = itemDatabase.items[random];
         }
 
-        OnChestOpened?.Invoke(itemsInChest);
+        OnChestOpened?.Invoke(this);
         inventory.OpenInventory();
         chestOpened = true;
     }

@@ -28,7 +28,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        InventoryUI.Instance.BeginDrag(eventData, ItemType);
+        InventoryUI.Instance.BeginDrag(eventData, ItemType, Index);
         canvasGroup.alpha = 0.7f;
         canvasGroup.blocksRaycasts = false;
     }

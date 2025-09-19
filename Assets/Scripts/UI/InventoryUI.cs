@@ -13,8 +13,9 @@ public class InventoryUI : MonoBehaviour
     public static InventoryUI Instance { get; private set; }
 
     private GameObject currentItem;
-    private RectTransform currentRT;
+    private Vector2Int currentIndex;
     private ItemUIType? currentType;
+    private Chest currentChest;
 
     [SerializeField] private Canvas canvas;
     [SerializeField] private GameObject cellPrefab;
@@ -49,11 +50,11 @@ public class InventoryUI : MonoBehaviour
         grid.DrawGrid(gridContainer, cellPrefab);
     }
 
-    public void BeginDrag(PointerEventData eventData, ItemUIType type)
+    public void BeginDrag(PointerEventData eventData, ItemUIType type, Vector2Int index)
     {
         currentItem = eventData.pointerDrag;
+        currentIndex = index;
         currentType = type;
-        currentRT = currentItem.GetComponent<RectTransform>();
     }
 
     public void Drag(PointerEventData eventData)
@@ -64,7 +65,7 @@ public class InventoryUI : MonoBehaviour
         Vector2Int nearestCell = grid.GetNearestGridPosition(itemPos);
 
         // UPDATE THIS CLUNKY CODE
-        Vector2Int itemSize = Inventory.Instance.ChestItemsData[currentItem.GetComponent<DraggableItem>().Index.y].size;
+        Vector2Int itemSize = currentChest.ItemsInChest[currentIndex.y].size;
 
         bool canPlace = grid.CanPlaceItem(itemSize, nearestCell);
         grid.HighlightCells(nearestCell, itemSize, canPlace);
@@ -74,7 +75,6 @@ public class InventoryUI : MonoBehaviour
     {
         currentItem = null;
         currentType = null;
-        currentRT = null;
     }
 
     private Vector2 GetCurrentItemPosition()
@@ -90,11 +90,12 @@ public class InventoryUI : MonoBehaviour
         chest.OnChestOpened += HandleChestOpened;
     }
 
-    private void HandleChestOpened(ItemData[] items)
+    private void HandleChestOpened(Chest chest)
     {
-        if (items == null) return;
+        if (chest == null || chest.ItemsInChest == null) return;
 
-        invRenderer.RenderChestItems(items);
+        currentChest = chest;
+        invRenderer.RenderChestItems(chest.ItemsInChest);
         itemDropsContainer.gameObject.SetActive(true);
     }
 }
