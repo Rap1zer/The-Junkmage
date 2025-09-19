@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Scope
   icon: {fileID: -9190675311735184628, guid: 3c690c26e44ba4db1a3e8526c4deb200, type: 3}
-  size: {x: 2, y: 1}
+  shape: {x: 2, y: 1}
   description: Gives 3 Crit for every attack that hits an enemy until 30. Crit from
     scope gets reset when you miss.
   prefab: {fileID: 6983380330852312643, guid: 58e6f08af6c0145f4ae56e334d45c398, type: 3}
