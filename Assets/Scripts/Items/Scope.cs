@@ -1,20 +1,11 @@
-using System;
 using UnityEngine;
 
-public class Scope : MonoBehaviour, IOnHit, IOnMiss, IItem
+public class Scope : ItemBase, IOnHit, IOnMiss
 {
-    public ItemData ItemData { get; private set; }
-    private PlayerController Player { get; set; }
     int critChanceStack = 0;
     int maxCritChanceStack = 30;
 
-    public void Initialise (ItemData itemData, PlayerController player)
-    {
-        ItemData = itemData;
-        Player = player;
-    }
-
-    public void OnHit()
+    public override void OnHit()
     {
         critChanceStack += 3;
         critChanceStack = Mathf.Min(critChanceStack, maxCritChanceStack);
@@ -23,8 +14,9 @@ public class Scope : MonoBehaviour, IOnHit, IOnMiss, IItem
         Player.critChance += increase;
     }
 
-    public void OnMiss() {
-        Player.critChance = Math.Max(0, Player.critChance - critChanceStack);
+    public override void OnMiss()
+    {
+        Player.critChance = Mathf.Max(0, Player.critChance - critChanceStack);
         critChanceStack = 0;
     }
 }
