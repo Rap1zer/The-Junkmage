@@ -5,6 +5,10 @@ using UnityEngine;
 public abstract class ItemBase : MonoBehaviour, IItem
 {
     public ItemData ItemData { get; private set; }
+    public ItemUIType UIType { get; set; } = ItemUIType.Chest;
+    public bool InInventory { get; set; } = false;
+
+    public Guid Id { get; private set; }
     public int RotationState { get; private set; } = 0;
 
     protected PlayerController Player { get; private set; }
@@ -14,6 +18,7 @@ public abstract class ItemBase : MonoBehaviour, IItem
     public virtual void Initialise(ItemData itemData)
     {
         ItemData = itemData;
+        Id = Guid.NewGuid();
         Player = GameObject.Find("Player").GetComponent<PlayerController>();
         CurrentShape = itemData.shape;
     }
@@ -68,6 +73,22 @@ public abstract class ItemBase : MonoBehaviour, IItem
         {
             // rotate local anchor into world space and add to item position
             return transform.position + transform.rotation * (Vector3)AnchorOffset;
+        }
+    }
+
+    public Vector2Int AnchorGridPos
+    {
+        get
+        {
+            if (InventoryManager.Inventory.TryGetItemGridPos(this, out var pos))
+                return pos;
+
+            // If not found, decide how you want to handle it:
+            // Option A: throw (explicit failure)
+            throw new InvalidOperationException("Item not found in inventory.");
+
+            // Option B: return a sentinel value
+            // return new Vector2Int(-1, -1);
         }
     }
 

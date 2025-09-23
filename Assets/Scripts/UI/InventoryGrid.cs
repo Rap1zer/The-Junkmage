@@ -59,11 +59,9 @@ public static class InventoryGrid
                 int cellX = nearestCell.x + x;
                 int cellY = nearestCell.y + y;
 
-                if (cellX >= CellObjs.GetLength(0) || cellY >= CellObjs.GetLength(1))
-                    return false;
+                if (cellX >= CellObjs.GetLength(0) || cellY >= CellObjs.GetLength(1)) return false;
 
-                // Optional: check if the cell is already occupied
-                // if (inventory.IsCellOccupied(cellX, cellY)) return false;
+                if (InventoryManager.Inventory.IsCellOccupied(new Vector2Int(cellX, cellY))) return false;
             }
         }
 
@@ -91,11 +89,23 @@ public static class InventoryGrid
         }
     }
 
+    public static void OccupyCells(Vector2Int cell, Vector2Int shape)
+    {
+        for (int y = 0; y < shape.y; y++)
+        {
+            for (int x = 0; x < shape.x; x++)
+            {
+                CellObjs[cell.x, cell.y].GetComponent<Image>().color = Color.yellow;
+            }
+        }
+    }
+
     public static void ClearHighlights()
     {
         foreach (var cell in CellObjs)
         {
-            cell.GetComponent<Image>().color = Color.white;
+            Image image = cell.GetComponent<Image>();
+            if (image.color != Color.yellow) image.color = Color.white;
         }
     }
 }

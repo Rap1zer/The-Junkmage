@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -16,13 +19,18 @@ public class InventoryManager : MonoBehaviour
     public Chest CurrentChest { get; set; }
     public GameObject CurrentObj { get; set; }
     public Vector2Int CurrentIndex { get; set; }
+    public ItemUIType? CurrentType { get; set; }
+    public IItem CurrentItem => CurrentObj.GetComponent<IItem>();
+
     public bool isInventoryOpen { get; set; } = false;
+    private bool isChestOpen { get; set; } = false;
 
     [Header("UI Settings")]
     [SerializeField] private Canvas canvas;
     [SerializeField] private GameObject cellPrefab;
     [SerializeField] private Transform gridContainer;
     [SerializeField] private Transform itemDropsContainer;
+    [SerializeField] private Button continueBtn;
 
     void Awake()
     {
@@ -45,7 +53,7 @@ public class InventoryManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.V)) ToggleInventory();
+        if (Input.GetKeyDown(KeyCode.V) && !isChestOpen) ToggleInventory();
 
         if (DraggableItem.IsDragging && Input.GetKeyDown(KeyCode.R))
             RotateItem();
@@ -79,30 +87,33 @@ public class InventoryManager : MonoBehaviour
 
     public bool TryPlaceItem(Vector2Int startingCell, GameObject itemObj)
     {
-        Vector2Int itemSize = CurrentObj.GetComponent<IItem>().CurrentShape;
-        bool canPlace = InventoryGrid.CanPlaceItem(itemSize, startingCell);
+        IItem item = itemObj.GetComponent<IItem>();
+        bool canPlace = InventoryGrid.CanPlaceItem(item.CurrentShape, startingCell);
 
         if (canPlace)
         {
-            PlaceItem(startingCell, itemSize, itemObj);
+            PlaceItem(item, startingCell, itemObj);
             return true;
         }
 
         return false;
     }
 
-    private void PlaceItem(Vector2Int startingCell, Vector2Int itemSize, GameObject itemObj)
+    private void PlaceItem(IItem item, Vector2Int startingCell, GameObject itemObj)
     {
         // Snap item's position to grid
         UI.PlaceItem(itemObj, startingCell);
         // Place item in inventory
-        Inventory.PlaceItem(itemObj, startingCell, itemSize);
+        Inventory.PlaceItem(item, startingCell);
+
+        CurrentItem.InInventory = true;
+        CurrentChest.TakeItem(CurrentItem);
     }
 
     // Calculate if dragged item can be placed on grid in its current position
     public (Vector2Int nearestCell, bool canPlace, Vector2Int itemSize) CalculateDragPlacement()
     {
-        Vector2 itemPos = UI.GetCurrentItemPosition();
+        Vector2 itemPos = UI.GetCurrentItemCanvasPos();
         Vector2Int nearestCell = InventoryGrid.GetNearestGridPosition(itemPos);
 
         Vector2Int itemSize = CurrentObj.GetComponent<IItem>().CurrentShape;
@@ -119,6 +130,30 @@ public class InventoryManager : MonoBehaviour
     private void HandleChestOpened(Chest chest)
     {
         CurrentChest = chest;
-        UI.HandleChestOpened(chest);
+        IItem[] chestItems = UI.HandleChestOpened(chest);
+        continueBtn.gameObject.SetActive(true);
+
+        chest.SetItemIds(chestItems);
+    }
+
+    public void OnContinueClicked()
+    {
+        Debug.Log("On continue clicked");
+        CurrentItem.UIType = ItemUIType.Inventory;
+        if (Inventory.ChestItemEquipped())
+        {
+            CloseInventory();
+            CurrentChest.CloseChest();
+            continueBtn.gameObject.SetActive(false);
+        }
+    }
+
+    public bool CanDrag(GameObject itemObj)
+    {
+        IItem item = itemObj.GetComponent<IItem>();
+
+        // Cannot drag another chest item if one is already equipped
+        if (!CurrentChest.IsItemTaken(item.Id) && CurrentChest.ItemsTaken >= 1) return false;
+        return isInventoryOpen;
     }
 }

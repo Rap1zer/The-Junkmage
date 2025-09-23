@@ -9,7 +9,7 @@ public enum ItemUIType
 
 public class InventoryUI
 {
-    private ItemUIType? currentType;
+    private Vector2 beginDragPos;
 
     private Canvas canvas;
     private GameObject cellPrefab;
@@ -40,11 +40,15 @@ public class InventoryUI
         InventoryGrid.DrawGrid(gridContainer, cellPrefab);
     }
 
-    public void BeginDrag(PointerEventData eventData, ItemUIType type, Vector2Int index)
+    public void BeginDrag(PointerEventData eventData, Vector2Int index)
     {
         InventoryManager.Instance.CurrentObj = eventData.pointerDrag;
         InventoryManager.Instance.CurrentIndex = index;
-        currentType = type;
+        InventoryManager.Instance.CurrentType = InventoryManager.Instance.CurrentItem.UIType;
+        
+        beginDragPos = eventData.pointerDrag.GetComponent<RectTransform>().anchoredPosition;
+
+        InventoryManager.Inventory.TryRemoveItem(InventoryManager.Instance.CurrentItem);
     }
 
     public void Drag(PointerEventData eventData)
@@ -57,14 +61,18 @@ public class InventoryUI
 
     public void EndDrag(PointerEventData eventData)
     {
-        // TODO: place logic here (snap to grid or reset)
-        Vector2Int nearestCell = InventoryGrid.GetNearestGridPosition(GetCurrentItemPosition());
+        Vector2Int nearestCell = InventoryGrid.GetNearestGridPosition(GetCurrentItemCanvasPos());
         bool placed = InventoryManager.Instance.TryPlaceItem(nearestCell, InventoryManager.Instance.CurrentObj);
 
-        // TODO: reset item position if cannot place
+        // Reset item position if cannot place
+        if (!placed && InventoryManager.Instance.CurrentType == ItemUIType.Chest)
+        {
+            RectTransform itemRT = InventoryManager.Instance.CurrentObj.transform as RectTransform;
+            itemRT.anchoredPosition = beginDragPos;
+        }
 
         InventoryManager.Instance.CurrentObj = null;
-        currentType = null;
+        InventoryManager.Instance.CurrentType = null;
     }
 
     // Snap item's position to grid
@@ -80,17 +88,15 @@ public class InventoryUI
         itemObj.transform.position = targetCellPos - offset;
     }
 
-    public Vector2 GetCurrentItemPosition()
+    public Vector2 GetCurrentItemCanvasPos()
     {
         RectTransform canvasRT = canvas.GetComponent<RectTransform>();
-        return canvasRT.InverseTransformPoint(InventoryManager.Instance.CurrentObj.GetComponent<IItem>().AnchorPos);
+        return canvasRT.InverseTransformPoint(InventoryManager.Instance.CurrentItem.AnchorPos);
     }
 
-    public void HandleChestOpened(Chest chest)
+    public IItem[] HandleChestOpened(Chest chest)
     {
-        if (chest == null || chest.ItemsInChest == null) return;
-
-        invRenderer.RenderChestItems(chest.ItemsInChest);
         itemDropsContainer.gameObject.SetActive(true);
+        return invRenderer.RenderChestItems(chest.ItemsInChest);
     }
 }

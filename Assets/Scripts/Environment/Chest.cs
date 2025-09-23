@@ -1,5 +1,6 @@
 using System;
-using Unity.VisualScripting;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Chest : MonoBehaviour
@@ -7,45 +8,40 @@ public class Chest : MonoBehaviour
     public static int itemPoolCount = 3;
 
     public ItemDatabase itemDatabase;
-    private Inventory inventory;
-    private GameObject itemDropsContainer;
 
     private bool inPlayerRange = false;
     private bool chestOpened = false;
 
-    public ItemData[] ItemsInChest { get; private set; }
+    public ItemData[] ItemsInChest { get; private set; } = new ItemData[itemPoolCount];
+    public int ItemsTaken { get; private set; }
+
+    // Dictionary to track items: Key = Item ID, Value = taken or not
+    private Dictionary<Guid, bool> chestItems = new Dictionary<Guid, bool>();
 
     // Event fired when chest opens
     public event Action<Chest> OnChestOpened;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        inventory = InventoryManager.Inventory;
-
-        Transform canvas = GameObject.Find("Canvas").transform;
-        itemDropsContainer = canvas.Find("Item Drops").gameObject;
-
         InventoryManager.Instance.RegisterChest(this);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && inPlayerRange)
+        if (Input.GetKeyDown(KeyCode.E) && inPlayerRange && !chestOpened)
         {
-            if (chestOpened) // ADD SECOND CHECK TO SEE IF ONE ITEM HAS BEEN TAKEN
-                CloseChest();
-            else
-                OpenChest();
+            OpenChest();
         }
     }
 
     private void OpenChest()
     {
-        if (!inPlayerRange) return; // Too far away to open chest
-        int itemCount = Mathf.Min(itemPoolCount, itemDatabase.items.Length); // Limit number of items
-        ItemsInChest = new ItemData[itemCount]; // Reset Chest
+        if (!inPlayerRange) return;
+        chestOpened = true;
+
+        int itemCount = Mathf.Min(itemPoolCount, itemDatabase.items.Length);
+        ItemsInChest = new ItemData[itemCount];
+        chestItems.Clear(); // Reset the dictionary
 
         // Randomly select items from database
         for (int i = 0; i < itemCount; i++)
@@ -56,13 +52,42 @@ public class Chest : MonoBehaviour
 
         OnChestOpened?.Invoke(this);
         InventoryManager.Instance.OpenInventory();
-        chestOpened = true;
     }
 
-    private void CloseChest()
+    public void CloseChest()
     {
         OnChestOpened?.Invoke(null);
         InventoryManager.Instance.CloseInventory();
+    }
+
+    public void SetItemIds(IItem[] items)
+    {
+        if (!chestOpened) return;
+
+        chestItems.Clear();
+        foreach (var item in items)
+        {
+            chestItems[item.Id] = false; // initialize as not taken
+        }
+    }
+
+    public bool CanTakeItem(IItem item)
+    {
+        return chestItems.ContainsKey(item.Id) && !chestItems[item.Id];
+    }
+
+    public void TakeItem(IItem item)
+    {
+        if (CanTakeItem(item))
+        {
+            chestItems[item.Id] = true; // mark item as taken
+            ItemsTaken++;
+        }
+    }
+
+    public bool IsItemTaken(Guid id)
+    {
+        return chestItems.ContainsKey(id) && chestItems[id];
     }
 
     void OnTriggerEnter2D(Collider2D other)

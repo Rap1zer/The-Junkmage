@@ -11,19 +11,23 @@ public class InventoryRenderer
         this.chestSlots = chestSlots;
     }
 
-    public void RenderChestItems(ItemData[] chestItems)
+    public IItem[] RenderChestItems(ItemData[] chestItems)
     {
+        IItem[] items = new IItem[chestItems.Length];
+
         for (int i = 0; i < chestItems.Length; i++)
         {
             if (chestItems[i] == null) continue;
 
-            GameObject item = Object.Instantiate(chestItems[i].prefab, canvas.transform);
-            item.GetComponent<ItemBase>().Initialise(chestItems[i]);
-            item.GetComponent<RectTransform>().anchoredPosition = chestSlots[i].anchoredPosition;
+            GameObject itemObj = Object.Instantiate(chestItems[i].prefab, canvas.transform);
+            itemObj.GetComponent<ItemBase>().Initialise(chestItems[i]);
+            itemObj.GetComponent<RectTransform>().anchoredPosition = chestSlots[i].anchoredPosition;
+            items[i] = itemObj.GetComponent<IItem>();
 
-            DraggableItem draggable = item.GetComponent<DraggableItem>();
-            draggable.SetItemUIType(ItemUIType.Chest);
+            DraggableItem draggable = itemObj.GetComponent<DraggableItem>();
             draggable.Index = new Vector2Int(0, i);
         }
+
+        return items;
     }
 }
