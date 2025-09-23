@@ -22,7 +22,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (!InventoryManager.Instance.CanDrag(eventData.pointerDrag)) return;
+        if (!InventoryManager.Instance.CanDrag(eventData.pointerDrag.GetComponent<IItem>())) return;
         InventoryManager.UI.BeginDrag(eventData, Index);
         canvasGroup.alpha = 0.7f;
         IsDragging = true;
@@ -30,14 +30,14 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (!InventoryManager.Instance.CanDrag(eventData.pointerDrag)) return;
+        if (!InventoryManager.Instance.CanDrag(eventData.pointerDrag.GetComponent<IItem>())) return;
         InventoryManager.UI.Drag(eventData);
         rt.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (!InventoryManager.Instance.CanDrag(eventData.pointerDrag)) return;
+        if (!InventoryManager.Instance.CanDrag(eventData.pointerDrag.GetComponent<IItem>())) return;
         InventoryManager.UI.EndDrag(eventData);
         canvasGroup.alpha = 1f;
         IsDragging = false;

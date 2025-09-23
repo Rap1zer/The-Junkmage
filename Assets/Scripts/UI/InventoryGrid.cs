@@ -9,7 +9,7 @@ public static class InventoryGrid
     static public float CellSize = 100f;
     static public float Margin = 10f;
 
-    public static void DrawGrid(Transform gridContainer, GameObject cellPrefab)
+    public static void DrawGrid(Transform InvContainer, GameObject cellPrefab)
     {
         int width = InventoryManager.Width;
         int height = InventoryManager.Height;
@@ -22,7 +22,7 @@ public static class InventoryGrid
         {
             for (int x = 0; x < width; x++)
             {
-                GameObject gridCell = Object.Instantiate(cellPrefab, gridContainer);
+                GameObject gridCell = Object.Instantiate(cellPrefab, InvContainer);
                 CellObjs[x, y] = gridCell;
 
                 RectTransform rt = gridCell.GetComponent<RectTransform>();

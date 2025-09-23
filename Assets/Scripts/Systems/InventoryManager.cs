@@ -18,9 +18,9 @@ public class InventoryManager : MonoBehaviour
 
     public Chest CurrentChest { get; set; }
     public GameObject CurrentObj { get; set; }
-    public Vector2Int CurrentIndex { get; set; }
+    public Vector2Int? CurrentIndex { get; set; }
     public ItemUIType? CurrentType { get; set; }
-    public IItem CurrentItem => CurrentObj.GetComponent<IItem>();
+    public IItem CurrentItem => CurrentObj != null ? CurrentObj.GetComponent<IItem>() : null;
 
     public bool isInventoryOpen { get; set; } = false;
     private bool isChestOpen { get; set; } = false;
@@ -28,8 +28,8 @@ public class InventoryManager : MonoBehaviour
     [Header("UI Settings")]
     [SerializeField] private Canvas canvas;
     [SerializeField] private GameObject cellPrefab;
-    [SerializeField] private Transform gridContainer;
-    [SerializeField] private Transform itemDropsContainer;
+    [SerializeField] private Transform InvContainer;
+    [SerializeField] private Transform ChestContainer;
     [SerializeField] private Button continueBtn;
 
     void Awake()
@@ -43,7 +43,7 @@ public class InventoryManager : MonoBehaviour
 
         // Initialize logic + UI
         inventory = new Inventory(Width, Height);
-        ui = new InventoryUI(canvas, cellPrefab, gridContainer, itemDropsContainer);
+        ui = new InventoryUI(canvas, cellPrefab, InvContainer, ChestContainer);
     }
 
     void Start()
@@ -70,19 +70,20 @@ public class InventoryManager : MonoBehaviour
     private void ToggleInventory()
     {
         isInventoryOpen = !isInventoryOpen;
-        gridContainer.gameObject.SetActive(!gridContainer.gameObject.activeSelf);
+        InvContainer.gameObject.SetActive(!InvContainer.gameObject.activeSelf);
     }
 
     public void OpenInventory()
     {
         isInventoryOpen = true;
-        gridContainer.gameObject.SetActive(true);
+        InvContainer.gameObject.SetActive(true);
     }
 
     public void CloseInventory()
     {
         isInventoryOpen = false;
-        gridContainer.gameObject.SetActive(false);
+        CurrentChest = null;
+        InvContainer.gameObject.SetActive(false);
     }
 
     public bool TryPlaceItem(Vector2Int startingCell, GameObject itemObj)
@@ -106,7 +107,6 @@ public class InventoryManager : MonoBehaviour
         // Place item in inventory
         Inventory.PlaceItem(item, startingCell);
 
-        CurrentItem.InInventory = true;
         CurrentChest.TakeItem(CurrentItem);
     }
 
@@ -139,21 +139,25 @@ public class InventoryManager : MonoBehaviour
     public void OnContinueClicked()
     {
         Debug.Log("On continue clicked");
-        CurrentItem.UIType = ItemUIType.Inventory;
-        if (Inventory.ChestItemEquipped())
+        Debug.Log(CurrentChest.ItemsTaken);
+
+        if (CurrentChest.ItemsTaken > 0)
         {
-            CloseInventory();
             CurrentChest.CloseChest();
             continueBtn.gameObject.SetActive(false);
+            CloseInventory();
         }
     }
 
-    public bool CanDrag(GameObject itemObj)
+    public bool CanDrag(IItem item)
     {
-        IItem item = itemObj.GetComponent<IItem>();
-
         // Cannot drag another chest item if one is already equipped
-        if (!CurrentChest.IsItemTaken(item.Id) && CurrentChest.ItemsTaken >= 1) return false;
+        if (item.UIType == ItemUIType.Chest && CurrentChest.ItemsTaken >= 1) return false;
         return isInventoryOpen;
+    }
+
+    public void HandleChestClosed()
+    {
+       UI.HandleChestClosed();
     }
 }

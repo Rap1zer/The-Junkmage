@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -13,31 +14,33 @@ public class InventoryUI
 
     private Canvas canvas;
     private GameObject cellPrefab;
-    private Transform gridContainer;
-    private Transform itemDropsContainer;
+    private Transform invContainer;
+    private Transform chestContainer;
 
     private InventoryRenderer invRenderer;
     private RectTransform[] chestSlots;
 
-    public InventoryUI(Canvas canvas, GameObject cellPrefab, Transform gridContainer, Transform itemDropsContainer)
+    public InventoryUI(Canvas canvas, GameObject cellPrefab, Transform invContainer, Transform chestContainer)
     {
         this.canvas = canvas;
         this.cellPrefab = cellPrefab;
-        this.gridContainer = gridContainer;
-        this.itemDropsContainer = itemDropsContainer;
+        this.invContainer = invContainer;
+        this.chestContainer = chestContainer;
 
         chestSlots = new RectTransform[Chest.itemPoolCount];
+        Transform itemDropsPos = canvas.transform.Find("Item Drops");
         for (int i = 0; i < chestSlots.Length; i++)
         {
-            chestSlots[i] = itemDropsContainer.GetChild(i).GetComponent<RectTransform>();
+            if (itemDropsPos.GetChild(i) == null) continue;
+            chestSlots[i] = itemDropsPos.GetChild(i).GetComponent<RectTransform>();
         }
 
-        invRenderer = new InventoryRenderer(canvas, chestSlots);
+        invRenderer = new InventoryRenderer(canvas, chestSlots, chestContainer.gameObject);
     }
 
     public void DrawGrid()
     {
-        InventoryGrid.DrawGrid(gridContainer, cellPrefab);
+        InventoryGrid.DrawGrid(invContainer.transform.Find("Inventory Grid"), cellPrefab);
     }
 
     public void BeginDrag(PointerEventData eventData, Vector2Int index)
@@ -71,6 +74,8 @@ public class InventoryUI
             itemRT.anchoredPosition = beginDragPos;
         }
 
+        if (placed) InventoryManager.Instance.CurrentItem.UIType = ItemUIType.Inventory;
+        InventoryManager.Instance.CurrentIndex = null;
         InventoryManager.Instance.CurrentObj = null;
         InventoryManager.Instance.CurrentType = null;
     }
@@ -96,7 +101,13 @@ public class InventoryUI
 
     public IItem[] HandleChestOpened(Chest chest)
     {
-        itemDropsContainer.gameObject.SetActive(true);
+        chestContainer.gameObject.SetActive(true);
         return invRenderer.RenderChestItems(chest.ItemsInChest);
+    }
+
+    public void HandleChestClosed()
+    {
+        invRenderer.ClearChestItems();
+        chestContainer.gameObject.SetActive(false);
     }
 }

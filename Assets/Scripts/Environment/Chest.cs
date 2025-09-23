@@ -16,7 +16,7 @@ public class Chest : MonoBehaviour
     public int ItemsTaken { get; private set; }
 
     // Dictionary to track items: Key = Item ID, Value = taken or not
-    private Dictionary<Guid, bool> chestItems = new Dictionary<Guid, bool>();
+    public Dictionary<Guid, bool> chestItems { get; private set; } = new Dictionary<Guid, bool>();
 
     // Event fired when chest opens
     public event Action<Chest> OnChestOpened;
@@ -56,8 +56,8 @@ public class Chest : MonoBehaviour
 
     public void CloseChest()
     {
-        OnChestOpened?.Invoke(null);
         InventoryManager.Instance.CloseInventory();
+        InventoryManager.Instance.HandleChestClosed();
     }
 
     public void SetItemIds(IItem[] items)
@@ -71,10 +71,7 @@ public class Chest : MonoBehaviour
         }
     }
 
-    public bool CanTakeItem(IItem item)
-    {
-        return chestItems.ContainsKey(item.Id) && !chestItems[item.Id];
-    }
+    public bool CanTakeItem(IItem item) => chestItems.ContainsKey(item.Id) && !chestItems[item.Id];
 
     public void TakeItem(IItem item)
     {

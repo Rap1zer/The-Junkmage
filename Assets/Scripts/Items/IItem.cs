@@ -5,7 +5,6 @@ public interface IItem
 {
     public ItemData ItemData { get; }
     public ItemUIType UIType { get; set; }
-    public bool InInventory { get; set; }
 
     public Guid Id { get; }
 

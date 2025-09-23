@@ -5,8 +5,22 @@ using UnityEngine;
 public abstract class ItemBase : MonoBehaviour, IItem
 {
     public ItemData ItemData { get; private set; }
-    public ItemUIType UIType { get; set; } = ItemUIType.Chest;
-    public bool InInventory { get; set; } = false;
+
+    private GameObject InvContainer;
+    private ItemUIType _uiType = ItemUIType.Chest;
+    public ItemUIType UIType
+    {
+        get => _uiType;
+        set
+        {
+            _uiType = value;
+            if (value == ItemUIType.Inventory)
+            {
+                if (InvContainer == null) InvContainer = GameObject.Find("Inventory");
+                transform.SetParent(InvContainer.transform, true);
+            }
+        }
+    }
 
     public Guid Id { get; private set; }
     public int RotationState { get; private set; } = 0;
