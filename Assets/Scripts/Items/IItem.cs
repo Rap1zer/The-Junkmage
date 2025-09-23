@@ -8,7 +8,7 @@ public interface IItem
 
     public Guid Id { get; }
 
-    public Vector2Int CurrentShape { get; }
+    public bool[,] CurrentShape { get; }
 
     public Vector2Int AnchorGridPos { get; }
     public Vector3 AnchorPos { get; }

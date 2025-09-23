@@ -27,14 +27,14 @@ public abstract class ItemBase : MonoBehaviour, IItem
 
     protected PlayerController Player { get; private set; }
 
-    public Vector2Int CurrentShape { get; private set; }
+    public bool[,] CurrentShape { get; private set; }
 
     public virtual void Initialise(ItemData itemData)
     {
         ItemData = itemData;
         Id = Guid.NewGuid();
         Player = GameObject.Find("Player").GetComponent<PlayerController>();
-        CurrentShape = itemData.shape;
+        CurrentShape = itemData.Get2DShape();
     }
 
     public float Rotate()
@@ -46,8 +46,42 @@ public abstract class ItemBase : MonoBehaviour, IItem
 
     private void UpdateCurrentShape()
     {
-        if (RotationState == 0 || RotationState == 2) CurrentShape = ItemData.shape;
-        else CurrentShape = new Vector2Int(ItemData.shape.y, ItemData.shape.x);
+        bool[,] original = ItemData.Get2DShape();
+
+        switch (RotationState)
+        {
+            case 0: // 0 degrees
+            case 1: // 90 degrees clockwise
+                CurrentShape = Rotate90Clockwise(original);
+                break;
+
+            case 2: // 180 degrees clockwise
+                CurrentShape = Rotate90Clockwise(Rotate90Clockwise(original));
+                break;
+
+            case 3: // 270 degrees clockwise / 90 counterclockwise
+                CurrentShape = Rotate90Clockwise(Rotate90Clockwise(Rotate90Clockwise(original)));
+                // Or write a Rotate90CounterClockwise method
+                break;
+        }
+    }
+
+    // Rotates a 2D bool array 90° clockwise
+    private bool[,] Rotate90Clockwise(bool[,] array)
+    {
+        int rows = array.GetLength(0);
+        int cols = array.GetLength(1);
+        bool[,] rotated = new bool[cols, rows];
+
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                rotated[c, rows - 1 - r] = array[r, c];
+            }
+        }
+
+        return rotated;
     }
 
     private Vector2 AnchorOffset
@@ -57,12 +91,12 @@ public abstract class ItemBase : MonoBehaviour, IItem
             float cellStep = InventoryGrid.CellSize + InventoryGrid.Margin;
 
             // Offset by half cell for items with more than one cell
-            float xCenterOffset = CurrentShape.x > 1 ? cellStep / 2f : 0f;
-            float yCenterOffset = CurrentShape.y > 1 ? cellStep / 2f : 0f;
+            float xCenterOffset = CurrentShape.GetLength(0) > 1 ? cellStep / 2f : 0f;
+            float yCenterOffset = CurrentShape.GetLength(1) > 1 ? cellStep / 2f : 0f;
 
             // Number of cells to shift from the origin to reach the center (not including first cell)
-            float xCellOffset = Mathf.Ceil(CurrentShape.x / 2f - 1);
-            float yCellOffset = Mathf.Ceil(CurrentShape.y / 2f - 1);
+            float xCellOffset = Mathf.Ceil(CurrentShape.GetLength(0) / 2f - 1);
+            float yCellOffset = Mathf.Ceil(CurrentShape.GetLength(1) / 2f - 1);
 
             float xPos = xCenterOffset + xCellOffset * cellStep;
             float yPos = yCenterOffset + yCellOffset * cellStep;

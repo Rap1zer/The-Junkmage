@@ -116,7 +116,7 @@ public class InventoryManager : MonoBehaviour
         Vector2 itemPos = UI.GetCurrentItemCanvasPos();
         Vector2Int nearestCell = InventoryGrid.GetNearestGridPosition(itemPos);
 
-        Vector2Int itemSize = CurrentObj.GetComponent<IItem>().CurrentShape;
+        Vector2Int itemSize = CurrentItem.CurrentShape;
         bool canPlace = InventoryGrid.CanPlaceItem(itemSize, nearestCell);
 
         return (nearestCell, canPlace, itemSize);

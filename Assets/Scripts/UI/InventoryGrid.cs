@@ -50,18 +50,29 @@ public static class InventoryGrid
         return new Vector2Int(gridX, gridY);
     }
 
-    public static bool CanPlaceItem(Vector2Int shape, Vector2Int nearestCell)
+    public static bool CanPlaceItem(bool[,] shape, Vector2Int nearestCell)
     {
-        for (int y = 0; y < shape.y; y++)
+        if (shape == null) return false;
+
+        int rows = shape.GetLength(0);
+        int cols = shape.GetLength(1);
+
+        for (int y = 0; y < rows; y++)
         {
-            for (int x = 0; x < shape.x; x++)
+            for (int x = 0; x < cols; x++)
             {
+                if (!shape[y, x]) continue; // Skip empty cells in the shape
+
                 int cellX = nearestCell.x + x;
                 int cellY = nearestCell.y + y;
 
-                if (cellX >= CellObjs.GetLength(0) || cellY >= CellObjs.GetLength(1)) return false;
+                // Check bounds
+                if (cellX >= CellObjs.GetLength(0) || cellY >= CellObjs.GetLength(1)) 
+                    return false;
 
-                if (InventoryManager.Inventory.IsCellOccupied(new Vector2Int(cellX, cellY))) return false;
+                // Check if the cell is already occupied
+                if (InventoryManager.Inventory.IsCellOccupied(new Vector2Int(cellX, cellY))) 
+                    return false;
             }
         }
 
