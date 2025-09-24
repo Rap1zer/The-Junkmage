@@ -50,7 +50,9 @@ public abstract class ItemBase : MonoBehaviour, IItem
 
         switch (RotationState)
         {
-            case 0: // 0 degrees
+            case 0:
+                CurrentShape = original;
+                break;
             case 1: // 90 degrees clockwise
                 CurrentShape = Rotate90Clockwise(original);
                 break;
@@ -91,12 +93,12 @@ public abstract class ItemBase : MonoBehaviour, IItem
             float cellStep = InventoryGrid.CellSize + InventoryGrid.Margin;
 
             // Offset by half cell for items with more than one cell
-            float xCenterOffset = CurrentShape.GetLength(0) > 1 ? cellStep / 2f : 0f;
-            float yCenterOffset = CurrentShape.GetLength(1) > 1 ? cellStep / 2f : 0f;
+            float xCenterOffset = CurrentShape.GetLength(1) > 1 ? cellStep / 2f : 0f;
+            float yCenterOffset = CurrentShape.GetLength(0) > 1 ? cellStep / 2f : 0f;
 
             // Number of cells to shift from the origin to reach the center (not including first cell)
-            float xCellOffset = Mathf.Ceil(CurrentShape.GetLength(0) / 2f - 1);
-            float yCellOffset = Mathf.Ceil(CurrentShape.GetLength(1) / 2f - 1);
+            float xCellOffset = Mathf.Ceil(CurrentShape.GetLength(1) / 2f - 1);
+            float yCellOffset = Mathf.Ceil(CurrentShape.GetLength(0) / 2f - 1);
 
             float xPos = xCenterOffset + xCellOffset * cellStep;
             float yPos = yCenterOffset + yCellOffset * cellStep;

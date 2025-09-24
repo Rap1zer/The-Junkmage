@@ -89,7 +89,7 @@ public class InventoryManager : MonoBehaviour
     public bool TryPlaceItem(Vector2Int startingCell, GameObject itemObj)
     {
         IItem item = itemObj.GetComponent<IItem>();
-        bool canPlace = InventoryGrid.CanPlaceItem(item.CurrentShape, startingCell);
+        bool canPlace = Inventory.CanPlaceItem(item.CurrentShape, startingCell);
 
         if (canPlace)
         {
@@ -111,15 +111,15 @@ public class InventoryManager : MonoBehaviour
     }
 
     // Calculate if dragged item can be placed on grid in its current position
-    public (Vector2Int nearestCell, bool canPlace, Vector2Int itemSize) CalculateDragPlacement()
+    public (Vector2Int nearestCell, bool canPlace, bool[,] itemSize) CalculateDragPlacement()
     {
         Vector2 itemPos = UI.GetCurrentItemCanvasPos();
         Vector2Int nearestCell = InventoryGrid.GetNearestGridPosition(itemPos);
 
-        Vector2Int itemSize = CurrentItem.CurrentShape;
-        bool canPlace = InventoryGrid.CanPlaceItem(itemSize, nearestCell);
+        bool[,] itemShape = CurrentItem.CurrentShape;
+        bool canPlace = Inventory.CanPlaceItem(itemShape, nearestCell);
 
-        return (nearestCell, canPlace, itemSize);
+        return (nearestCell, canPlace, itemShape);
     }
 
     public void RegisterChest(Chest chest)

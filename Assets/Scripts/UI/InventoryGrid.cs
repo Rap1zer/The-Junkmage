@@ -16,7 +16,7 @@ public static class InventoryGrid
         CellObjs = new GameObject[width, height];
 
         float offsetW = ((CellSize * width) + (Margin * (width - 1))) / 2 - (CellSize / 2);
-        float offsetH = ((CellSize * width) + (Margin * (height - 1))) / 2 - (CellSize / 2);
+        float offsetH = ((CellSize * height) + (Margin * (height - 1))) / 2 - (CellSize / 2);
 
         for (int y = 0; y < height; y++)
         {
@@ -50,44 +50,18 @@ public static class InventoryGrid
         return new Vector2Int(gridX, gridY);
     }
 
-    public static bool CanPlaceItem(bool[,] shape, Vector2Int nearestCell)
-    {
-        if (shape == null) return false;
-
-        int rows = shape.GetLength(0);
-        int cols = shape.GetLength(1);
-
-        for (int y = 0; y < rows; y++)
-        {
-            for (int x = 0; x < cols; x++)
-            {
-                if (!shape[y, x]) continue; // Skip empty cells in the shape
-
-                int cellX = nearestCell.x + x;
-                int cellY = nearestCell.y + y;
-
-                // Check bounds
-                if (cellX >= CellObjs.GetLength(0) || cellY >= CellObjs.GetLength(1)) 
-                    return false;
-
-                // Check if the cell is already occupied
-                if (InventoryManager.Inventory.IsCellOccupied(new Vector2Int(cellX, cellY))) 
-                    return false;
-            }
-        }
-
-        return true;
-    }
-
-    public static void HighlightCells(Vector2Int nearestCell, Vector2Int shape, bool canPlace)
+    public static void HighlightCells(Vector2Int nearestCell, bool[,] shape, bool canPlace)
     {
         int width = InventoryManager.Width;
         int height = InventoryManager.Height;
-        for (int y = 0; y < shape.y; y++)
+        for (int y = 0; y < shape.GetLength(0); y++)
         {
-            for (int x = 0; x < shape.x; x++)
+            for (int x = 0; x < shape.GetLength(1); x++)
             {
                 Vector2Int cellPos = new Vector2Int(nearestCell.x + x, nearestCell.y + y);
+                if (cellPos.x >= width && cellPos.y >= height) continue;
+                if (!shape[y, x]) continue;
+
                 if (canPlace)
                     CellObjs[cellPos.x, cellPos.y].GetComponent<Image>().color = Color.green;
                 else
@@ -100,13 +74,13 @@ public static class InventoryGrid
         }
     }
 
-    public static void OccupyCells(Vector2Int cell, Vector2Int shape)
+    public static void OccupyCells(Vector2Int cell, bool[,] shape)
     {
-        for (int y = 0; y < shape.y; y++)
+        for (int y = 0; y < shape.GetLength(0); y++)
         {
-            for (int x = 0; x < shape.x; x++)
+            for (int x = 0; x < shape.GetLength(1); x++)
             {
-                CellObjs[cell.x, cell.y].GetComponent<Image>().color = Color.yellow;
+                if (shape[y, x]) CellObjs[cell.x + x, cell.y + y].GetComponent<Image>().color = Color.yellow;
             }
         }
     }
