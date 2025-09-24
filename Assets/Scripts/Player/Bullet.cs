@@ -32,7 +32,6 @@ public class Bullet : MonoBehaviour
         }
         else if (isPlayerBullet && other.CompareTag("Enemy"))
         {
-            Debug.Log("hit an enemy");
             IEnemy enemy = other.GetComponent<IEnemy>();
             if (enemy != null) enemy.TakeDamage(dmg);
         }

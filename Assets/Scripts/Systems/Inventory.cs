@@ -68,9 +68,9 @@ public class Inventory
     {
         if (!TryGetItemGridPos(item, out Vector2Int anchor)) return;
 
-        for (int x = 0; x < item.CurrentShape.GetLength(1); x++)
+        for (int y = 0; y < item.CurrentShape.GetLength(0); y++)
         {
-            for (int y = 0; y < item.CurrentShape.GetLength(0); y++)
+            for (int x = 0; x < item.CurrentShape.GetLength(1); x++)
             {
                 if (item.CurrentShape[y, x]) Data[anchor.x + x, anchor.y + y] = null;
             }
