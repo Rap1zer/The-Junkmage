@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61b35fac736fc4e77b63e7ff43f9af9e, type: 3}
   m_Name: Banana
   m_EditorClassIdentifier: 
-  itemName: 
-  icon: {fileID: 0}
-  shape: []
-  description: 
-  prefab: {fileID: 0}
+  itemName: Banana
+  icon: {fileID: -9182177788924653191, guid: c64c907a59cc44d0593b3d60973b782b, type: 3}
+  shape:
+  - values: 0101
+  - values: 0001
+  description: Gives 5 Regeneration.
+  prefab: {fileID: 4827175836839536285, guid: 9378993e675d043728f449422dfc5614, type: 3}

@@ -72,7 +72,7 @@ public class Inventory
         {
             for (int x = 0; x < item.CurrentShape.GetLength(1); x++)
             {
-                if (item.CurrentShape[y, x]) Data[anchor.x + x, anchor.y + y] = null;
+                if (item.CurrentShape[y, x]) Data[anchor.y + y, anchor.x + x] = null;
             }
         }
     }
@@ -105,7 +105,7 @@ public class Inventory
             {
                 if (Data[x, y] != null && Data[x, y].Id == guid)
                 {
-                    position = new Vector2Int(x, y);
+                    position = Data[x, y].LocalAnchor;
                     return true;
                 }
             }

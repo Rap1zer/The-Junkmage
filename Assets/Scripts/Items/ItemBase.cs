@@ -126,19 +126,18 @@ public abstract class ItemBase : MonoBehaviour, IItem
         }
     }
 
-    public Vector2Int AnchorGridPos
+    public Vector2Int LocalAnchor
     {
         get
         {
-            if (InventoryManager.Inventory.TryGetItemGridPos(this, out var pos))
-                return pos;
-
-            // If not found, decide how you want to handle it:
-            // Option A: throw (explicit failure)
-            throw new InvalidOperationException("Item not found in inventory.");
-
-            // Option B: return a sentinel value
-            // return new Vector2Int(-1, -1);
+            for (int y = 0; y < CurrentShape.GetLength(0); y++)
+            {
+                for (int x = 0; x < CurrentShape.GetLength(1); x++)
+                {
+                    if (CurrentShape[y, x]) return new Vector2Int(x, y);
+                }
+            }
+            return default;
         }
     }
 
