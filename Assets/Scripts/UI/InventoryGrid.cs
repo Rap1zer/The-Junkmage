@@ -38,12 +38,15 @@ public static class InventoryGrid
         int height = CellObjs.GetLength(1);
 
         // Calculate offset (same as in DrawGrid)
-        float offsetW = ((CellSize * width) + (Margin * (width - 1))) / 2;
-        float offsetH = ((CellSize * height) + (Margin * (height - 1))) / 2;
+        float offsetW = ((CellSize * width) + (Margin * (width - 1))) / 2 - (CellSize / 2);
+        float offsetH = ((CellSize * height) + (Margin * (height - 1))) / 2 - (CellSize / 2);
 
+        // Convert from mouse position in local space to grid-relative coordinates
         float localX = mousePos.x + offsetW;
         float localY = mousePos.y + offsetH;
 
+        // Divide by (cell size + margin) to get the nearest grid indices
+        // Clamp ensures we don’t go outside the valid inventory range
         int gridX = Mathf.Clamp(Mathf.RoundToInt(localX / (CellSize + Margin)), 0, width - 1);
         int gridY = Mathf.Clamp(Mathf.RoundToInt(localY / (CellSize + Margin)), 0, height - 1);
 

@@ -17,7 +17,7 @@ public class Inventory
         this.height = height;
     }
 
-    public bool CanPlaceItem(bool[,] shape, Vector2Int nearestCell)
+    public bool CanPlaceItem(bool[,] shape, Vector2Int anchorCell)
     {
         if (shape == null) return false;
 
@@ -30,15 +30,15 @@ public class Inventory
             {
                 if (!shape[y, x]) continue; // Skip empty cells in the shape
 
-                int cellX = nearestCell.x + x;
-                int cellY = nearestCell.y + y;
+                int col = anchorCell.x + x;
+                int row = anchorCell.y + y;
 
                 // Check bounds
-                if (cellX >= width || cellY >= height) 
+                if (col >= width || row >= height) 
                     return false;
 
                 // Check if the cell is already occupied
-                if (InventoryManager.Inventory.IsCellOccupied(new Vector2Int(cellX, cellY))) 
+                if (InventoryManager.Inventory.IsCellOccupied(new Vector2Int(row, col))) 
                     return false;
             }
         }
@@ -46,41 +46,66 @@ public class Inventory
         return true;
     }
 
-    public void PlaceItem(IItem item, Vector2Int startingCell)
+    public void PlaceItem(IItem item, Vector2Int anchorCell)
     {
-        if (!CanPlaceItem(item.CurrentShape, startingCell))
+        if (!CanPlaceItem(item.CurrentShape, anchorCell))
         {
             Debug.LogWarning("Model rejected item placement!");
             return;
         }
 
+        item.AnchorGridPos = anchorCell;
+
         for (int y = 0; y < item.CurrentShape.GetLength(0); y++)
         {
             for (int x = 0; x < item.CurrentShape.GetLength(1); x++)
             {
-                if (item.CurrentShape[y, x]) Data[startingCell.x + x, startingCell.y + y] = item;
+                if (item.CurrentShape[y, x])
+                {
+                    Data[anchorCell.y + y, anchorCell.x + x] = item;
+                }
             }
         }
-        InventoryGrid.OccupyCells(new Vector2Int(startingCell.x, startingCell.y), item.CurrentShape);
+        InventoryGrid.OccupyCells(new Vector2Int(anchorCell.x, anchorCell.y), item.CurrentShape);
     }
 
     public void TryRemoveItem(IItem item)
     {
+        Debug.Log("try to remove item " + item.ItemData.name);
         if (!TryGetItemGridPos(item, out Vector2Int anchor)) return;
+        Debug.Log(anchor);
 
         for (int y = 0; y < item.CurrentShape.GetLength(0); y++)
         {
             for (int x = 0; x < item.CurrentShape.GetLength(1); x++)
             {
-                if (item.CurrentShape[y, x]) Data[anchor.y + y, anchor.x + x] = null;
+                bool shapeCell = item.CurrentShape[y, x];
+                int targetY = anchor.y + y;
+                int targetX = anchor.x + x;
+
+                Debug.Log($"Checking shape cell [{y},{x}] = {shapeCell} -> Data[{targetY},{targetX}]");
+
+                // Optional: bounds check
+                if (targetY < 0 || targetY >= Data.GetLength(0) || targetX < 0 || targetX >= Data.GetLength(1))
+                {
+                    Debug.LogWarning($"Skipped out-of-bounds cell at Data[{targetY},{targetX}]");
+                    continue;
+                }
+
+                if (shapeCell)
+                {
+                    Debug.Log($"Setting Data[{targetY},{targetX}] = null");
+                    Data[targetY, targetX] = null;
+                }
             }
         }
+
     }
 
     public bool IsCellOccupied(Vector2Int cell)
     {
         if (cell.x >= width || cell.y >= height) return false;
-        return Data[cell.x, cell.y] != null;
+        return Data[cell.y, cell.x] != null;
     }
 
     public bool ChestItemEquipped()
@@ -99,13 +124,13 @@ public class Inventory
     public bool TryGetItemGridPos(IItem item, out Vector2Int position)
     {
         Guid guid = item.Id;
-        for (int x = 0; x < width; x++)
+        for (int y = 0; y < height; y++) // rows first
         {
-            for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++) // columns second
             {
-                if (Data[x, y] != null && Data[x, y].Id == guid)
+                if (Data[y, x] != null && Data[y, x].Id == guid)
                 {
-                    position = Data[x, y].LocalAnchor;
+                    position = Data[y, x].AnchorGridPos;
                     return true;
                 }
             }

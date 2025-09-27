@@ -126,20 +126,7 @@ public abstract class ItemBase : MonoBehaviour, IItem
         }
     }
 
-    public Vector2Int LocalAnchor
-    {
-        get
-        {
-            for (int y = 0; y < CurrentShape.GetLength(0); y++)
-            {
-                for (int x = 0; x < CurrentShape.GetLength(1); x++)
-                {
-                    if (CurrentShape[y, x]) return new Vector2Int(x, y);
-                }
-            }
-            return default;
-        }
-    }
+    public Vector2Int AnchorGridPos { get; set; }
 
     // Abstract methods that subclasses must implement if needed
     public virtual void OnHit() { }       // optional to override

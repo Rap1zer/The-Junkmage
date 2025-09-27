@@ -13,9 +13,18 @@ MonoBehaviour:
   m_Name: WoodenShield
   m_EditorClassIdentifier: 
   itemName: Wooden Shield
+  description: "On hit: 40% chance to block 2 \u2694\uFE0F. "
   icon: {fileID: -7464024602411179035, guid: 7c16b469a1cbf4fec9dabbc0528e6c3e, type: 3}
+  prefab: {fileID: 5410237761881617018, guid: fb37a320c784d48b184d7045dbc47bae, type: 3}
   shape:
   - values: 0101
   - values: 0101
-  description: "On hit: 40% chance to block 2 \u2694\uFE0F. "
-  prefab: {fileID: 5410237761881617018, guid: fb37a320c784d48b184d7045dbc47bae, type: 3}
+  extraRowsHalf: 2
+  extraColsHalf: 2
+  stars:
+  - values: 000000000000
+  - values: 000000000000
+  - values: 000000000000
+  - values: 000000000000
+  - values: 000000000000
+  - values: 000000000000

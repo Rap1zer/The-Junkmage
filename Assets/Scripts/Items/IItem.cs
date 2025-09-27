@@ -10,7 +10,7 @@ public interface IItem
 
     public bool[,] CurrentShape { get; }
 
-    public Vector2Int LocalAnchor { get; }
+    public Vector2Int AnchorGridPos { get; set;  }
     public Vector3 AnchorPos { get; }
 
     public int RotationState { get; }

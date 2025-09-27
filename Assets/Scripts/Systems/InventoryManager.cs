@@ -25,6 +25,8 @@ public class InventoryManager : MonoBehaviour
     public bool isInventoryOpen { get; set; } = false;
     private bool isChestOpen { get; set; } = false;
 
+    [SerializeField] private DebugInventoryRenderer debugRenderer;
+
     [Header("UI Settings")]
     [SerializeField] private Canvas canvas;
     [SerializeField] private GameObject cellPrefab;
@@ -43,12 +45,14 @@ public class InventoryManager : MonoBehaviour
 
         // Initialize logic + UI
         inventory = new Inventory(Width, Height);
-        ui = new InventoryUI(canvas, cellPrefab, InvContainer, ChestContainer);
+        ui = new InventoryUI(canvas, cellPrefab, ChestContainer);
+
+        if (debugRenderer != null) debugRenderer.Init(Width, Height);
     }
 
     void Start()
     {
-        UI.DrawGrid();
+        UI.DrawGrid(InvContainer.transform.Find("Inventory Grid"));
     }
 
     void Update()
@@ -57,6 +61,8 @@ public class InventoryManager : MonoBehaviour
 
         if (DraggableItem.IsDragging && Input.GetKeyDown(KeyCode.R))
             RotateItem();
+
+        if (debugRenderer != null) debugRenderer.Refresh(Inventory.Data);
     }
 
     private void RotateItem()
@@ -86,26 +92,26 @@ public class InventoryManager : MonoBehaviour
         InvContainer.gameObject.SetActive(false);
     }
 
-    public bool TryPlaceItem(Vector2Int startingCell, GameObject itemObj)
+    public bool TryPlaceItem(Vector2Int anchorCell, GameObject itemObj)
     {
         IItem item = itemObj.GetComponent<IItem>();
-        bool canPlace = Inventory.CanPlaceItem(item.CurrentShape, startingCell);
+        bool canPlace = Inventory.CanPlaceItem(item.CurrentShape, anchorCell);
 
         if (canPlace)
         {
-            PlaceItem(item, startingCell, itemObj);
+            PlaceItem(item, anchorCell, itemObj);
             return true;
         }
 
         return false;
     }
 
-    private void PlaceItem(IItem item, Vector2Int startingCell, GameObject itemObj)
+    private void PlaceItem(IItem item, Vector2Int anchorCell, GameObject itemObj)
     {
         // Snap item's position to grid
-        UI.PlaceItem(itemObj, startingCell);
+        UI.PlaceItem(itemObj, anchorCell);
         // Place item in inventory
-        Inventory.PlaceItem(item, startingCell);
+        Inventory.PlaceItem(item, anchorCell);
 
         CurrentChest.TakeItem(CurrentItem);
     }

@@ -2312,6 +2312,7 @@ RectTransform:
   - {fileID: 2070882153}
   - {fileID: 647387587}
   - {fileID: 1481218267}
+  - {fileID: 1974411543}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4502,6 +4503,56 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5520219220503245451, guid: 85e95ca0f5016454494021d15e6fa71e, type: 3}
   m_PrefabInstance: {fileID: 1910686233}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1974411542
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1974411543}
+  - component: {fileID: 1974411544}
+  m_Layer: 5
+  m_Name: Debug Inventory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1974411543
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1974411542}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1069548163}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -779, y: -345}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1974411544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1974411542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4ae3badadb8547fd8ade429e60b8fe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugContainer: {fileID: 1974411543}
+  debugCellPrefab: {fileID: 4760301150829493137, guid: 03c5213d5a9804319b90d3debb5663a2, type: 3}
 --- !u!1 &1983886629 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9162290592251244621, guid: 14fb97d28e1f24df0b38e9f51cc8208c, type: 3}
@@ -4662,6 +4713,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a03b5d5dba9fc486583596af8f9ba5f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugRenderer: {fileID: 1974411544}
   canvas: {fileID: 1069548162}
   cellPrefab: {fileID: 4760301150829493137, guid: 92dcc5a3aa4a7430cada717b8371e599, type: 3}
   InvContainer: {fileID: 1616644362}

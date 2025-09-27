@@ -14,17 +14,15 @@ public class InventoryUI
 
     private Canvas canvas;
     private GameObject cellPrefab;
-    private Transform invContainer;
     private Transform chestContainer;
 
     private InventoryRenderer invRenderer;
     private RectTransform[] chestSlots;
 
-    public InventoryUI(Canvas canvas, GameObject cellPrefab, Transform invContainer, Transform chestContainer)
+    public InventoryUI(Canvas canvas, GameObject cellPrefab, Transform chestContainer)
     {
         this.canvas = canvas;
         this.cellPrefab = cellPrefab;
-        this.invContainer = invContainer;
         this.chestContainer = chestContainer;
 
         chestSlots = new RectTransform[Chest.itemPoolCount];
@@ -38,9 +36,9 @@ public class InventoryUI
         invRenderer = new InventoryRenderer(canvas, chestSlots, chestContainer.gameObject);
     }
 
-    public void DrawGrid()
+    public void DrawGrid(Transform container)
     {
-        InventoryGrid.DrawGrid(invContainer.transform.Find("Inventory Grid"), cellPrefab);
+        InventoryGrid.DrawGrid(container, cellPrefab);
     }
 
     public void BeginDrag(PointerEventData eventData, Vector2Int index)
