@@ -4,16 +4,16 @@ using UnityEngine.UI;
 [System.Serializable]
 public static class InventoryGrid
 {
-    static public GameObject[,] CellObjs;
+    public static GameObject[,] CellObjs;
 
-    static public float CellSize = 100f;
-    static public float Margin = 10f;
+    public static float CellSize = 100f;
+    public static float Margin = 10f;
 
     public static void DrawGrid(Transform InvContainer, GameObject cellPrefab)
     {
         int width = InventoryManager.Width;
         int height = InventoryManager.Height;
-        CellObjs = new GameObject[width, height];
+        CellObjs = new GameObject[width, height]; // x = columns, y = rows
 
         float offsetW = ((CellSize * width) + (Margin * (width - 1))) / 2 - (CellSize / 2);
         float offsetH = ((CellSize * height) + (Margin * (height - 1))) / 2 - (CellSize / 2);
@@ -26,27 +26,26 @@ public static class InventoryGrid
                 CellObjs[x, y] = gridCell;
 
                 RectTransform rt = gridCell.GetComponent<RectTransform>();
-                rt.anchoredPosition = new Vector3(((CellSize + Margin) * x) - offsetW,
-                ((CellSize + Margin) * y) - offsetH, 0);
+                rt.anchoredPosition = new Vector3(
+                    ((CellSize + Margin) * x) - offsetW,
+                    ((CellSize + Margin) * y) - offsetH,
+                    0
+                );
             }
         }
     }
 
-    public static Vector2Int GetNearestGridPosition(Vector2 mousePos)
+    public static Vector2Int GetNearestGridPosition(Vector2 anchorCanvasPos)
     {
         int width = CellObjs.GetLength(0);
         int height = CellObjs.GetLength(1);
 
-        // Calculate offset (same as in DrawGrid)
         float offsetW = ((CellSize * width) + (Margin * (width - 1))) / 2 - (CellSize / 2);
         float offsetH = ((CellSize * height) + (Margin * (height - 1))) / 2 - (CellSize / 2);
 
-        // Convert from mouse position in local space to grid-relative coordinates
-        float localX = mousePos.x + offsetW;
-        float localY = mousePos.y + offsetH;
+        float localX = anchorCanvasPos.x + offsetW;
+        float localY = anchorCanvasPos.y + offsetH;
 
-        // Divide by (cell size + margin) to get the nearest grid indices
-        // Clamp ensures we don’t go outside the valid inventory range
         int gridX = Mathf.Clamp(Mathf.RoundToInt(localX / (CellSize + Margin)), 0, width - 1);
         int gridY = Mathf.Clamp(Mathf.RoundToInt(localY / (CellSize + Margin)), 0, height - 1);
 
@@ -57,39 +56,49 @@ public static class InventoryGrid
     {
         int width = InventoryManager.Width;
         int height = InventoryManager.Height;
+
         for (int y = 0; y < shape.GetLength(0); y++)
         {
             for (int x = 0; x < shape.GetLength(1); x++)
             {
-                Vector2Int cellPos = new Vector2Int(nearestCell.x + x, nearestCell.y + y);
-                if (cellPos.x >= width && cellPos.y >= height) continue;
                 if (!shape[y, x]) continue;
 
-                if (canPlace)
-                    CellObjs[cellPos.x, cellPos.y].GetComponent<Image>().color = Color.green;
-                else
-                {
-                    if (cellPos.x < width && cellPos.y < height)
-                        CellObjs[cellPos.x, cellPos.y].GetComponent<Image>().color = Color.red;
-                }
+                int cellX = nearestCell.x + x;
+                int cellY = nearestCell.y + y;
 
+                if (cellX >= width || cellY >= height) continue; // Fixed bounds check
+
+                Image image = CellObjs[cellX, cellY].GetComponent<Image>();
+                image.color = canPlace ? Color.green : Color.red;
             }
         }
     }
 
     public static void OccupyCells(Vector2Int cell, bool[,] shape)
     {
+        int width = InventoryManager.Width;
+        int height = InventoryManager.Height;
+
         for (int y = 0; y < shape.GetLength(0); y++)
         {
             for (int x = 0; x < shape.GetLength(1); x++)
             {
-                if (shape[y, x]) CellObjs[cell.x + x, cell.y + y].GetComponent<Image>().color = Color.yellow;
+                if (!shape[y, x]) continue;
+
+                int cellX = cell.x + x;
+                int cellY = cell.y + y;
+
+                if (cellX >= width || cellY >= height) continue;
+
+                CellObjs[cellX, cellY].GetComponent<Image>().color = Color.yellow;
             }
         }
     }
 
     public static void ClearHighlights()
     {
+        if (CellObjs == null) return;
+
         foreach (var cell in CellObjs)
         {
             Image image = cell.GetComponent<Image>();

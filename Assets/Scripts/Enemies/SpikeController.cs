@@ -55,7 +55,6 @@ public class SpikeController : MonoBehaviour, IEnemy
 
     public void Die()
     {
-        Debug.Log("Spike ded");
         spawnRoom.EnemyCount--;
         Destroy(gameObject);
     }

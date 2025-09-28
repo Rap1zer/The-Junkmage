@@ -76,7 +76,6 @@ public class GunnerController : MonoBehaviour, IEnemy
 
     public void Die()
     {
-        Debug.Log("Gunner ded");
         spawnRoom.EnemyCount--;
         Destroy(gameObject);
     }

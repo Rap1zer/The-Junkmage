@@ -1,32 +1,31 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
+    // --- Singleton ---
     public static InventoryManager Instance { get; private set; }
 
+    // --- Inventory State ---
     private Inventory inventory;
     public static Inventory Inventory => Instance.inventory;
 
     private InventoryUI ui;
     public static InventoryUI UI => Instance.ui;
 
-    public static int Width { get; private set; } = 3;
+    public static int Width { get; private set; } = 4;
     public static int Height { get; private set; } = 3;
 
     public Chest CurrentChest { get; set; }
-    public GameObject CurrentObj { get; set; }
-    public Vector2Int? CurrentIndex { get; set; }
-    public ItemUIType? CurrentType { get; set; }
-    public IItem CurrentItem => CurrentObj != null ? CurrentObj.GetComponent<IItem>() : null;
+    public SelectedItem Current { get; private set; } = new SelectedItem();
 
     public bool isInventoryOpen { get; set; } = false;
-    private bool isChestOpen { get; set; } = false;
 
     [SerializeField] private DebugInventoryRenderer debugRenderer;
 
+    // --- UI References ---
     [Header("UI Settings")]
     [SerializeField] private Canvas canvas;
     [SerializeField] private GameObject cellPrefab;
@@ -34,7 +33,9 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private Transform ChestContainer;
     [SerializeField] private Button continueBtn;
 
-    void Awake()
+    // ----------------- UNITY CALLBACKS -----------------
+
+    private void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -47,30 +48,49 @@ public class InventoryManager : MonoBehaviour
         inventory = new Inventory(Width, Height);
         ui = new InventoryUI(canvas, cellPrefab, ChestContainer);
 
-        if (debugRenderer != null) debugRenderer.Init(Width, Height);
+        if (debugRenderer != null)
+            debugRenderer.Init(Height, Width);
     }
 
-    void Start()
+    private void Start()
     {
         UI.DrawGrid(InvContainer.transform.Find("Inventory Grid"));
     }
 
-    void Update()
+    private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.V) && !isChestOpen) ToggleInventory();
+        if (Input.GetKeyDown(KeyCode.V))
+            ToggleInventory();
 
-        if (DraggableItem.IsDragging && Input.GetKeyDown(KeyCode.R))
+        if (DraggableItem.IsDragging && Current.Item != null && Input.GetKeyDown(KeyCode.R))
             RotateItem();
 
-        if (debugRenderer != null) debugRenderer.Refresh(Inventory.Data);
+        if (debugRenderer != null)
+            debugRenderer.Refresh(Inventory.Data);
     }
+
+    private void OnEnable()
+    {
+        InventoryDragEvents.OnBeginDrag += HandleBeginDrag;
+        InventoryDragEvents.OnDrag += HandleDrag;
+        InventoryDragEvents.OnEndDrag += HandleEndDrag;
+    }
+
+    private void OnDisable()
+    {
+        InventoryDragEvents.OnBeginDrag -= HandleBeginDrag;
+        InventoryDragEvents.OnDrag -= HandleDrag;
+        InventoryDragEvents.OnEndDrag -= HandleEndDrag;
+    }
+
+    // ----------------- INVENTORY OPERATIONS -----------------
 
     private void RotateItem()
     {
-        IItem item = CurrentObj.GetComponent<IItem>();
-        RectTransform rt = CurrentObj.transform as RectTransform;
+        if (Current.Item == null) return;
 
-        rt.localEulerAngles = new Vector3(0f, 0f, item.Rotate());
+        RectTransform rt = Current.Obj.transform as RectTransform;
+        rt.localEulerAngles = new Vector3(0f, 0f, Current.Item.Rotate());
     }
 
     private void ToggleInventory()
@@ -108,29 +128,24 @@ public class InventoryManager : MonoBehaviour
 
     private void PlaceItem(IItem item, Vector2Int anchorCell, GameObject itemObj)
     {
-        // Snap item's position to grid
-        UI.PlaceItem(itemObj, anchorCell);
-        // Place item in inventory
-        Inventory.PlaceItem(item, anchorCell);
-
-        CurrentChest.TakeItem(CurrentItem);
+        UI.PlaceItem(itemObj, anchorCell);      // Snap item to grid
+        Inventory.PlaceItem(item, anchorCell);  // Place in inventory
+        CurrentChest?.TakeItem(item);           // Remove from chest if applicable
     }
 
-    // Calculate if dragged item can be placed on grid in its current position
-    public (Vector2Int anchorCell, bool canPlace, bool[,] itemSize) CalculateDragPlacement()
+    public (Vector2Int anchorCell, bool canPlace) CanPlaceDraggedItem(Vector2 anchorCanvasPos, IItem item)
     {
-        Vector2 itemPos = UI.GetCurrentItemCanvasPos();
-        Vector2Int anchorCell = InventoryGrid.GetNearestGridPosition(itemPos);
-
-        bool[,] itemShape = CurrentItem.CurrentShape;
-        bool canPlace = Inventory.CanPlaceItem(itemShape, anchorCell);
-
-        return (anchorCell, canPlace, itemShape);
+        Vector2Int anchorCell = InventoryGrid.GetNearestGridPosition(anchorCanvasPos);
+        bool canPlace = Inventory.CanPlaceItem(item.CurrentShape, anchorCell);
+        return (anchorCell, canPlace);
     }
+
+    // ----------------- CHEST OPERATIONS -----------------
 
     public void RegisterChest(Chest chest)
     {
         chest.OnChestOpened += HandleChestOpened;
+        chest.OnChestClosed += HandleChestClosed;
     }
 
     private void HandleChestOpened(Chest chest)
@@ -140,12 +155,18 @@ public class InventoryManager : MonoBehaviour
         continueBtn.gameObject.SetActive(true);
 
         chest.SetItemIds(chestItems);
+
+        InventoryManager.Instance.OpenInventory();
+    }
+
+    public void HandleChestClosed()
+    {
+        UI.HandleChestClosed();
+        CloseInventory();
     }
 
     public void OnContinueClicked()
     {
-        Debug.Log("On continue clicked");
-
         if (inventory.ChestItemEquipped(CurrentChest))
         {
             CurrentChest.CloseChest();
@@ -154,15 +175,47 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
+    // ----------------- DRAG & DROP HANDLERS -----------------
+
     public bool CanDrag(IItem item)
     {
-        // Cannot drag another chest item if one is already equipped
         if (item.UIType == ItemUIType.Chest && CurrentChest.ItemsTaken >= 1) return false;
         return isInventoryOpen;
     }
 
-    public void HandleChestClosed()
+    private void HandleBeginDrag(GameObject itemObj, Vector2Int index, PointerEventData data)
     {
-       UI.HandleChestClosed();
+        IItem item = itemObj.GetComponent<IItem>();
+        if (!CanDrag(item)) return;
+
+        Current.Obj = itemObj;
+        Current.Index = index;
+
+        UI.BeginDrag(data, index);
+        inventory.RemoveItem(item);
+    }
+
+    private void HandleDrag(GameObject itemObj, PointerEventData data)
+    {
+        if (Current.Item == null || !CanDrag(Current.Item)) return;
+        UI.Drag(data);
+    }
+
+    public void HandleEndDrag(GameObject itemObj, PointerEventData eventData)
+    {
+        if (Current.Item == null || !CanDrag(Current.Item)) return;
+
+        Vector2 anchorCanvasPos = UI.GetCurrentItemCanvasPos();
+        Vector2Int anchorCell = InventoryGrid.GetNearestGridPosition(anchorCanvasPos);
+
+        bool placed = TryPlaceItem(anchorCell, itemObj);
+
+        if (!placed && Current.Item.UIType == ItemUIType.Chest)
+            UI.UnDragCurrentItemPos();
+
+        if (placed)
+            Current.Item.UIType = ItemUIType.Inventory;
+
+        Current.Clear();
     }
 }

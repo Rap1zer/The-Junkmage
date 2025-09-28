@@ -39,7 +39,6 @@ public class Door : MonoBehaviour
         {
             PlayerController player = other.GetComponent<PlayerController>();
             player.inRoomIndex = player.inRoomIndex == FromRoom.Index ? ToRoom.Index : FromRoom.Index;
-            Debug.Log("Player entered the door!");
         }
     }
 }

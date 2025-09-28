@@ -43,39 +43,28 @@ public class InventoryUI
 
     public void BeginDrag(PointerEventData eventData, Vector2Int index)
     {
-        InventoryManager.Instance.CurrentObj = eventData.pointerDrag;
-        InventoryManager.Instance.CurrentIndex = index;
-        InventoryManager.Instance.CurrentType = InventoryManager.Instance.CurrentItem.UIType;
-        
         beginDragPos = eventData.pointerDrag.GetComponent<RectTransform>().anchoredPosition;
-
-        InventoryManager.Inventory.TryRemoveItem(InventoryManager.Instance.CurrentItem);
     }
 
     public void Drag(PointerEventData eventData)
     {
         InventoryGrid.ClearHighlights();
 
-        var (nearestCell, canPlace, itemSize) = InventoryManager.Instance.CalculateDragPlacement();
-        InventoryGrid.HighlightCells(nearestCell, itemSize, canPlace);
+        Vector2 anchorCanvasPos = GetCurrentItemCanvasPos();
+        (var anchorCell, bool canPlace) = InventoryManager.Instance.CanPlaceDraggedItem(anchorCanvasPos, InventoryManager.Instance.Current.Item);
+        InventoryGrid.HighlightCells(anchorCell, InventoryManager.Instance.Current.Item.CurrentShape, canPlace);
     }
 
     public void EndDrag(PointerEventData eventData)
     {
-        Vector2Int nearestCell = InventoryGrid.GetNearestGridPosition(GetCurrentItemCanvasPos());
-        bool placed = InventoryManager.Instance.TryPlaceItem(nearestCell, InventoryManager.Instance.CurrentObj);
+        beginDragPos = default;
+        InventoryDragEvents.RaiseEndDrag(InventoryManager.Instance.Current.Obj, eventData);
+    }
 
-        // Reset item position if cannot place
-        if (!placed && InventoryManager.Instance.CurrentType == ItemUIType.Chest)
-        {
-            RectTransform itemRT = InventoryManager.Instance.CurrentObj.transform as RectTransform;
-            itemRT.anchoredPosition = beginDragPos;
-        }
-
-        if (placed) InventoryManager.Instance.CurrentItem.UIType = ItemUIType.Inventory;
-        InventoryManager.Instance.CurrentIndex = null;
-        InventoryManager.Instance.CurrentObj = null;
-        InventoryManager.Instance.CurrentType = null;
+    public void UnDragCurrentItemPos()
+    {
+        RectTransform itemRT = InventoryManager.Instance.Current.Obj.transform as RectTransform;
+        itemRT.anchoredPosition = beginDragPos;
     }
 
     // Snap item's position to grid
@@ -94,7 +83,7 @@ public class InventoryUI
     public Vector2 GetCurrentItemCanvasPos()
     {
         RectTransform canvasRT = canvas.GetComponent<RectTransform>();
-        return canvasRT.InverseTransformPoint(InventoryManager.Instance.CurrentItem.AnchorPos);
+        return canvasRT.InverseTransformPoint(InventoryManager.Instance.Current.Item.AnchorPos);
     }
 
     public IItem[] HandleChestOpened(Chest chest)

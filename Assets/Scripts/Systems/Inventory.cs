@@ -5,14 +5,16 @@ public class Inventory
 {
     public static Inventory Instance { get; private set; }
 
-    public int width = 3;
-    public int height = 3;
+    private int width;
+    private int height;
 
     public IItem[,] Data { get; private set; }
+    public event Action<IItem, Vector2Int> OnItemPlaced; // InventoryGrid.OccupyCells()
+    public event Action<IItem> OnItemRemoved;
 
     public Inventory(int width, int height)
     {
-        Data = new IItem[width, height];
+        Data = new IItem[height, width]; // row-major: y first, x second
         this.width = width;
         this.height = height;
     }
@@ -38,7 +40,7 @@ public class Inventory
                     return false;
 
                 // Check if the cell is already occupied
-                if (InventoryManager.Inventory.IsCellOccupied(new Vector2Int(row, col))) 
+                if (IsCellOccupied(new Vector2Int(col, row))) 
                     return false;
             }
         }
@@ -46,13 +48,9 @@ public class Inventory
         return true;
     }
 
-    public void PlaceItem(IItem item, Vector2Int anchorCell)
+    public bool PlaceItem(IItem item, Vector2Int anchorCell)
     {
-        if (!CanPlaceItem(item.CurrentShape, anchorCell))
-        {
-            Debug.LogWarning("Model rejected item placement!");
-            return;
-        }
+        if (!CanPlaceItem(item.CurrentShape, anchorCell)) return false;
 
         item.AnchorGridPos = anchorCell;
 
@@ -66,55 +64,50 @@ public class Inventory
                 }
             }
         }
-        InventoryGrid.OccupyCells(new Vector2Int(anchorCell.x, anchorCell.y), item.CurrentShape);
+        
+        OnItemPlaced?.Invoke(item, anchorCell);
+        return true;
     }
 
-    public void TryRemoveItem(IItem item)
+    public void RemoveItem(IItem item)
     {
-        Debug.Log("try to remove item " + item.ItemData.name);
         if (!TryGetItemGridPos(item, out Vector2Int anchor)) return;
-        Debug.Log(anchor);
 
         for (int y = 0; y < item.CurrentShape.GetLength(0); y++)
         {
             for (int x = 0; x < item.CurrentShape.GetLength(1); x++)
             {
-                bool shapeCell = item.CurrentShape[y, x];
+                if (!item.CurrentShape[y, x]) continue;
+
                 int targetY = anchor.y + y;
                 int targetX = anchor.x + x;
 
-                Debug.Log($"Checking shape cell [{y},{x}] = {shapeCell} -> Data[{targetY},{targetX}]");
-
-                // Optional: bounds check
-                if (targetY < 0 || targetY >= Data.GetLength(0) || targetX < 0 || targetX >= Data.GetLength(1))
-                {
-                    Debug.LogWarning($"Skipped out-of-bounds cell at Data[{targetY},{targetX}]");
+                // Bounds check
+                if (targetY < 0 || targetY >= height || targetX < 0 || targetX >= width) 
                     continue;
-                }
 
-                if (shapeCell)
-                {
-                    Debug.Log($"Setting Data[{targetY},{targetX}] = null");
-                    Data[targetY, targetX] = null;
-                }
+                Data[targetY, targetX] = null;
             }
         }
 
+        OnItemRemoved?.Invoke(item);
     }
 
     public bool IsCellOccupied(Vector2Int cell)
     {
-        if (cell.x >= width || cell.y >= height) return false;
+        if (cell.x < 0 || cell.x >= width || cell.y < 0 || cell.y >= height) return false;
         return Data[cell.y, cell.x] != null;
     }
 
     public bool ChestItemEquipped(Chest chest)
     {
-        for (int x = 0; x < width; x++)
+        // Fixed loop order: y = rows, x = columns
+        for (int y = 0; y < height; y++)
         {
-            for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
             {
-                if (Data[x, y] != null && chest.chestItems.ContainsKey(Data[x, y].Id)) return true;
+                if (Data[y, x] != null && chest.chestItems.ContainsKey(Data[y, x].Id))
+                    return true;
             }
         }
 

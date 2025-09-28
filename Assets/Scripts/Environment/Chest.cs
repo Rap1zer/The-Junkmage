@@ -20,6 +20,7 @@ public class Chest : MonoBehaviour
 
     // Event fired when chest opens
     public event Action<Chest> OnChestOpened;
+    public event Action OnChestClosed;
 
     void Start()
     {
@@ -51,13 +52,11 @@ public class Chest : MonoBehaviour
         }
 
         OnChestOpened?.Invoke(this);
-        InventoryManager.Instance.OpenInventory();
     }
 
     public void CloseChest()
     {
-        InventoryManager.Instance.CloseInventory();
-        InventoryManager.Instance.HandleChestClosed();
+        OnChestClosed?.Invoke();
     }
 
     public void SetItemIds(IItem[] items)
