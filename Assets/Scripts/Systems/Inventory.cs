@@ -108,13 +108,13 @@ public class Inventory
         return Data[cell.y, cell.x] != null;
     }
 
-    public bool ChestItemEquipped()
+    public bool ChestItemEquipped(Chest chest)
     {
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                if (Data[x, y]?.UIType == ItemUIType.Chest) return true;
+                if (Data[x, y] != null && chest.chestItems.ContainsKey(Data[x, y].Id)) return true;
             }
         }
 

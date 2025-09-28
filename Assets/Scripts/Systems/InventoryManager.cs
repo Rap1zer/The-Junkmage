@@ -117,15 +117,15 @@ public class InventoryManager : MonoBehaviour
     }
 
     // Calculate if dragged item can be placed on grid in its current position
-    public (Vector2Int nearestCell, bool canPlace, bool[,] itemSize) CalculateDragPlacement()
+    public (Vector2Int anchorCell, bool canPlace, bool[,] itemSize) CalculateDragPlacement()
     {
         Vector2 itemPos = UI.GetCurrentItemCanvasPos();
-        Vector2Int nearestCell = InventoryGrid.GetNearestGridPosition(itemPos);
+        Vector2Int anchorCell = InventoryGrid.GetNearestGridPosition(itemPos);
 
         bool[,] itemShape = CurrentItem.CurrentShape;
-        bool canPlace = Inventory.CanPlaceItem(itemShape, nearestCell);
+        bool canPlace = Inventory.CanPlaceItem(itemShape, anchorCell);
 
-        return (nearestCell, canPlace, itemShape);
+        return (anchorCell, canPlace, itemShape);
     }
 
     public void RegisterChest(Chest chest)
@@ -145,9 +145,8 @@ public class InventoryManager : MonoBehaviour
     public void OnContinueClicked()
     {
         Debug.Log("On continue clicked");
-        Debug.Log(CurrentChest.ItemsTaken);
 
-        if (CurrentChest.ItemsTaken > 0)
+        if (inventory.ChestItemEquipped(CurrentChest))
         {
             CurrentChest.CloseChest();
             continueBtn.gameObject.SetActive(false);
