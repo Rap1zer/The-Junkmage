@@ -11,8 +11,6 @@ public class DebugInventoryRenderer : MonoBehaviour
 
     public void Init(int rows, int cols)
     {
-        Debug.Log(rows);
-        Debug.Log(cols);
         foreach (Transform child in debugContainer)
             Destroy(child.gameObject);
 

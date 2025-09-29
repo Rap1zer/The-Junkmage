@@ -5,42 +5,45 @@ public class Inventory
 {
     public static Inventory Instance { get; private set; }
 
-    private int width;
-    private int height;
+    public int width = 4;   // columns
+    public int height = 3;  // rows
 
+    // Data[row, col]
     public IItem[,] Data { get; private set; }
     public event Action<IItem, Vector2Int> OnItemPlaced; // InventoryGrid.OccupyCells()
     public event Action<IItem> OnItemRemoved;
 
     public Inventory(int width, int height)
     {
-        Data = new IItem[height, width]; // row-major: y first, x second
+        // Data is allocated as [rows, cols] => [height, width]
+        Data = new IItem[height, width];
         this.width = width;
         this.height = height;
     }
 
+    // NOTE: anchorCell.x == row, anchorCell.y == col
     public bool CanPlaceItem(bool[,] shape, Vector2Int anchorCell)
     {
         if (shape == null) return false;
 
-        int rows = shape.GetLength(0);
-        int cols = shape.GetLength(1);
+        int shapeRows = shape.GetLength(0);
+        int shapeCols = shape.GetLength(1);
 
-        for (int y = 0; y < rows; y++)
+        for (int r = 0; r < shapeRows; r++)
         {
-            for (int x = 0; x < cols; x++)
+            for (int c = 0; c < shapeCols; c++)
             {
-                if (!shape[y, x]) continue; // Skip empty cells in the shape
+                if (!shape[r, c]) continue; // Skip empty cells in the shape
 
-                int col = anchorCell.x + x;
-                int row = anchorCell.y + y;
+                int row = anchorCell.x + r;
+                int col = anchorCell.y + c;
 
                 // Check bounds
-                if (col >= width || row >= height) 
+                if (row < 0 || row >= height || col < 0 || col >= width)
                     return false;
 
                 // Check if the cell is already occupied
-                if (IsCellOccupied(new Vector2Int(col, row))) 
+                if (IsCellOccupied(new Vector2Int(row, col)))
                     return false;
             }
         }
@@ -52,19 +55,21 @@ public class Inventory
     {
         if (!CanPlaceItem(item.CurrentShape, anchorCell)) return false;
 
-        item.AnchorGridPos = anchorCell;
+        item.AnchorGridPos = anchorCell; // stored as (row, col)
 
-        for (int y = 0; y < item.CurrentShape.GetLength(0); y++)
+        for (int r = 0; r < item.CurrentShape.GetLength(0); r++)
         {
-            for (int x = 0; x < item.CurrentShape.GetLength(1); x++)
+            for (int c = 0; c < item.CurrentShape.GetLength(1); c++)
             {
-                if (item.CurrentShape[y, x])
+                if (item.CurrentShape[r, c])
                 {
-                    Data[anchorCell.y + y, anchorCell.x + x] = item;
+                    int row = anchorCell.x + r;
+                    int col = anchorCell.y + c;
+                    Data[row, col] = item;
                 }
             }
         }
-        
+
         OnItemPlaced?.Invoke(item, anchorCell);
         return true;
     }
@@ -73,41 +78,45 @@ public class Inventory
     {
         if (!TryGetItemGridPos(item, out Vector2Int anchor)) return;
 
-        for (int y = 0; y < item.CurrentShape.GetLength(0); y++)
+        for (int r = 0; r < item.CurrentShape.GetLength(0); r++)
         {
-            for (int x = 0; x < item.CurrentShape.GetLength(1); x++)
+            for (int c = 0; c < item.CurrentShape.GetLength(1); c++)
             {
-                if (!item.CurrentShape[y, x]) continue;
+                if (!item.CurrentShape[r, c]) continue;
 
-                int targetY = anchor.y + y;
-                int targetX = anchor.x + x;
+                int targetRow = anchor.x + r;
+                int targetCol = anchor.y + c;
 
-                // Bounds check
-                if (targetY < 0 || targetY >= height || targetX < 0 || targetX >= width) 
+                // Bounds check (defensive)
+                if (targetRow < 0 || targetRow >= height || targetCol < 0 || targetCol >= width)
+                {
+                    Debug.LogWarning($"Skipped out-of-bounds cell at Data[{targetRow},{targetCol}]");
                     continue;
+                }
 
-                Data[targetY, targetX] = null;
+                Data[targetRow, targetCol] = null;
             }
         }
 
         OnItemRemoved?.Invoke(item);
     }
 
+    // cell.x = row, cell.y = col
     public bool IsCellOccupied(Vector2Int cell)
     {
-        if (cell.x < 0 || cell.x >= width || cell.y < 0 || cell.y >= height) return false;
-        return Data[cell.y, cell.x] != null;
+        if (cell.x < 0 || cell.x >= height || cell.y < 0 || cell.y >= width) return false;
+        return Data[cell.x, cell.y] != null;
     }
 
     public bool ChestItemEquipped(Chest chest)
     {
-        // Fixed loop order: y = rows, x = columns
-        for (int y = 0; y < height; y++)
+        // iterate rows then cols
+        for (int r = 0; r < height; r++)
         {
-            for (int x = 0; x < width; x++)
+            for (int c = 0; c < width; c++)
             {
-                if (Data[y, x] != null && chest.chestItems.ContainsKey(Data[y, x].Id))
-                    return true;
+                var it = Data[r, c];
+                if (it != null && chest.chestItems.ContainsKey(it.Id)) return true;
             }
         }
 
@@ -117,13 +126,13 @@ public class Inventory
     public bool TryGetItemGridPos(IItem item, out Vector2Int position)
     {
         Guid guid = item.Id;
-        for (int y = 0; y < height; y++) // rows first
+        for (int r = 0; r < height; r++) // rows first
         {
-            for (int x = 0; x < width; x++) // columns second
+            for (int c = 0; c < width; c++) // cols second
             {
-                if (Data[y, x] != null && Data[y, x].Id == guid)
+                if (Data[r, c] != null && Data[r, c].Id == guid)
                 {
-                    position = Data[y, x].AnchorGridPos;
+                    position = Data[r, c].AnchorGridPos; // AnchorGridPos should also be (row,col)
                     return true;
                 }
             }

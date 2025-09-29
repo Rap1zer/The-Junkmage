@@ -11,24 +11,24 @@ public static class InventoryGrid
 
     public static void DrawGrid(Transform InvContainer, GameObject cellPrefab)
     {
-        int width = InventoryManager.Width;
-        int height = InventoryManager.Height;
-        CellObjs = new GameObject[width, height]; // x = columns, y = rows
+        int rows = InventoryManager.Height;
+        int cols = InventoryManager.Width;
+        CellObjs = new GameObject[rows, cols]; // [row, col]
 
-        float offsetW = ((CellSize * width) + (Margin * (width - 1))) / 2 - (CellSize / 2);
-        float offsetH = ((CellSize * height) + (Margin * (height - 1))) / 2 - (CellSize / 2);
+        float offsetW = ((CellSize * cols) + (Margin * (cols - 1))) / 2 - (CellSize / 2);
+        float offsetH = ((CellSize * rows) + (Margin * (rows - 1))) / 2 - (CellSize / 2);
 
-        for (int y = 0; y < height; y++)
+        for (int row = 0; row < rows; row++)
         {
-            for (int x = 0; x < width; x++)
+            for (int col = 0; col < cols; col++)
             {
                 GameObject gridCell = Object.Instantiate(cellPrefab, InvContainer);
-                CellObjs[x, y] = gridCell;
+                CellObjs[row, col] = gridCell;
 
                 RectTransform rt = gridCell.GetComponent<RectTransform>();
                 rt.anchoredPosition = new Vector3(
-                    ((CellSize + Margin) * x) - offsetW,
-                    ((CellSize + Margin) * y) - offsetH,
+                    ((CellSize + Margin) * col) - offsetW,
+                    ((CellSize + Margin) * row) - offsetH,
                     0
                 );
             }
@@ -37,38 +37,39 @@ public static class InventoryGrid
 
     public static Vector2Int GetNearestGridPosition(Vector2 anchorCanvasPos)
     {
-        int width = CellObjs.GetLength(0);
-        int height = CellObjs.GetLength(1);
+        int rows = CellObjs.GetLength(0);
+        int cols = CellObjs.GetLength(1);
 
-        float offsetW = ((CellSize * width) + (Margin * (width - 1))) / 2 - (CellSize / 2);
-        float offsetH = ((CellSize * height) + (Margin * (height - 1))) / 2 - (CellSize / 2);
+        float offsetW = ((CellSize * cols) + (Margin * (cols - 1))) / 2 - (CellSize / 2);
+        float offsetH = ((CellSize * rows) + (Margin * (rows - 1))) / 2 - (CellSize / 2);
 
         float localX = anchorCanvasPos.x + offsetW;
         float localY = anchorCanvasPos.y + offsetH;
 
-        int gridX = Mathf.Clamp(Mathf.RoundToInt(localX / (CellSize + Margin)), 0, width - 1);
-        int gridY = Mathf.Clamp(Mathf.RoundToInt(localY / (CellSize + Margin)), 0, height - 1);
+        int col = Mathf.Clamp(Mathf.RoundToInt(localX / (CellSize + Margin)), 0, cols - 1);
+        int row = Mathf.Clamp(Mathf.RoundToInt(localY / (CellSize + Margin)), 0, rows - 1);
 
-        return new Vector2Int(gridX, gridY);
+        // row first, col second
+        return new Vector2Int(row, col);
     }
 
     public static void HighlightCells(Vector2Int nearestCell, bool[,] shape, bool canPlace)
     {
-        int width = InventoryManager.Width;
-        int height = InventoryManager.Height;
+        int rows = InventoryManager.Height;
+        int cols = InventoryManager.Width;
 
-        for (int y = 0; y < shape.GetLength(0); y++)
+        for (int r = 0; r < shape.GetLength(0); r++)
         {
-            for (int x = 0; x < shape.GetLength(1); x++)
+            for (int c = 0; c < shape.GetLength(1); c++)
             {
-                if (!shape[y, x]) continue;
+                if (!shape[r, c]) continue;
 
-                int cellX = nearestCell.x + x;
-                int cellY = nearestCell.y + y;
+                int row = nearestCell.x + r;
+                int col = nearestCell.y + c;
 
-                if (cellX >= width || cellY >= height) continue; // Fixed bounds check
+                if (row >= rows || col >= cols) continue;
 
-                Image image = CellObjs[cellX, cellY].GetComponent<Image>();
+                Image image = CellObjs[row, col].GetComponent<Image>();
                 image.color = canPlace ? Color.green : Color.red;
             }
         }
@@ -76,21 +77,21 @@ public static class InventoryGrid
 
     public static void OccupyCells(Vector2Int cell, bool[,] shape)
     {
-        int width = InventoryManager.Width;
-        int height = InventoryManager.Height;
+        int rows = InventoryManager.Height;
+        int cols = InventoryManager.Width;
 
-        for (int y = 0; y < shape.GetLength(0); y++)
+        for (int r = 0; r < shape.GetLength(0); r++)
         {
-            for (int x = 0; x < shape.GetLength(1); x++)
+            for (int c = 0; c < shape.GetLength(1); c++)
             {
-                if (!shape[y, x]) continue;
+                if (!shape[r, c]) continue;
 
-                int cellX = cell.x + x;
-                int cellY = cell.y + y;
+                int row = cell.x + r;
+                int col = cell.y + c;
 
-                if (cellX >= width || cellY >= height) continue;
+                if (row >= rows || col >= cols) continue;
 
-                CellObjs[cellX, cellY].GetComponent<Image>().color = Color.yellow;
+                CellObjs[row, col].GetComponent<Image>().color = Color.yellow;
             }
         }
     }
