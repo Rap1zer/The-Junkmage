@@ -11,12 +11,12 @@ public class Scope : ItemBase, IOnHit, IOnMiss
         critChanceStack = Mathf.Min(critChanceStack, maxCritChanceStack);
 
         int increase = Mathf.Min(3, maxCritChanceStack - critChanceStack);
-        Player.critChance += increase;
+        player.critChance += increase;
     }
 
     public override void OnMiss()
     {
-        Player.critChance = Mathf.Max(0, Player.critChance - critChanceStack);
+        player.critChance = Mathf.Max(0, player.critChance - critChanceStack);
         critChanceStack = 0;
     }
 }

@@ -25,12 +25,12 @@ public abstract class ItemBase : MonoBehaviour, IItem
     public Guid Id { get; private set; }
     public int RotationState { get; private set; } = 0;
 
-    protected PlayerController Player { get; private set; }
+    private PlayerController player;
 
     public bool[,] CurrentShape { get; private set; }
     public bool[,] CurrentStars { get; private set; }
-    public int CurrStarOffsetRow { get; private set; }
-    public int CurrStarOffsetCol { get; private set; }
+    private int currStarOffsetRow;
+    private int currStarOffsetCol;
 
     private Vector2 AnchorOffset
     {
@@ -78,11 +78,11 @@ public abstract class ItemBase : MonoBehaviour, IItem
     {
         ItemData = itemData;
         Id = Guid.NewGuid();
-        Player = GameObject.Find("Player").GetComponent<PlayerController>();
+        player = GameObject.Find("Player").GetComponent<PlayerController>();
         CurrentShape = itemData.Get2DBoolArray(ItemData.shape);
         CurrentStars = ItemData.Get2DBoolArray(ItemData.stars);
-        CurrStarOffsetRow = ItemData.extraRowsHalf;
-        CurrStarOffsetCol = ItemData.extraColsHalf;
+        currStarOffsetRow = ItemData.extraRowsHalf;
+        currStarOffsetCol = ItemData.extraColsHalf;
     }
 
     public float Rotate()
@@ -99,13 +99,13 @@ public abstract class ItemBase : MonoBehaviour, IItem
         {
             case 0: // 0 degrees
             case 2: // 180 degrees clockwise
-                CurrStarOffsetRow = ItemData.extraRowsHalf;
-                CurrStarOffsetCol = ItemData.extraColsHalf;
+                currStarOffsetRow = ItemData.extraRowsHalf;
+                currStarOffsetCol = ItemData.extraColsHalf;
                 break;
             case 1: // 90 degrees clockwise
             case 3: // 270 degrees clockwise
-                CurrStarOffsetRow = ItemData.extraColsHalf;
-                CurrStarOffsetCol = ItemData.extraRowsHalf;
+                currStarOffsetRow = ItemData.extraColsHalf;
+                currStarOffsetCol = ItemData.extraRowsHalf;
                 break;
         }
     }
@@ -176,8 +176,8 @@ public abstract class ItemBase : MonoBehaviour, IItem
                 if (!CurrentStars[r, c]) continue;
 
                 yield return new CellPos(
-                    anchor.Row + r - CurrStarOffsetRow,
-                    anchor.Col + c - CurrStarOffsetCol
+                    anchor.Row + r - currStarOffsetRow,
+                    anchor.Col + c - currStarOffsetCol
                 );
             }
         }

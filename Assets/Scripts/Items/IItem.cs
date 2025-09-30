@@ -11,8 +11,6 @@ public interface IItem
 
     public bool[,] CurrentShape { get; }
     public bool[,] CurrentStars { get; }
-    public int CurrStarOffsetRow { get; }
-    public int CurrStarOffsetCol { get; }
 
     IEnumerable<CellPos> GetOccupiedCells(CellPos anchor);
     IEnumerable<CellPos> GetStarCells(CellPos anchor);

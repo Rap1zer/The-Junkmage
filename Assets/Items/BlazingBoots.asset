@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61b35fac736fc4e77b63e7ff43f9af9e, type: 3}
+  m_Name: BlazingBoots
+  m_EditorClassIdentifier: 
+  itemName: Blazing Boots
+  description: Increase speed by 3. 75% chance to apply 4 Burn to enemies you touch.
+    (3 second probability cooldown per enemy)
+  icon: {fileID: -8630435554779211992, guid: f16f2974d081c46b5bda8a2dcdb21e73, type: 3}
+  prefab: {fileID: 0}
+  shape:
+  - values: 0101
+  - values: 0100
+  extraRowsHalf: 0
+  extraColsHalf: 0
+  stars: []

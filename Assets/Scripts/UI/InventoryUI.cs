@@ -16,7 +16,7 @@ public class InventoryUI
     private GameObject cellPrefab;
     private Transform chestContainer;
 
-    private InventoryRenderer invRenderer;
+    private ChestUI invRenderer;
     public InventoryGrid invGrid;
 
     public float CellSize { get; private set; } = 100f;
@@ -38,7 +38,7 @@ public class InventoryUI
             chestSlots[i] = itemDropsPos.GetChild(i).GetComponent<RectTransform>();
         }
 
-        invRenderer = new InventoryRenderer(chestSlots, chestContainer.gameObject);
+        invRenderer = new ChestUI(chestSlots, chestContainer.gameObject);
         invGrid = new InventoryGrid(InventoryManager.Height, InventoryManager.Width, CellSize, Margin);
     }
 
