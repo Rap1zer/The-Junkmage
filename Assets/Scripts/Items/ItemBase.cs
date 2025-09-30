@@ -1,5 +1,5 @@
 using System;
-using Unity.VisualScripting;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class ItemBase : MonoBehaviour, IItem
@@ -28,69 +28,15 @@ public abstract class ItemBase : MonoBehaviour, IItem
     protected PlayerController Player { get; private set; }
 
     public bool[,] CurrentShape { get; private set; }
-
-    public virtual void Initialise(ItemData itemData)
-    {
-        ItemData = itemData;
-        Id = Guid.NewGuid();
-        Player = GameObject.Find("Player").GetComponent<PlayerController>();
-        CurrentShape = itemData.Get2DShape();
-    }
-
-    public float Rotate()
-    {
-        RotationState = RotationState < 3 ? RotationState + 1 : 0;
-        UpdateCurrentShape();
-        return RotationState * 90f;
-    }
-
-    private void UpdateCurrentShape()
-    {
-        bool[,] original = ItemData.Get2DShape();
-
-        switch (RotationState)
-        {
-            case 0:
-                CurrentShape = original;
-                break;
-            case 1: // 90 degrees clockwise
-                CurrentShape = Rotate90Clockwise(original);
-                break;
-
-            case 2: // 180 degrees clockwise
-                CurrentShape = Rotate90Clockwise(Rotate90Clockwise(original));
-                break;
-
-            case 3: // 270 degrees clockwise / 90 counterclockwise
-                CurrentShape = Rotate90Clockwise(Rotate90Clockwise(Rotate90Clockwise(original)));
-                // Or write a Rotate90CounterClockwise method
-                break;
-        }
-    }
-
-    // Rotates a 2D bool array 90° clockwise
-    private bool[,] Rotate90Clockwise(bool[,] array)
-    {
-        int rows = array.GetLength(0);
-        int cols = array.GetLength(1);
-        bool[,] rotated = new bool[cols, rows];
-
-        for (int r = 0; r < rows; r++)
-        {
-            for (int c = 0; c < cols; c++)
-            {
-                rotated[c, rows - 1 - r] = array[r, c];
-            }
-        }
-
-        return rotated;
-    }
+    public bool[,] CurrentStars { get; private set; }
+    public int CurrStarOffsetRow { get; private set; }
+    public int CurrStarOffsetCol { get; private set; }
 
     private Vector2 AnchorOffset
     {
         get
         {
-            float cellStep = InventoryGrid.CellSize + InventoryGrid.Margin;
+            float cellStep = InventoryManager.UI.CellSize + InventoryManager.UI.Margin;
 
             // Offset by half cell for items with more than one cell
             float xCenterOffset = CurrentShape.GetLength(1) > 1 ? cellStep / 2f : 0f;
@@ -126,7 +72,116 @@ public abstract class ItemBase : MonoBehaviour, IItem
         }
     }
 
-    public Vector2Int AnchorGridPos { get; set; }
+    public CellPos AnchorGridPos { get; set; }
+
+    public virtual void Initialise(ItemData itemData)
+    {
+        ItemData = itemData;
+        Id = Guid.NewGuid();
+        Player = GameObject.Find("Player").GetComponent<PlayerController>();
+        CurrentShape = itemData.Get2DBoolArray(ItemData.shape);
+        CurrentStars = ItemData.Get2DBoolArray(ItemData.stars);
+        CurrStarOffsetRow = ItemData.extraRowsHalf;
+        CurrStarOffsetCol = ItemData.extraColsHalf;
+    }
+
+    public float Rotate()
+    {
+        RotationState = RotationState < 3 ? RotationState + 1 : 0;
+        CurrentShape = UpdateRotatedBoolArray(ItemData.Get2DBoolArray(ItemData.shape));
+        CurrentStars = UpdateRotatedBoolArray(ItemData.Get2DBoolArray(ItemData.stars));
+        UpdateStarOffset();
+        return RotationState * 90f;
+    }
+
+    private void UpdateStarOffset() {
+        switch (RotationState)
+        {
+            case 0: // 0 degrees
+            case 2: // 180 degrees clockwise
+                CurrStarOffsetRow = ItemData.extraRowsHalf;
+                CurrStarOffsetCol = ItemData.extraColsHalf;
+                break;
+            case 1: // 90 degrees clockwise
+            case 3: // 270 degrees clockwise
+                CurrStarOffsetRow = ItemData.extraColsHalf;
+                CurrStarOffsetCol = ItemData.extraRowsHalf;
+                break;
+        }
+    }
+
+    private bool[,] UpdateRotatedBoolArray(bool[,] original)
+    {
+        bool[,] rotatedArray = new bool[original.GetLength(0), original.GetLength(1)];
+
+        switch (RotationState)
+        {
+            case 0:
+                rotatedArray = original;
+                break;
+            case 1: // 90 degrees clockwise
+                rotatedArray = Rotate90Clockwise(original);
+                break;
+
+            case 2: // 180 degrees clockwise
+                rotatedArray = Rotate90Clockwise(Rotate90Clockwise(original));
+                break;
+
+            case 3: // 270 degrees clockwise / 90 counterclockwise
+                rotatedArray = Rotate90Clockwise(Rotate90Clockwise(Rotate90Clockwise(original)));
+                // Or write a Rotate90CounterClockwise method
+                break;
+        }
+
+        return rotatedArray;
+    }
+
+    // Rotates a 2D bool array 90° clockwise
+    private bool[,] Rotate90Clockwise(bool[,] array)
+    {
+        int rows = array.GetLength(0);
+        int cols = array.GetLength(1);
+        bool[,] rotated = new bool[cols, rows];
+
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                rotated[c, rows - 1 - r] = array[r, c];
+            }
+        }
+
+        return rotated;
+    }
+
+    public IEnumerable<CellPos> GetOccupiedCells(CellPos anchor)
+    {
+        for (int r = 0; r < CurrentShape.GetLength(0); r++)
+        {
+            for (int c = 0; c < CurrentShape.GetLength(1); c++)
+            {
+                if (!CurrentShape[r, c]) continue;
+
+                yield return new CellPos(anchor.Row + r, anchor.Col + c);
+            }
+        }
+    }
+
+    public IEnumerable<CellPos> GetStarCells(CellPos anchor)
+    {
+        for (int r = 0; r < CurrentStars.GetLength(0); r++)
+        {
+            for (int c = 0; c < CurrentStars.GetLength(1); c++)
+            {
+                if (!CurrentStars[r, c]) continue;
+
+                yield return new CellPos(
+                    anchor.Row + r - CurrStarOffsetRow,
+                    anchor.Col + c - CurrStarOffsetCol
+                );
+            }
+        }
+    }
 
     // Abstract methods that subclasses must implement if needed
     public virtual void OnHit() { }       // optional to override

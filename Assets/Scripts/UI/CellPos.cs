@@ -13,8 +13,8 @@ public readonly struct CellPos
 
     public override string ToString() => $"({Row}, {Col})";
 
-    // Convert to Vector2Int 
-    public Vector2Int ToVector2Int() => new Vector2Int(Col, Row);
+    // Convert to CellPos 
+    public CellPos ToVector2Int() => new CellPos(Col, Row);
 
     // Equality support
     public override bool Equals(object obj) => obj is CellPos other && Row == other.Row && Col == other.Col;

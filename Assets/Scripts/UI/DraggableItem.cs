@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public static bool IsDragging { get; private set; } = false;
-    public Vector2Int Index { get; set; }
 
     private RectTransform rt;
     private CanvasGroup canvasGroup;
@@ -24,7 +23,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         canvasGroup.alpha = 0.7f;
         IsDragging = true;
 
-        InventoryDragEvents.RaiseBeginDrag(gameObject, Index, eventData);
+        InventoryDragEvents.RaiseBeginDrag(gameObject, eventData);
     }
 
     public void OnDrag(PointerEventData eventData)

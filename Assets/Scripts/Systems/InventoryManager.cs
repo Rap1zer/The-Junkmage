@@ -112,10 +112,10 @@ public class InventoryManager : MonoBehaviour
         InvContainer.gameObject.SetActive(false);
     }
 
-    public bool TryPlaceItem(Vector2Int anchorCell, GameObject itemObj)
+    public bool TryPlaceItem(CellPos anchorCell, GameObject itemObj)
     {
         IItem item = itemObj.GetComponent<IItem>();
-        bool canPlace = Inventory.CanPlaceItem(item.CurrentShape, anchorCell);
+        bool canPlace = Inventory.CanPlaceItem(item, anchorCell);
 
         if (canPlace)
         {
@@ -126,17 +126,17 @@ public class InventoryManager : MonoBehaviour
         return false;
     }
 
-    private void PlaceItem(IItem item, Vector2Int anchorCell, GameObject itemObj)
+    private void PlaceItem(IItem item, CellPos anchorCell, GameObject itemObj)
     {
         UI.PlaceItem(itemObj, anchorCell);      // Snap item to grid
         Inventory.PlaceItem(item, anchorCell);  // Place in inventory
         CurrentChest?.TakeItem(item);           // Remove from chest if applicable
     }
 
-    public (Vector2Int anchorCell, bool canPlace) CanPlaceDraggedItem(Vector2 anchorCanvasPos, IItem item)
+    public (CellPos anchorCell, bool canPlace) CanPlaceDraggedItem(Vector2 anchorCanvasPos, IItem item)
     {
-        Vector2Int anchorCell = InventoryGrid.GetNearestGridPosition(anchorCanvasPos);
-        bool canPlace = Inventory.CanPlaceItem(item.CurrentShape, anchorCell);
+        CellPos anchorCell = ui.invGrid.GetNearestGridPosition(anchorCanvasPos);
+        bool canPlace = Inventory.CanPlaceItem(item, anchorCell);
         return (anchorCell, canPlace);
     }
 
@@ -156,7 +156,7 @@ public class InventoryManager : MonoBehaviour
 
         chest.SetItemIds(chestItems);
 
-        InventoryManager.Instance.OpenInventory();
+        OpenInventory();
     }
 
     public void HandleChestClosed()
@@ -183,15 +183,14 @@ public class InventoryManager : MonoBehaviour
         return isInventoryOpen;
     }
 
-    private void HandleBeginDrag(GameObject itemObj, Vector2Int index, PointerEventData data)
+    private void HandleBeginDrag(GameObject itemObj, PointerEventData data)
     {
         IItem item = itemObj.GetComponent<IItem>();
         if (!CanDrag(item)) return;
 
         Current.Obj = itemObj;
-        Current.Index = index;
 
-        UI.BeginDrag(data, index);
+        UI.BeginDrag(data);
         inventory.RemoveItem(item);
     }
 
@@ -206,7 +205,7 @@ public class InventoryManager : MonoBehaviour
         if (Current.Item == null || !CanDrag(Current.Item)) return;
 
         Vector2 anchorCanvasPos = UI.GetCurrentItemCanvasPos();
-        Vector2Int anchorCell = InventoryGrid.GetNearestGridPosition(anchorCanvasPos);
+        CellPos anchorCell = ui.invGrid.GetNearestGridPosition(anchorCanvasPos);
 
         bool placed = TryPlaceItem(anchorCell, itemObj);
 

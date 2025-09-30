@@ -23,19 +23,19 @@ public class ItemData : ScriptableObject
     public BoolRow[] stars;
 
     // Helper to convert to 2D array
-    public bool[,] Get2DShape()
+    public bool[,] Get2DBoolArray(BoolRow[] array)
     {
-        if (shape == null || shape.Length == 0) return new bool[0, 0];
+        if (array == null || array.Length == 0) return new bool[0, 0];
 
-        int rows = shape.Length;
-        int cols = shape[0].values.Length;
+        int rows = array.Length;
+        int cols = array[0].values.Length;
         bool[,] result = new bool[rows, cols];
 
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < cols; c++)
             {
-                result[r, c] = shape[r].values[c];
+                result[r, c] = array[r].values[c];
             }
         }
 

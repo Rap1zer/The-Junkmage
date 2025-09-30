@@ -10,7 +10,7 @@ public class Inventory
 
     // Data[row, col]
     public IItem[,] Data { get; private set; }
-    public event Action<IItem, Vector2Int> OnItemPlaced; // InventoryGrid.OccupyCells()
+    public event Action<IItem, CellPos> OnItemPlaced; // InventoryGrid.OccupyCells()
     public event Action<IItem> OnItemRemoved;
 
     public Inventory(int width, int height)
@@ -21,53 +21,32 @@ public class Inventory
         this.height = height;
     }
 
-    // NOTE: anchorCell.x == row, anchorCell.y == col
-    public bool CanPlaceItem(bool[,] shape, Vector2Int anchorCell)
+    public bool CanPlaceItem(IItem item, CellPos anchorCell)
     {
-        if (shape == null) return false;
-
-        int shapeRows = shape.GetLength(0);
-        int shapeCols = shape.GetLength(1);
-
-        for (int r = 0; r < shapeRows; r++)
+        foreach (var pos in item.GetOccupiedCells(anchorCell))
         {
-            for (int c = 0; c < shapeCols; c++)
-            {
-                if (!shape[r, c]) continue; // Skip empty cells in the shape
+            // Check bounds
+            if (pos.Row < 0 || pos.Row >= height || pos.Col < 0 || pos.Col >= width)
+                return false;
 
-                int row = anchorCell.x + r;
-                int col = anchorCell.y + c;
-
-                // Check bounds
-                if (row < 0 || row >= height || col < 0 || col >= width)
-                    return false;
-
-                // Check if the cell is already occupied
-                if (IsCellOccupied(new Vector2Int(row, col)))
-                    return false;
-            }
+            // Check if the cell is already occupied
+            if (IsCellOccupied(pos))
+                return false;
         }
 
         return true;
     }
 
-    public bool PlaceItem(IItem item, Vector2Int anchorCell)
+
+    public bool PlaceItem(IItem item, CellPos anchorCell)
     {
-        if (!CanPlaceItem(item.CurrentShape, anchorCell)) return false;
+        if (!CanPlaceItem(item, anchorCell)) return false;
 
-        item.AnchorGridPos = anchorCell; // stored as (row, col)
+        item.AnchorGridPos = anchorCell;
 
-        for (int r = 0; r < item.CurrentShape.GetLength(0); r++)
+        foreach (var pos in item.GetOccupiedCells(anchorCell))
         {
-            for (int c = 0; c < item.CurrentShape.GetLength(1); c++)
-            {
-                if (item.CurrentShape[r, c])
-                {
-                    int row = anchorCell.x + r;
-                    int col = anchorCell.y + c;
-                    Data[row, col] = item;
-                }
-            }
+            Data[pos.Row, pos.Col] = item;
         }
 
         OnItemPlaced?.Invoke(item, anchorCell);
@@ -76,36 +55,27 @@ public class Inventory
 
     public void RemoveItem(IItem item)
     {
-        if (!TryGetItemGridPos(item, out Vector2Int anchor)) return;
+        if (!TryGetItemGridPos(item, out CellPos anchor)) return;
 
-        for (int r = 0; r < item.CurrentShape.GetLength(0); r++)
+        foreach (var pos in item.GetOccupiedCells(anchor))
         {
-            for (int c = 0; c < item.CurrentShape.GetLength(1); c++)
+            if (pos.Row < 0 || pos.Row >= height || pos.Col < 0 || pos.Col >= width)
             {
-                if (!item.CurrentShape[r, c]) continue;
-
-                int targetRow = anchor.x + r;
-                int targetCol = anchor.y + c;
-
-                // Bounds check (defensive)
-                if (targetRow < 0 || targetRow >= height || targetCol < 0 || targetCol >= width)
-                {
-                    Debug.LogWarning($"Skipped out-of-bounds cell at Data[{targetRow},{targetCol}]");
-                    continue;
-                }
-
-                Data[targetRow, targetCol] = null;
+                Debug.LogWarning($"Skipped out-of-bounds cell at Data[{pos.Row},{pos.Col}]");
+                continue;
             }
+
+            Data[pos.Row, pos.Col] = null;
         }
 
         OnItemRemoved?.Invoke(item);
     }
 
     // cell.x = row, cell.y = col
-    public bool IsCellOccupied(Vector2Int cell)
+    public bool IsCellOccupied(CellPos cell)
     {
-        if (cell.x < 0 || cell.x >= height || cell.y < 0 || cell.y >= width) return false;
-        return Data[cell.x, cell.y] != null;
+        if (cell.Row < 0 || cell.Row >= height || cell.Col < 0 || cell.Col >= width) return false;
+        return Data[cell.Row, cell.Col] != null;
     }
 
     public bool ChestItemEquipped(Chest chest)
@@ -123,7 +93,7 @@ public class Inventory
         return false;
     }
 
-    public bool TryGetItemGridPos(IItem item, out Vector2Int position)
+    public bool TryGetItemGridPos(IItem item, out CellPos position)
     {
         Guid guid = item.Id;
         for (int r = 0; r < height; r++) // rows first

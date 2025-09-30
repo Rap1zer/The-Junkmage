@@ -2,22 +2,63 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [System.Serializable]
-public static class InventoryGrid
+public class InventoryGrid
 {
-    public static GameObject[,] CellObjs;
+    public GameObject[,] CellObjs { get; private set; }
 
-    public static float CellSize = 100f;
-    public static float Margin = 10f;
+    private readonly float cellSize;
+    private readonly float margin;
+    private readonly int rows;
+    private readonly int cols;
 
-    public static void DrawGrid(Transform InvContainer, GameObject cellPrefab)
+    public InventoryGrid(int rows, int cols, float cellSize, float margin)
     {
-        int rows = InventoryManager.Height;
-        int cols = InventoryManager.Width;
-        CellObjs = new GameObject[rows, cols]; // [row, col]
+        this.rows = rows;
+        this.cols = cols;
+        this.cellSize = cellSize;
+        this.margin = margin;
 
-        float offsetW = ((CellSize * cols) + (Margin * (cols - 1))) / 2 - (CellSize / 2);
-        float offsetH = ((CellSize * rows) + (Margin * (rows - 1))) / 2 - (CellSize / 2);
+        CellObjs = new GameObject[rows, cols];
+    }
 
+    // -----------------------
+    // Grid math helpers
+    // -----------------------
+
+    private Vector2 CalculateGridOffset()
+    {
+        float offsetW = ((cellSize * cols) + (margin * (cols - 1))) / 2 - (cellSize / 2);
+        float offsetH = ((cellSize * rows) + (margin * (rows - 1))) / 2 - (cellSize / 2);
+        return new Vector2(offsetW, offsetH);
+    }
+
+    public Vector2 GridToLocal(CellPos pos)
+    {
+        Vector2 offset = CalculateGridOffset();
+        return new Vector2(
+            ((cellSize + margin) * pos.Col) - offset.x,
+            ((cellSize + margin) * pos.Row) - offset.y
+        );
+    }
+
+    public CellPos LocalToGrid(Vector2 local)
+    {
+        Vector2 offset = CalculateGridOffset();
+        float localX = local.x + offset.x;
+        float localY = local.y + offset.y;
+
+        int col = Mathf.Clamp(Mathf.RoundToInt(localX / (cellSize + margin)), 0, cols - 1);
+        int row = Mathf.Clamp(Mathf.RoundToInt(localY / (cellSize + margin)), 0, rows - 1);
+
+        return new CellPos(row, col);
+    }
+
+    // -----------------------
+    // UI: Grid rendering
+    // -----------------------
+
+    public void DrawGrid(Transform InvContainer, GameObject cellPrefab)
+    {
         for (int row = 0; row < rows; row++)
         {
             for (int col = 0; col < cols; col++)
@@ -26,84 +67,58 @@ public static class InventoryGrid
                 CellObjs[row, col] = gridCell;
 
                 RectTransform rt = gridCell.GetComponent<RectTransform>();
-                rt.anchoredPosition = new Vector3(
-                    ((CellSize + Margin) * col) - offsetW,
-                    ((CellSize + Margin) * row) - offsetH,
-                    0
-                );
+                rt.anchoredPosition = GridToLocal(new CellPos(row, col));
             }
         }
     }
 
-    public static Vector2Int GetNearestGridPosition(Vector2 anchorCanvasPos)
+    public CellPos GetNearestGridPosition(Vector2 localPosition)
     {
-        int rows = CellObjs.GetLength(0);
-        int cols = CellObjs.GetLength(1);
+        Vector2 offset = CalculateGridOffset();
 
-        float offsetW = ((CellSize * cols) + (Margin * (cols - 1))) / 2 - (CellSize / 2);
-        float offsetH = ((CellSize * rows) + (Margin * (rows - 1))) / 2 - (CellSize / 2);
+        float localX = localPosition.x + offset.x;
+        float localY = localPosition.y + offset.y;
 
-        float localX = anchorCanvasPos.x + offsetW;
-        float localY = anchorCanvasPos.y + offsetH;
+        int col = Mathf.Clamp(Mathf.RoundToInt(localX / (cellSize + margin)), 0, cols - 1);
+        int row = Mathf.Clamp(Mathf.RoundToInt(localY / (cellSize + margin)), 0, rows - 1);
 
-        int col = Mathf.Clamp(Mathf.RoundToInt(localX / (CellSize + Margin)), 0, cols - 1);
-        int row = Mathf.Clamp(Mathf.RoundToInt(localY / (CellSize + Margin)), 0, rows - 1);
-
-        // row first, col second
-        return new Vector2Int(row, col);
+        return new CellPos(row, col);
     }
 
-    public static void HighlightCells(Vector2Int nearestCell, bool[,] shape, bool canPlace)
-    {
-        int rows = InventoryManager.Height;
-        int cols = InventoryManager.Width;
+    // -----------------------
+    // UI: Cell highlighting
+    // -----------------------
 
-        for (int r = 0; r < shape.GetLength(0); r++)
+    private void SetCellColor(CellPos pos, Color color)
+    {
+        if (pos.Row < 0 || pos.Row >= rows) return;
+        if (pos.Col < 0 || pos.Col >= cols) return;
+
+        Image image = CellObjs[pos.Row, pos.Col].GetComponent<Image>();
+        image.color = color;
+    }
+
+    public void HighlightCells(CellPos anchorCell, IItem item, bool canPlace)
+    {
+        foreach (var pos in item.GetOccupiedCells(anchorCell))
         {
-            for (int c = 0; c < shape.GetLength(1); c++)
-            {
-                if (!shape[r, c]) continue;
-
-                int row = nearestCell.x + r;
-                int col = nearestCell.y + c;
-
-                if (row >= rows || col >= cols) continue;
-
-                Image image = CellObjs[row, col].GetComponent<Image>();
-                image.color = canPlace ? Color.green : Color.red;
-            }
+            SetCellColor(pos, canPlace ? Color.green : Color.red);
         }
-    }
 
-    public static void OccupyCells(Vector2Int cell, bool[,] shape)
-    {
-        int rows = InventoryManager.Height;
-        int cols = InventoryManager.Width;
-
-        for (int r = 0; r < shape.GetLength(0); r++)
+        if (canPlace)
         {
-            for (int c = 0; c < shape.GetLength(1); c++)
+            foreach (var pos in item.GetStarCells(anchorCell))
             {
-                if (!shape[r, c]) continue;
-
-                int row = cell.x + r;
-                int col = cell.y + c;
-
-                if (row >= rows || col >= cols) continue;
-
-                CellObjs[row, col].GetComponent<Image>().color = Color.yellow;
+                SetCellColor(pos, Color.yellow);
             }
         }
     }
 
-    public static void ClearHighlights()
+    public void ClearHighlights()
     {
-        if (CellObjs == null) return;
-
         foreach (var cell in CellObjs)
         {
-            Image image = cell.GetComponent<Image>();
-            if (image.color != Color.yellow) image.color = Color.white;
+            cell.GetComponent<Image>().color = Color.white;
         }
     }
 }

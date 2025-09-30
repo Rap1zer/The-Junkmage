@@ -17,6 +17,11 @@ public class InventoryUI
     private Transform chestContainer;
 
     private InventoryRenderer invRenderer;
+    public InventoryGrid invGrid;
+
+    public float CellSize { get; private set; } = 100f;
+    public float Margin { get; private set; } = 10f;
+
     private RectTransform[] chestSlots;
 
     public InventoryUI(Canvas canvas, GameObject cellPrefab, Transform chestContainer)
@@ -33,26 +38,27 @@ public class InventoryUI
             chestSlots[i] = itemDropsPos.GetChild(i).GetComponent<RectTransform>();
         }
 
-        invRenderer = new InventoryRenderer(canvas, chestSlots, chestContainer.gameObject);
+        invRenderer = new InventoryRenderer(chestSlots, chestContainer.gameObject);
+        invGrid = new InventoryGrid(InventoryManager.Height, InventoryManager.Width, CellSize, Margin);
     }
 
     public void DrawGrid(Transform container)
     {
-        InventoryGrid.DrawGrid(container, cellPrefab);
+        invGrid.DrawGrid(container, cellPrefab);
     }
 
-    public void BeginDrag(PointerEventData eventData, Vector2Int index)
+    public void BeginDrag(PointerEventData eventData)
     {
         beginDragPos = eventData.pointerDrag.GetComponent<RectTransform>().anchoredPosition;
     }
 
     public void Drag(PointerEventData eventData)
     {
-        InventoryGrid.ClearHighlights();
+        invGrid.ClearHighlights();
 
         Vector2 anchorCanvasPos = GetCurrentItemCanvasPos();
         (var anchorCell, bool canPlace) = InventoryManager.Instance.CanPlaceDraggedItem(anchorCanvasPos, InventoryManager.Instance.Current.Item);
-        InventoryGrid.HighlightCells(anchorCell, InventoryManager.Instance.Current.Item.CurrentShape, canPlace);
+        invGrid.HighlightCells(anchorCell, InventoryManager.Instance.Current.Item, canPlace);
     }
 
     public void EndDrag(PointerEventData eventData)
@@ -68,10 +74,10 @@ public class InventoryUI
     }
 
     // Snap item's position to grid
-    public void PlaceItem(GameObject itemObj, Vector2Int startingCell)
+    public void PlaceItem(GameObject itemObj, CellPos startingCell)
     {
         Vector3 anchorWorldPos = itemObj.GetComponent<IItem>().AnchorPos;
-        Vector3 targetCellPos = InventoryGrid.CellObjs[startingCell.x, startingCell.y].transform.position;
+        Vector3 targetCellPos = invGrid.CellObjs[startingCell.Row, startingCell.Col].transform.position;
 
         // compute how far off the item is
         Vector3 offset = anchorWorldPos - itemObj.transform.position;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public interface IItem
@@ -9,8 +10,14 @@ public interface IItem
     public Guid Id { get; }
 
     public bool[,] CurrentShape { get; }
+    public bool[,] CurrentStars { get; }
+    public int CurrStarOffsetRow { get; }
+    public int CurrStarOffsetCol { get; }
 
-    public Vector2Int AnchorGridPos { get; set;  }
+    IEnumerable<CellPos> GetOccupiedCells(CellPos anchor);
+    IEnumerable<CellPos> GetStarCells(CellPos anchor);
+    
+    public CellPos AnchorGridPos { get; set; }
     public Vector3 AnchorPos { get; }
 
     public int RotationState { get; }
