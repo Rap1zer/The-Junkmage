@@ -37,8 +37,11 @@ public class Door : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PlayerController player = other.GetComponent<PlayerController>();
-            player.inRoomIndex = player.inRoomIndex == FromRoom.Index ? ToRoom.Index : FromRoom.Index;
+            int newRoomIndex = RoomManager.Instance.CurrentRoomIndex == FromRoom.Index
+                ? ToRoom.Index
+                : FromRoom.Index;
+
+            RoomManager.Instance.SetPlayerRoom(newRoomIndex);
         }
     }
 }

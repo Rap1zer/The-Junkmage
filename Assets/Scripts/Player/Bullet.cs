@@ -11,29 +11,18 @@ public class Bullet : MonoBehaviour
         this.isPlayerBullet = isPlayerBullet;
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     void OnTriggerEnter2D(Collider2D other)
     {
         if (!isPlayerBullet && other.CompareTag("Player"))
         {
-            PlayerController player = other.GetComponent<PlayerController>();
-            player.TakeDamage(dmg);
+            var player = other.GetComponent<IDamageable>();
+            player?.TakeDamage(dmg);
+
         }
         else if (isPlayerBullet && other.CompareTag("Enemy"))
         {
-            IEnemy enemy = other.GetComponent<IEnemy>();
-            if (enemy != null) enemy.TakeDamage(dmg);
+            var enemy = other.GetComponent<IDamageable>();
+            enemy?.TakeDamage(dmg);
         }
 
         // Destroy the bullet after it hits something

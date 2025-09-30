@@ -7,7 +7,7 @@ public enum EnemyState
 
 public interface IEnemy
 {
-    public int Health { get; set; }
+    public int Health { get; }
     public int AttackDmg { get; set; }
     public float AttackCooldown { get; set; }
     public float Speed { get; set; }

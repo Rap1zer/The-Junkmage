@@ -25,7 +25,7 @@ public abstract class ItemBase : MonoBehaviour, IItem
     public Guid Id { get; private set; }
     public int RotationState { get; private set; } = 0;
 
-    private PlayerController player;
+    protected PlayerController player;
 
     public bool[,] CurrentShape { get; private set; }
     public bool[,] CurrentStars { get; private set; }

@@ -1,139 +1,35 @@
-using System;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
-public class PlayerController : MonoBehaviour
+[RequireComponent(typeof(PlayerStats))]
+[RequireComponent(typeof(PlayerMovement))]
+[RequireComponent(typeof(PlayerCombat))]
+[RequireComponent(typeof(PlayerHealth))]
+public class PlayerController : MonoBehaviour, IPlayerItemConsumer
 {
-    public int inRoomIndex = 0;
-
-    [Header("Player Stats")]
-    public int health = 20;
-    public float moveSpeed = 5f;
-
-    [Header("Dash Settings")]
-    public float dashSpeed = 12f;
-    public float dashDuration = 0.2f;
-    public float dashCooldown = 1f;
-
-    private Rigidbody2D rb;
-    private Vector2 moveInput;
-    private bool isDashing = false;
-    private float dashTimeLeft = 0f;
-    private float dashCooldownTimer = 0f;
-    private Vector2 dashDirection;
-
-    [Header("Shooting Settings")]
-    public GameObject bulletPrefab;
-    public int bulletDmg = 1;
-    public float critChance = 0.1f;
-    public int critMultiplier = 2;
-    public float bulletSpeed = 14f;
-    public Transform firePoint;
+    private PlayerStats stats;
+    private PlayerMovement movement;
+    private PlayerCombat combat;
 
     void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        stats = GetComponent<PlayerStats>();
+        movement = GetComponent<PlayerMovement>();
+        combat = GetComponent<PlayerCombat>();
     }
 
     void Update()
     {
-        // --- Handle movement input ---
-        moveInput.x = Input.GetAxisRaw("Horizontal");
-        moveInput.y = Input.GetAxisRaw("Vertical");
-        moveInput = moveInput.normalized;
-
-        // --- Handle dash input ---
-        if (Input.GetKeyDown(KeyCode.Space) && dashCooldownTimer <= 0f)
-        {
-            StartDash();
-        }
-
-        // --- Dash timing ---
-        if (isDashing)
-        {
-            dashTimeLeft -= Time.deltaTime;
-            if (dashTimeLeft <= 0f)
-            {
-                isDashing = false;
-            }
-        }
-
-        // --- Cooldown timer ---
-        if (dashCooldownTimer > 0f)
-        {
-            dashCooldownTimer -= Time.deltaTime;
-        }
-
-        // --- Rotate player to face mouse ---
-        RotateToMouse();
-
-        // --- Shooting with left mouse button ---
-        if (Input.GetMouseButtonDown(0)) Shoot();
+        movement.HandleInput();
+        combat.HandleInput();
     }
 
-    void FixedUpdate()
+    public void ApplyStatModifier(StatModifier modifier)
     {
-        if (isDashing)
-        {
-            rb.linearVelocity = dashDirection * dashSpeed;
-        }
-        else
-        {
-            rb.linearVelocity = moveInput * moveSpeed;
-        }
+        stats.ApplyModifier(modifier);
     }
 
-    void StartDash()
+    public void ApplyStatusEffect(StatusEffect effect)
     {
-        if (moveInput == Vector2.zero) return; // can't dash without direction
-
-        isDashing = true;
-        dashTimeLeft = dashDuration;
-        dashCooldownTimer = dashCooldown;
-
-        dashDirection = moveInput; // dash in current movement direction
-    }
-
-    void RotateToMouse()
-    {
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 direction = (mousePos - transform.position).normalized;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f; // -90 if your sprite faces up
-        transform.rotation = Quaternion.Euler(0f, 0f, angle);
-    }
-
-    void Shoot()
-    {
-        if (bulletPrefab == null || firePoint == null || InventoryManager.Instance.isInventoryOpen) return;
-
-        // Spawn bullet
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-        int dmg = UnityEngine.Random.value < critChance ? bulletDmg * critMultiplier : bulletDmg;
-        bullet.GetComponent<Bullet>().SetDmg(bulletDmg, true);
-
-        // Apply velocity
-        Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
-        if (bulletRb != null)
-        {
-            bulletRb.linearVelocity = firePoint.up * bulletSpeed;
-        }
-    }
-
-    public void TakeDamage(int dmg)
-    {
-        health -= dmg;
-        if (health <= 0) Die();
-    }
-
-    private void Die()
-    {
-        Debug.Log("Player ded :(");
-        this.enabled = false;
-    }
-
-    public void Heal(int healAmount)
-    {
-        health += healAmount;
-        if (health > 20) health = 20;
+        // effectManager.AddEffect(effect);
     }
 }
