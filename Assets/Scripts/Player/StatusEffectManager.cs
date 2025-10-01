@@ -57,6 +57,7 @@ public class StatusEffectManager : MonoBehaviour
 
     // These dispatcher methods are used by the owning object to pass events into effects:
 
+    // Just before the damage is actually applied to owner's health pool
     public float DispatchIncomingDamage(float dmg, GameObject attacker = null)
     {
         float modified = dmg;
@@ -66,18 +67,21 @@ public class StatusEffectManager : MonoBehaviour
         return Mathf.Max(0, modified);
     }
 
+    // After damage has been subtracted from owner's health
     public void DispatchAfterDamageTaken(float dmg, GameObject attacker = null)
     {
         foreach (var e in effects)
             e.OnAfterDamageTaken(dmg, attacker);
     }
 
+    // After owner's attack successfully damages another entity.
     public void DispatchDealDamage(float dmg, GameObject target = null)
     {
         foreach (var e in effects)
             e.OnDealDamage(dmg, target);
     }
 
+    // After a room is cleared
     public void DispatchRoomCleared()
     {
         foreach (var e in effects)

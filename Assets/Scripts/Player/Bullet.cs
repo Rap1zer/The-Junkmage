@@ -4,27 +4,36 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     private float dmg = 1f;
-    private bool isPlayerBullet = false;
 
-    public void SetDmg(float dmg, bool isPlayerBullet)
+    private GameObject owner;
+    private bool isPlayerBullet => owner.CompareTag("Player");
+
+    public void Initilaise(float dmg, GameObject owner)
     {
         this.dmg = dmg;
-        this.isPlayerBullet = isPlayerBullet;
+        this.owner = owner;
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        // Attack object if hit valid target
         if ((!isPlayerBullet && other.CompareTag("Player")) || (isPlayerBullet && other.CompareTag("Enemy")))
         {
             Attack(other.gameObject);
-            Destroy(this, 0.1f);
         }
+
+        // Destroy the bullet after it collides
+        if (isPlayerBullet && !other.CompareTag("Player") || !isPlayerBullet && !other.CompareTag("Enemy"))
+        {
+            Destroy(gameObject, 0.1f);
+        }
+
     }
     
     private void Attack(GameObject target)
     {
-        StatusEffectManager statusManager = target.GetComponent<StatusEffectManager>();
-        if (statusManager != null) dmg = statusManager.DispatchIncomingDamage(dmg);
+        StatusEffectManager statusManager = owner.GetComponent<StatusEffectManager>();
+        if (statusManager != null) statusManager.DispatchDealDamage(dmg, target);
 
         target.GetComponent<IDamageable>().TakeDamage(dmg);
     }

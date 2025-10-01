@@ -3,7 +3,12 @@ using UnityEngine;
 public class RoomManager : MonoBehaviour
 {
     public static RoomManager Instance { get; private set; }
+
     public int CurrentRoomIndex { get; private set; }
+    
+    public Room[] rooms = new Room[6];
+    public GameObject[] doorObjs = new GameObject[5];
+    public int[] enemyCounts = new int[6];
 
     public event System.Action<int> OnPlayerEnterRoom;
 
@@ -15,6 +20,23 @@ public class RoomManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        // Initialise the room classes and their doors.
+        for (int i = rooms.Length - 1; i >= 0; i--)
+        {
+            if (i == rooms.Length - 1)
+            {
+                rooms[i] = new Room(i, enemyCounts[i], null, null);
+            }
+            else if (i == 0)
+            {
+                rooms[0] = new Room(i, enemyCounts[i], rooms[1], doorObjs[0]);
+            }
+            else
+            {
+                rooms[i] = new Room(i, enemyCounts[i], rooms[i + 1], doorObjs[i]);
+            }
+        }
     }
 
     public void SetPlayerRoom(int roomIndex)

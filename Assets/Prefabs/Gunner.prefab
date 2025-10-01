@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 516204937276225170}
   - component: {fileID: 5025293364500038380}
   - component: {fileID: 4997672305662813601}
+  - component: {fileID: -4728518352130508595}
   m_Layer: 0
   m_Name: Gunner
   m_TagString: Untagged
@@ -178,8 +179,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomIndex: 0
+  maxHealth: 10
   bulletPrefab: {fileID: 6446100217759873899, guid: c5a4515b58995430ab73ec8f3734c0a1, type: 3}
   bulletSpeed: 11
+--- !u!114 &-4728518352130508595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2489771570938699428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54d132308b70142d1a350132ece09a4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2720097900498029537
 GameObject:
   m_ObjectHideFlags: 0

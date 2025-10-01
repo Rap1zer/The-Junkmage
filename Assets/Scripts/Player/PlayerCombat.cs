@@ -29,7 +29,7 @@ public class PlayerCombat : MonoBehaviour
             ? (stats.GetVal(StatType.BulletDmg) * stats.GetVal(StatType.CritMultiplier))
             : stats.GetVal(StatType.BulletDmg));
 
-        bullet.GetComponent<Bullet>().SetDmg(dmg, true);
+        bullet.GetComponent<Bullet>().Initilaise(dmg, gameObject);
 
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
         if (bulletRb != null)

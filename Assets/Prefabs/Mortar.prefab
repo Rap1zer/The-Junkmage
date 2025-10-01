@@ -185,6 +185,7 @@ GameObject:
   - component: {fileID: 3258947447144499473}
   - component: {fileID: 4145501645831033455}
   - component: {fileID: 4234208220651888104}
+  - component: {fileID: 8426970889344003711}
   m_Layer: 0
   m_Name: Mortar
   m_TagString: Untagged
@@ -272,3 +273,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &8426970889344003711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2304953029719872978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54d132308b70142d1a350132ece09a4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

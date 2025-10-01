@@ -29,7 +29,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
     {
         player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
-        spawnRoom = gameManager.rooms[roomIndex];
+        spawnRoom = RoomManager.Instance.rooms[roomIndex];
 
         Health = maxHealth;
         CurrentState = EnemyState.Idle;

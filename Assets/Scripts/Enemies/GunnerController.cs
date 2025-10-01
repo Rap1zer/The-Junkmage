@@ -32,7 +32,7 @@ public class GunnerController : EnemyBase
         if (bulletPrefab == null || firePoint == null) return;
 
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-        bullet.GetComponent<Bullet>().SetDmg(AttackDmg, false);
+        bullet.GetComponent<Bullet>().Initilaise(AttackDmg, gameObject);
 
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
         if (bulletRb != null)
