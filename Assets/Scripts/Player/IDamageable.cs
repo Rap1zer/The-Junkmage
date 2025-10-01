@@ -1,4 +1,6 @@
+using UnityEngine;
+
 public interface IDamageable
 {
-    void TakeDamage(int dmg);
+    void TakeDamage(float dmg, GameObject attacker = null);
 }

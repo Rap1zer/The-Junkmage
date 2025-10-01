@@ -14,7 +14,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
     public float AttackCooldown { get; set; } = 1f;
     public float Speed { get; set; } = 2f;
 
-    public int Health { get; protected set; }
+    public float Health { get; protected set; }
     public EnemyState CurrentState { get; set; }
 
     protected Rigidbody2D rb;
@@ -33,6 +33,8 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
 
         Health = maxHealth;
         CurrentState = EnemyState.Idle;
+
+        RoomManager.Instance.OnPlayerEnterRoom += HandlePlayerEnterRoom;
     }
 
     protected virtual void Update()
@@ -41,14 +43,10 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
             DoAttackBehavior();
     }
 
-    void OnEnable()
-    {
-        RoomManager.Instance.OnPlayerEnterRoom += HandlePlayerEnterRoom;
-    }
-
     void OnDisable()
     {
-        RoomManager.Instance.OnPlayerEnterRoom -= HandlePlayerEnterRoom;
+        if (RoomManager.Instance != null)
+            RoomManager.Instance.OnPlayerEnterRoom -= HandlePlayerEnterRoom;
     }
 
     private void HandlePlayerEnterRoom(int playerRoomIndex)
@@ -67,7 +65,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
     public abstract void Attack();
     protected abstract void DoAttackBehavior();
 
-    public virtual void TakeDamage(int dmg)
+    public virtual void TakeDamage(float dmg, GameObject attacker = null)
     {
         Health -= dmg;
         if (Health <= 0) Die();

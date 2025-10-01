@@ -14,31 +14,24 @@ public enum StatType
     BulletSpeed
 }
 
-public class PlayerStats : MonoBehaviour, IDamageable
+public class PlayerStats : MonoBehaviour
 {
     // Base values (serialized so you can set in Inspector)
     [Header("Base Stats")]
-    [SerializeField] private int baseMaxHealth = 20;
+    [SerializeField] private float baseMaxHealth = 20;
     [SerializeField] private float baseMoveSpeed = 5f;
     [SerializeField] private float baseDashSpeed = 12f;
     [SerializeField] private float baseDashDuration = 0.2f;
     [SerializeField] private float baseDashCooldown = 1f;
-    [SerializeField] private int baseBulletDmg = 1;
+    [SerializeField] private float baseBulletDmg = 1;
     [SerializeField] private float baseCritChance = 0.1f;
-    [SerializeField] private int baseCritMultiplier = 2;
+    [SerializeField] private float baseCritMultiplier = 2;
     [SerializeField] private float baseBulletSpeed = 14f;
 
     // Active modifiers for each stat
     private Dictionary<StatType, List<StatModifier>> modifiers 
         = new Dictionary<StatType, List<StatModifier>>();
 
-    // Current health
-    public int CurrentHealth { get; private set; }
-
-    void Awake()
-    {
-        CurrentHealth = (int)GetVal(StatType.MaxHealth);
-    }
 
     public void ApplyModifier(StatModifier modifier)
     {
@@ -48,28 +41,10 @@ public class PlayerStats : MonoBehaviour, IDamageable
         modifiers[modifier.Stat].Add(modifier);
 
         // If it's health, clamp current
-        if (modifier.Stat == StatType.MaxHealth)
-        {
-            CurrentHealth = Mathf.Clamp(CurrentHealth, 0, (int)GetVal(StatType.MaxHealth));
-        }
-    }
-
-    public void TakeDamage(int dmg)
-    {
-        CurrentHealth -= dmg;
-        if (CurrentHealth <= 0)
-            Die();
-    }
-
-    public void Heal(int amount)
-    {
-        CurrentHealth = Mathf.Clamp(CurrentHealth + amount, 0, (int)GetVal(StatType.MaxHealth));
-    }
-
-    private void Die()
-    {
-        Debug.Log("Player died");
-        // TODO: trigger events
+        // if (modifier.Stat == StatType.MaxHealth)
+        // {
+        //     CurrentHealth = Mathf.Clamp(CurrentHealth, 0, (int)GetVal(StatType.MaxHealth));
+        // }
     }
 
     // Compute final stat value from base + modifiers

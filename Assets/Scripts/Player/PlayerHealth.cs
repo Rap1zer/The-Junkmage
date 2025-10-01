@@ -4,10 +4,11 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
     private PlayerStats stats;
-    public int CurrentHealth { get; private set; }
+
+    public float CurrentHealth { get; private set; }
 
     public event System.Action OnDeath;
-    public event System.Action<int> OnHealthChanged;
+    public event System.Action<float> OnHealthChanged;
 
     void Awake()
     {
@@ -15,22 +16,36 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         CurrentHealth = (int)stats.GetVal(StatType.MaxHealth);
     }
 
-    public void TakeDamage(int dmg)
+    public void TakeDamage(float dmg, GameObject attacker = null)
     {
-        ModifyHealth(-dmg);
+        StatusEffectManager statusManager = attacker?.GetComponent<StatusEffectManager>();
+
+        if (statusManager != null)
+        {
+            dmg = statusManager.DispatchIncomingDamage(dmg, attacker);
+        }
+
+        CurrentHealth -= dmg;
+
+        if (statusManager != null)
+            statusManager.DispatchAfterDamageTaken(dmg, attacker);
+
+        if (CurrentHealth <= 0)
+        {
+            Die();
+            OnDeath?.Invoke();
+        }
     }
 
     public void Heal(int amount)
     {
-        ModifyHealth(amount);
-    }
-
-    private void ModifyHealth(int amount)
-    {
         CurrentHealth = Mathf.Clamp(CurrentHealth + amount, 0, (int)stats.GetVal(StatType.MaxHealth));
         OnHealthChanged?.Invoke(CurrentHealth);
+    }
 
-        if (CurrentHealth <= 0)
-            OnDeath?.Invoke();
+    private void Die()
+    {
+        Debug.Log("Player died");
+        // TODO: trigger events
     }
 }

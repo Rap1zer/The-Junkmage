@@ -3685,8 +3685,12 @@ GameObject:
   - component: {fileID: 1680841006}
   - component: {fileID: 1680841005}
   - component: {fileID: 1680841004}
-  - component: {fileID: 1680841008}
   - component: {fileID: 1680841007}
+  - component: {fileID: 1680841008}
+  - component: {fileID: 1680841012}
+  - component: {fileID: 1680841011}
+  - component: {fileID: 1680841010}
+  - component: {fileID: 1680841009}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -3850,18 +3854,65 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe76251d678f418b95e6ba01b4a49aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inRoomIndex: 0
-  health: 25
-  moveSpeed: 8
-  dashSpeed: 28
-  dashDuration: 0.2
-  dashCooldown: 0.8
+--- !u!114 &1680841009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1680841003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3b59fd179dda450ea5cdbd19465989f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1680841010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1680841003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5352cf4d695004141bdfb4dfecd49e4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 6446100217759873899, guid: c5a4515b58995430ab73ec8f3734c0a1, type: 3}
-  bulletDmg: 1
-  critChance: 0.1
-  critMultiplier: 2
-  bulletSpeed: 14
   firePoint: {fileID: 581900708}
+--- !u!114 &1680841011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1680841003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad3cfa68387e44c4193c24410fa3d1f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1680841012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1680841003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54ff3568495b7482fa6041a017c73eb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseMaxHealth: 20
+  baseMoveSpeed: 5
+  baseDashSpeed: 12
+  baseDashDuration: 0.2
+  baseDashCooldown: 1
+  baseBulletDmg: 1
+  baseCritChance: 0.1
+  baseCritMultiplier: 2
+  baseBulletSpeed: 14
 --- !u!1001 &1690145397
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4717,6 +4768,7 @@ GameObject:
   - component: {fileID: 2098540416}
   - component: {fileID: 2098540415}
   - component: {fileID: 2098540417}
+  - component: {fileID: 2098540418}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -4776,6 +4828,18 @@ MonoBehaviour:
   InvContainer: {fileID: 1616644362}
   ChestContainer: {fileID: 1481218267}
   continueBtn: {fileID: 647387588}
+--- !u!114 &2098540418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098540414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de650a2a40304f99bd1186b4a1d65fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2139774361
 GameObject:
   m_ObjectHideFlags: 0

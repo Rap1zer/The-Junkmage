@@ -16,7 +16,7 @@ MonoBehaviour:
   description: Increase speed by 3. 75% chance to apply 4 Burn to enemies you touch.
     (3 second probability cooldown per enemy)
   icon: {fileID: -8630435554779211992, guid: f16f2974d081c46b5bda8a2dcdb21e73, type: 3}
-  prefab: {fileID: 0}
+  prefab: {fileID: 5410237761881617018, guid: 1fa4fd442d14a401fb81145a191e319f, type: 3}
   shape:
   - values: 0101
   - values: 0100
