@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8712999518974496995}
   - component: {fileID: -1979836348029333005}
   - component: {fileID: 5454916174721836411}
-  - component: {fileID: -5646646655645833787}
+  - component: {fileID: -2491575489123075733}
   m_Layer: 8
   m_Name: Spike
   m_TagString: Untagged
@@ -171,9 +171,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomIndex: 0
-  maxHealth: 10
   playerInRange: 0
---- !u!114 &-5646646655645833787
+--- !u!114 &-2491575489123075733
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -182,9 +181,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 3360943659272257181}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54d132308b70142d1a350132ece09a4d, type: 3}
+  m_Script: {fileID: 11500000, guid: 347be8a730ed441d08233c71109f8d99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseMaxHealth: 10
+  baseMoveSpeed: 2
+  AttackDmg: 1
+  AttackCooldown: 1
 --- !u!1 &5152238288666365362
 GameObject:
   m_ObjectHideFlags: 0

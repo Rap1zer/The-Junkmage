@@ -13,9 +13,13 @@ MonoBehaviour:
   m_Name: Banana
   m_EditorClassIdentifier: 
   itemName: Banana
+  description: Gives 5 Regeneration.
   icon: {fileID: -9182177788924653191, guid: c64c907a59cc44d0593b3d60973b782b, type: 3}
+  prefab: {fileID: 4827175836839536285, guid: 9378993e675d043728f449422dfc5614, type: 3}
   shape:
   - values: 0101
   - values: 0001
-  description: Gives 5 Regeneration.
-  prefab: {fileID: 4827175836839536285, guid: 9378993e675d043728f449422dfc5614, type: 3}
+  extraRowsHalf: 0
+  extraColsHalf: 0
+  stars: []
+  guid: 30062f6c-7e18-483d-b8a8-3458321cbfc6

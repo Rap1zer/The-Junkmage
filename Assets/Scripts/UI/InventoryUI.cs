@@ -16,7 +16,7 @@ public class InventoryUI
     private GameObject cellPrefab;
     private Transform chestContainer;
 
-    private ChestUI invRenderer;
+    private ChestUI chestUI;
     public InventoryGrid invGrid;
 
     public float CellSize { get; private set; } = 100f;
@@ -38,7 +38,7 @@ public class InventoryUI
             chestSlots[i] = itemDropsPos.GetChild(i).GetComponent<RectTransform>();
         }
 
-        invRenderer = new ChestUI(chestSlots, chestContainer.gameObject);
+        chestUI = new ChestUI(chestSlots, chestContainer.gameObject);
         invGrid = new InventoryGrid(InventoryManager.Height, InventoryManager.Width, CellSize, Margin);
     }
 
@@ -76,7 +76,7 @@ public class InventoryUI
     // Snap item's position to grid
     public void PlaceItem(GameObject itemObj, CellPos startingCell)
     {
-        Vector3 anchorWorldPos = itemObj.GetComponent<IItem>().AnchorPos;
+        Vector3 anchorWorldPos = itemObj.GetComponent<ItemBase>().AnchorPos;
         Vector3 targetCellPos = invGrid.CellObjs[startingCell.Row, startingCell.Col].transform.position;
 
         // compute how far off the item is
@@ -92,15 +92,15 @@ public class InventoryUI
         return canvasRT.InverseTransformPoint(InventoryManager.Instance.Current.Item.AnchorPos);
     }
 
-    public IItem[] HandleChestOpened(Chest chest)
+    public ItemBase[] HandleChestOpened(Chest chest)
     {
         chestContainer.gameObject.SetActive(true);
-        return invRenderer.RenderChestItems(chest.ItemsInChest);
+        return chestUI.RenderChestItems(chest.ItemsInChest);
     }
 
     public void HandleChestClosed()
     {
-        invRenderer.ClearChestItems();
+        chestUI.ClearChestItems();
         chestContainer.gameObject.SetActive(false);
     }
 }

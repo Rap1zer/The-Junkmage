@@ -6,7 +6,7 @@ public class ChestUI
     private RectTransform[] chestSlots;
     private GameObject invContainer;
     private GameObject[] itemObjs;
-    private IItem[] items;
+    private ItemBase[] items;
 
     public ChestUI(RectTransform[] chestSlots, GameObject invContainer)
     {
@@ -22,21 +22,32 @@ public class ChestUI
         }
     }
 
-    public IItem[] RenderChestItems(ItemData[] chestItems)
+    public ItemBase[] RenderChestItems(ItemData[] chestItems)
     {
-        items = new IItem[chestItems.Length];
+        items = new ItemBase[chestItems.Length];
         itemObjs = new GameObject[chestItems.Length];
 
         for (int i = 0; i < chestItems.Length; i++)
         {
             if (chestItems[i] == null) continue;
 
-            itemObjs[i] = UnityEngine.Object.Instantiate(chestItems[i].prefab, invContainer.transform);
-            itemObjs[i].GetComponent<ItemBase>().Initialise(chestItems[i]);
-            itemObjs[i].GetComponent<RectTransform>().anchoredPosition = chestSlots[i].anchoredPosition;
-            items[i] = itemObjs[i].GetComponent<IItem>();
+            items[i] = CreateItem(chestItems[i], chestSlots[i].anchoredPosition, out itemObjs[i]);
         }
 
         return items;
+    }
+
+    private ItemBase CreateItem(ItemData data, Vector2 pos, out GameObject obj)
+    {
+        obj = UnityEngine.Object.Instantiate(data.prefab, invContainer.transform);
+
+        // Initialise the component with the item data
+        ItemBase itemBase = obj.GetComponent<ItemBase>();
+        itemBase.Initialise(data);
+
+        // Place it in the correct UI slot
+        obj.GetComponent<RectTransform>().anchoredPosition = pos;
+
+        return obj.GetComponent<ItemBase>();
     }
 }

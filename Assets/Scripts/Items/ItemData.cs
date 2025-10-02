@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 [System.Serializable]
 public class BoolRow
@@ -9,83 +10,122 @@ public class BoolRow
 [CreateAssetMenu(fileName = "ItemData", menuName = "Scriptable Objects/ItemData")]
 public class ItemData : ScriptableObject
 {
+    // ==============================
+    // Basic Item Info
+    // ==============================
+    [Header("General Info")]
     public string itemName;
-    public string description;
+    [TextArea] public string description;
     public Sprite icon;
     public GameObject prefab;
 
+    // ==============================
+    // Item Shape
+    // ==============================
     [Header("Item Shape")]
     public BoolRow[] shape;
 
+    // ==============================
+    // Stars (Overlay System)
+    // ==============================
     [Header("Star Placement")]
     public int extraRowsHalf = 0;
     public int extraColsHalf = 0;
     public BoolRow[] stars;
 
-    // Helper to convert to 2D array
-    public bool[,] Get2DBoolArray(BoolRow[] array)
-    {
-        if (array == null || array.Length == 0) return new bool[0, 0];
+    // ==============================
+    // Unique Identifier
+    // ==============================
+    [SerializeField, HideInInspector] private string guid;
+    public string Guid => guid;
 
-        int rows = array.Length;
-        int cols = array[0].values.Length;
-        bool[,] result = new bool[rows, cols];
-
-        for (int r = 0; r < rows; r++)
-        {
-            for (int c = 0; c < cols; c++)
-            {
-                result[r, c] = array[r].values[c];
-            }
-        }
-
-        return result;
-    }
-
+    // ==============================
+    // Unity Lifecycle
+    // ==============================
     private void OnValidate()
     {
-        // If shape is null, nothing to enforce
+        EnsureGuid();
+        NormalizeShape();
+        NormalizeStars();
+        EnforceStarRules();
+    }
+
+    // ==============================
+    // GUID Handling
+    // ==============================
+    private void EnsureGuid()
+    {
+#if UNITY_EDITOR
+        if (string.IsNullOrEmpty(guid))
+        {
+            guid = System.Guid.NewGuid().ToString();
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+#endif
+    }
+
+    // ==============================
+    // Shape Helpers
+    // ==============================
+    private void NormalizeShape()
+    {
         if (shape == null || shape.Length == 0) return;
 
-        // If the first row's values are null, initialize to a default length (e.g., 1)
-        if (shape[0].values == null) shape[0].values = new bool[1];
+        // Ensure first row is valid
+        if (shape[0].values == null)
+            shape[0].values = new bool[1];
 
         int rows = shape.Length;
-        int cols = shape[0].values.Length; // The length of the first column determines the length of the rest
+        int cols = shape[0].values.Length;
 
-        // Normalize shape rows to ensure no jaggedness
+        // Normalize rows
         for (int r = 0; r < rows; r++)
         {
-            if (shape[r] == null) shape[r] = new BoolRow();
+            if (shape[r] == null)
+                shape[r] = new BoolRow();
 
-            if (shape[r].values == null) shape[r].values = new bool[cols];
+            if (shape[r].values == null)
+                shape[r].values = new bool[cols];
             else if (shape[r].values.Length != cols)
-            {
-                System.Array.Resize(ref shape[r].values, cols);
-            }
+                Array.Resize(ref shape[r].values, cols);
         }
+    }
+
+    // ==============================
+    // Stars Helpers
+    // ==============================
+    private void NormalizeStars()
+    {
+        int rows = shape != null ? shape.Length : 0;
+        int cols = (rows > 0 && shape[0] != null && shape[0].values != null)
+            ? shape[0].values.Length
+            : 0;
 
         int starRows = extraRowsHalf > 0 || extraColsHalf > 0 ? rows + extraRowsHalf * 2 : 0;
         int starCols = extraRowsHalf > 0 || extraColsHalf > 0 ? cols + extraColsHalf * 2 : 0;
 
-        // Initialize stars if null
+        // Resize stars array
         if (stars == null || stars.Length != starRows)
-        {
-            System.Array.Resize(ref stars, starRows);
-        }
+            Array.Resize(ref stars, starRows);
 
-        // Ensure each row in stars matches the column length of the corresponding row in shape
+        // Normalize each row
         for (int r = 0; r < starRows; r++)
         {
-            if (stars[r] == null) stars[r] = new BoolRow();
+            if (stars[r] == null)
+                stars[r] = new BoolRow();
 
             if (stars[r].values == null || stars[r].values.Length != starCols)
-            {
-                System.Array.Resize(ref stars[r].values, starCols);
-            }
+                Array.Resize(ref stars[r].values, starCols);
         }
+    }
 
-        // Ensure no star cells overlap item grid
+    private void EnforceStarRules()
+    {
+        if (stars == null) return;
+
+        int starRows = stars.Length;
+        int starCols = starRows > 0 && stars[0] != null ? stars[0].values.Length : 0;
+
         for (int r = 0; r < starRows; r++)
         {
             for (int c = 0; c < starCols; c++)
@@ -99,38 +139,50 @@ public class ItemData : ScriptableObject
         }
     }
 
-    // Returns the index in shape for a given overlay row, or -1 if outside
+    // ==============================
+    // Public API
+    // ==============================
+    public bool[,] Get2DBoolArray(BoolRow[] array)
+    {
+        if (array == null || array.Length == 0) return new bool[0, 0];
+
+        int rows = array.Length;
+        int cols = array[0].values.Length;
+        bool[,] result = new bool[rows, cols];
+
+        for (int r = 0; r < rows; r++)
+            for (int c = 0; c < cols; c++)
+                result[r, c] = array[r].values[c];
+
+        return result;
+    }
+
+    // ==============================
+    // Internal Helpers
+    // ==============================
     private int MapStarRowToShape(int starRow)
     {
-        // If shape is null, nothing to enforce
         if (shape == null || shape.Length == 0) return -1;
 
         int row = starRow - extraRowsHalf;
         return (row >= 0 && row < shape.Length) ? row : -1;
     }
 
-    // Same for columns
     private int MapStarColToShape(int starCol)
     {
-        // If shape is null, nothing to enforce
         if (shape == null || shape.Length == 0) return -1;
-
-        // If the first row's values are null, initialize to a default length (e.g., 1)
         if (shape[0].values == null) return -1;
 
         int col = starCol - extraColsHalf;
         return (col >= 0 && col < shape[0].values.Length) ? col : -1;
     }
-    
+
     private bool IsStarOverlappingItem(int r, int c)
     {
         int shapeR = MapStarRowToShape(r);
         int shapeC = MapStarColToShape(c);
 
-        // Outside item grid?
-        if (shapeR == -1 || shapeC == -1) return false;
-
-        // Inside item grid: true if the shape cell is false
+        if (shapeR == -1 || shapeC == -1) return false; // outside
         return stars[r].values[c] && shape[shapeR].values[shapeC];
     }
 }

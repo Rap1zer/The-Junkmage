@@ -59,7 +59,7 @@ public class Chest : MonoBehaviour
         OnChestClosed?.Invoke();
     }
 
-    public void SetItemIds(IItem[] items)
+    public void SetItemIds(ItemBase[] items)
     {
         if (!chestOpened) return;
 
@@ -70,9 +70,9 @@ public class Chest : MonoBehaviour
         }
     }
 
-    public bool CanTakeItem(IItem item) => chestItems.ContainsKey(item.Id) && !chestItems[item.Id];
+    public bool CanTakeItem(ItemBase item) => chestItems.ContainsKey(item.Id) && !chestItems[item.Id];
 
-    public void TakeItem(IItem item)
+    public void TakeItem(ItemBase item)
     {
         if (CanTakeItem(item))
         {

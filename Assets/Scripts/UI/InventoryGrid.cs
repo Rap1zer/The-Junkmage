@@ -98,7 +98,7 @@ public class InventoryGrid
         image.color = color;
     }
 
-    public void HighlightCells(CellPos anchorCell, IItem item, bool canPlace)
+    public void HighlightCells(CellPos anchorCell, ItemBase item, bool canPlace)
     {
         foreach (var pos in item.GetOccupiedCells(anchorCell))
         {

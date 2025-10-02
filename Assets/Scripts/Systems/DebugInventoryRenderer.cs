@@ -32,7 +32,7 @@ public class DebugInventoryRenderer : MonoBehaviour
         }
     }
 
-    public void Refresh(IItem[,] inventoryData)
+    public void Refresh(ItemBase[,] inventoryData)
     {
         int rows = inventoryData.GetLength(0);
         int cols = inventoryData.GetLength(1);

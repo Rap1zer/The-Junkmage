@@ -9,19 +9,19 @@ public class Inventory
     public int height = 3;  // rows
 
     // Data[row, col]
-    public IItem[,] Data { get; private set; }
-    public event Action<IItem, CellPos> OnItemPlaced; // InventoryGrid.OccupyCells()
-    public event Action<IItem> OnItemRemoved;
+    public ItemBase[,] Data { get; private set; }
+    public event Action<ItemBase, CellPos> OnItemPlaced; // InventoryGrid.OccupyCells()
+    public event Action<ItemBase> OnItemRemoved;
 
     public Inventory(int width, int height)
     {
         // Data is allocated as [rows, cols] => [height, width]
-        Data = new IItem[height, width];
+        Data = new ItemBase[height, width];
         this.width = width;
         this.height = height;
     }
 
-    public bool CanPlaceItem(IItem item, CellPos anchorCell)
+    public bool CanPlaceItem(ItemBase item, CellPos anchorCell)
     {
         foreach (var pos in item.GetOccupiedCells(anchorCell))
         {
@@ -38,7 +38,7 @@ public class Inventory
     }
 
 
-    public bool PlaceItem(IItem item, CellPos anchorCell)
+    public bool PlaceItem(ItemBase item, CellPos anchorCell)
     {
         if (!CanPlaceItem(item, anchorCell)) return false;
 
@@ -53,7 +53,7 @@ public class Inventory
         return true;
     }
 
-    public void RemoveItem(IItem item)
+    public void RemoveItem(ItemBase item)
     {
         if (!TryGetItemGridPos(item, out CellPos anchor)) return;
 
@@ -93,7 +93,7 @@ public class Inventory
         return false;
     }
 
-    public bool TryGetItemGridPos(IItem item, out CellPos position)
+    public bool TryGetItemGridPos(ItemBase item, out CellPos position)
     {
         Guid guid = item.Id;
         for (int r = 0; r < height; r++) // rows first

@@ -9,12 +9,14 @@ public class PlayerController : MonoBehaviour, IPlayerItemConsumer
     private PlayerStats stats;
     private PlayerMovement movement;
     private PlayerCombat combat;
+    private EntityEventDispatcher dispatcher;
 
     void Awake()
     {
         stats = GetComponent<PlayerStats>();
         movement = GetComponent<PlayerMovement>();
         combat = GetComponent<PlayerCombat>();
+        dispatcher = GetComponent<EntityEventDispatcher>();
     }
 
     void Update()
@@ -30,6 +32,6 @@ public class PlayerController : MonoBehaviour, IPlayerItemConsumer
 
     public void ApplyStatusEffect(StatusEffect effect)
     {
-        // effectManager.AddEffect(effect);
+        dispatcher.AddEffect(effect);
     }
 }

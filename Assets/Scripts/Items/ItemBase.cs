@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ItemBase : MonoBehaviour, IItem
+public abstract class ItemBase : MonoBehaviour
 {
     public ItemData ItemData { get; private set; }
+    protected PlayerController player;
+    protected EntityEventDispatcher ownerDispatcher;
 
     private GameObject InvContainer;
     private ItemUIType _uiType = ItemUIType.Chest;
@@ -24,8 +26,6 @@ public abstract class ItemBase : MonoBehaviour, IItem
 
     public Guid Id { get; private set; }
     public int RotationState { get; private set; } = 0;
-
-    protected PlayerController player;
 
     public bool[,] CurrentShape { get; private set; }
     public bool[,] CurrentStars { get; private set; }
@@ -77,8 +77,6 @@ public abstract class ItemBase : MonoBehaviour, IItem
     public virtual void Initialise(ItemData itemData)
     {
         ItemData = itemData;
-        Id = Guid.NewGuid();
-        player = GameObject.Find("Player").GetComponent<PlayerController>();
         CurrentShape = itemData.Get2DBoolArray(ItemData.shape);
         CurrentStars = ItemData.Get2DBoolArray(ItemData.stars);
         currStarOffsetRow = ItemData.extraRowsHalf;
@@ -94,7 +92,8 @@ public abstract class ItemBase : MonoBehaviour, IItem
         return RotationState * 90f;
     }
 
-    private void UpdateStarOffset() {
+    private void UpdateStarOffset()
+    {
         switch (RotationState)
         {
             case 0: // 0 degrees
@@ -183,7 +182,27 @@ public abstract class ItemBase : MonoBehaviour, IItem
         }
     }
 
-    // Abstract methods that subclasses must implement if needed
-    public virtual void OnHit() { }       // optional to override
-    public virtual void OnMiss() { }      // optional to override
+    protected virtual void Awake()
+    {
+        Id = Guid.NewGuid();
+        player = GameObject.Find("Player").GetComponent<PlayerController>();
+
+        // find the owning dispatcher on parent (adjust if your ownership model differs)
+        ownerDispatcher = GetComponentInParent<EntityEventDispatcher>();
+        if (ownerDispatcher != null)
+            ownerDispatcher.RegisterItemHandlers(this);
+    }
+
+    // ensure we unregister when destroyed / unequipped
+    protected virtual void OnDestroy()
+    {
+        if (ownerDispatcher != null)
+        {
+            ownerDispatcher.UnregisterItemHandlers(this);
+            ownerDispatcher = null;
+        }
+    }
+    
+    // Default hook implementations (override in subclasses as needed)
+    public virtual float OnIncomingDamage(float damage, GameObject attacker = null) => damage;
 }

@@ -6,7 +6,7 @@ public class SelectedItem
     public CellPos? Index { get; set; }
 
     public ItemUIType? Type => Obj != null || Item != null ? Item.UIType : null;
-    public IItem Item => Obj != null ? Obj.GetComponent<IItem>() : null;
+    public ItemBase Item => Obj != null ? Obj.GetComponent<ItemBase>() : null;
 
     public void Clear()
     {

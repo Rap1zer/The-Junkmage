@@ -1,27 +1,28 @@
 using UnityEngine;
+using System;
 
 /// <summary>
 /// Base class for all stateful/behavioral effects (buffs/debuffs).
 /// Duration: seconds. duration <= 0 means infinite until explicitly removed.
-/// Effects are applied to an object that has a StatusEffectManager (the "target").
+/// Effects are applied to an object that has an EntityEventDispatcher (the "target").
 /// </summary>
 public abstract class StatusEffect
 {
-    public readonly string Id;          // optional id/name for debugging / removal
+    public readonly Guid Id;          // optional id/name for debugging / removal
     public float Duration;             // seconds; <= 0 => infinite
     public bool IsExpired => Duration > 0f && elapsed >= Duration;
     public bool IsApplied { get; private set; }
 
     protected float elapsed = 0f;
-    protected StatusEffectManager owner; // the manager that owns this effect
+    protected EntityEventDispatcher owner; // the dispatcher that owns this effect
 
-    public StatusEffect(string id, float duration)
+    public StatusEffect(float duration)
     {
-        Id = id;
+        Id = Guid.NewGuid();
         Duration = duration;
     }
 
-    internal void SetOwner(StatusEffectManager mgr)
+    internal void SetOwner(EntityEventDispatcher mgr)
     {
         owner = mgr;
     }

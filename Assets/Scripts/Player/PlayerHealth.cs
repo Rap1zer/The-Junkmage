@@ -18,17 +18,17 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public void TakeDamage(float dmg, GameObject attacker = null)
     {
-        StatusEffectManager statusManager = attacker?.GetComponent<StatusEffectManager>();
+        EntityEventDispatcher dispatcher = attacker?.GetComponent<EntityEventDispatcher>();
 
-        if (statusManager != null)
+        if (dispatcher != null)
         {
-            dmg = statusManager.DispatchIncomingDamage(dmg, attacker);
+            dmg = dispatcher.DispatchIncomingDamage(dmg, attacker);
         }
 
         CurrentHealth -= dmg;
 
-        if (statusManager != null)
-            statusManager.DispatchAfterDamageTaken(dmg, attacker);
+        if (dispatcher != null)
+            dispatcher.DispatchAfterDamageTaken(dmg, attacker);
 
         if (CurrentHealth <= 0)
         {

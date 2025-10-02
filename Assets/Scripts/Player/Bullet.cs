@@ -32,8 +32,8 @@ public class Bullet : MonoBehaviour
     
     private void Attack(GameObject target)
     {
-        StatusEffectManager statusManager = owner.GetComponent<StatusEffectManager>();
-        if (statusManager != null) statusManager.DispatchDealDamage(dmg, target);
+        EntityEventDispatcher dispatcher = owner.GetComponent<EntityEventDispatcher>();
+        if (dispatcher != null) dispatcher.DispatchDealDamage(dmg, target);
 
         target.GetComponent<IDamageable>().TakeDamage(dmg);
     }

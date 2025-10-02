@@ -1,30 +1,29 @@
 using UnityEngine;
 
-public class Scope : ItemBase, IOnHit, IOnMiss
+public class Scope : ItemBase
 {
+    private IPlayerItemConsumer playerConsumer;
     int critChanceStack = 0;
     int maxCritChanceStack = 30;
 
-    IPlayerItemConsumer target;
-
-    public override void Initialise(ItemData itemData)
+    protected override void Awake()
     {
-        base.Initialise(itemData);
-        target = player.GetComponent<IPlayerItemConsumer>();
+        base.Awake();
+        playerConsumer = player.GetComponent<IPlayerItemConsumer>();
     }
 
-    public override void OnHit()
+    public void OnHit()
     {
         critChanceStack += 3;
         critChanceStack = Mathf.Min(critChanceStack, maxCritChanceStack);
 
         int increase = Mathf.Min(3, maxCritChanceStack - critChanceStack);
-        target.ApplyStatModifier(new StatModifier(StatType.CritChance, increase, ModifierType.Flat));
+        playerConsumer.ApplyStatModifier(new StatModifier(StatType.CritChance, increase, ModifierType.Flat));
     }
 
-    public override void OnMiss()
+    public void OnMiss()
     {
-        target.ApplyStatModifier(new StatModifier(StatType.CritChance, -critChanceStack, ModifierType.Flat));
+        playerConsumer.ApplyStatModifier(new StatModifier(StatType.CritChance, -critChanceStack, ModifierType.Flat));
         critChanceStack = 0;
     }
 }

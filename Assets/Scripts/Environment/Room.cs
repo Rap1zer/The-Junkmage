@@ -25,7 +25,7 @@ public class Room
             if (value)
             {
                 if (exitDoor) exitDoor.OpenDoor();
-                GameObject.Find("Player").GetComponent<StatusEffectManager>().DispatchRoomCleared();
+                GameObject.Find("Player").GetComponent<EntityEventDispatcher>().DispatchRoomCleared();
             }
         }
     }

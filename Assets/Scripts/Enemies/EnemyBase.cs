@@ -8,11 +8,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
     protected PlayerController player;
     protected GameManager gameManager;
 
-    [Header("Stats")]
-    public int maxHealth = 10;
-    public int AttackDmg { get; set; } = 1;
-    public float AttackCooldown { get; set; } = 1f;
-    public float Speed { get; set; } = 2f;
+    public EnemyStats Stats { get; protected set; } // reference to the new EnemyStats component
 
     public float Health { get; protected set; }
     public EnemyState CurrentState { get; set; }
@@ -23,6 +19,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
     protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        Stats = GetComponent<EnemyStats>();
     }
 
     protected virtual void Start()
@@ -31,7 +28,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         spawnRoom = RoomManager.Instance.rooms[roomIndex];
 
-        Health = maxHealth;
+        Health = Stats.GetVal(StatType.MaxHealth); // initialize health from stats
         CurrentState = EnemyState.Idle;
 
         RoomManager.Instance.OnPlayerEnterRoom += HandlePlayerEnterRoom;
@@ -58,7 +55,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
 
     protected bool AttackCooled()
     {
-        return Time.time >= lastAttackTime + AttackCooldown;
+        return Time.time >= lastAttackTime + Stats.GetVal(StatType.AttackCooldown);
     }
 
     // Must be implemented in subclasses
@@ -76,4 +73,8 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
         spawnRoom.EnemyCount--;
         Destroy(gameObject);
     }
+
+    // Optional convenience properties
+    protected float Speed => Stats.GetVal(StatType.MoveSpeed);
+    protected float AttackDmg => Stats.GetVal(StatType.AttackDmg);
 }

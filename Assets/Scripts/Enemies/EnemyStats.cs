@@ -1,38 +1,17 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public enum StatType
-{
-    MaxHealth,
-    MoveSpeed,
-    DashSpeed,
-    DashDuration,
-    DashCooldown,
-    BulletDmg,
-    CritChance,
-    CritMultiplier,
-    BulletSpeed,
-    AttackSpeed,
-    AttackDmg,
-    AttackCooldown
-}
-
-public class PlayerStats : MonoBehaviour
+public class EnemyStats : MonoBehaviour
 {
     // Base values (serialized so you can set in Inspector)
     [Header("Base Stats")]
-    [SerializeField] private float baseMaxHealth = 20;
-    [SerializeField] private float baseMoveSpeed = 5f;
-    [SerializeField] private float baseDashSpeed = 12f;
-    [SerializeField] private float baseDashDuration = 0.2f;
-    [SerializeField] private float baseDashCooldown = 1f;
-    [SerializeField] private float baseBulletDmg = 1;
-    [SerializeField] private float baseCritChance = 0.1f;
-    [SerializeField] private float baseCritMultiplier = 2;
-    [SerializeField] private float baseBulletSpeed = 14f;
+    [SerializeField] private float baseMaxHealth = 10f;
+    [SerializeField] private float baseMoveSpeed = 2f;
+    [SerializeField] private float AttackDmg = 1f;
+    [SerializeField] private float AttackCooldown = 1f;
 
     // Active modifiers for each stat
-    private Dictionary<StatType, List<StatModifier>> modifiers 
+    private Dictionary<StatType, List<StatModifier>> modifiers
         = new Dictionary<StatType, List<StatModifier>>();
 
 
@@ -86,13 +65,8 @@ public class PlayerStats : MonoBehaviour
         {
             StatType.MaxHealth => baseMaxHealth,
             StatType.MoveSpeed => baseMoveSpeed,
-            StatType.DashSpeed => baseDashSpeed,
-            StatType.DashDuration => baseDashDuration,
-            StatType.DashCooldown => baseDashCooldown,
-            StatType.BulletDmg => baseBulletDmg,
-            StatType.CritChance => baseCritChance,
-            StatType.CritMultiplier => baseCritMultiplier,
-            StatType.BulletSpeed => baseBulletSpeed,
+            StatType.AttackDmg => AttackDmg,
+            StatType.AttackCooldown => AttackCooldown,
             _ => 0f
         };
     }

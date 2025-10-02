@@ -114,7 +114,7 @@ public class InventoryManager : MonoBehaviour
 
     public bool TryPlaceItem(CellPos anchorCell, GameObject itemObj)
     {
-        IItem item = itemObj.GetComponent<IItem>();
+        ItemBase item = itemObj.GetComponent<ItemBase>();
         bool canPlace = Inventory.CanPlaceItem(item, anchorCell);
 
         if (canPlace)
@@ -126,18 +126,25 @@ public class InventoryManager : MonoBehaviour
         return false;
     }
 
-    private void PlaceItem(IItem item, CellPos anchorCell, GameObject itemObj)
+    private void PlaceItem(ItemBase item, CellPos anchorCell, GameObject itemObj)
     {
         UI.PlaceItem(itemObj, anchorCell);      // Snap item to grid
         Inventory.PlaceItem(item, anchorCell);  // Place in inventory
         CurrentChest?.TakeItem(item);           // Remove from chest if applicable
+        GameObject.Find("Player").GetComponent<EntityEventDispatcher>().RegisterItemHandlers(item);
     }
 
-    public (CellPos anchorCell, bool canPlace) CanPlaceDraggedItem(Vector2 anchorCanvasPos, IItem item)
+    public (CellPos anchorCell, bool canPlace) CanPlaceDraggedItem(Vector2 anchorCanvasPos, ItemBase item)
     {
         CellPos anchorCell = ui.invGrid.GetNearestGridPosition(anchorCanvasPos);
         bool canPlace = Inventory.CanPlaceItem(item, anchorCell);
         return (anchorCell, canPlace);
+    }
+
+    private void RemoveItem(ItemBase item)
+    {
+        GameObject.Find("Player").GetComponent<EntityEventDispatcher>().RegisterItemHandlers(item);
+        inventory.RemoveItem(item);
     }
 
     // ----------------- CHEST OPERATIONS -----------------
@@ -151,7 +158,7 @@ public class InventoryManager : MonoBehaviour
     private void HandleChestOpened(Chest chest)
     {
         CurrentChest = chest;
-        IItem[] chestItems = UI.HandleChestOpened(chest);
+        ItemBase[] chestItems = UI.HandleChestOpened(chest);
         continueBtn.gameObject.SetActive(true);
 
         chest.SetItemIds(chestItems);
@@ -177,7 +184,7 @@ public class InventoryManager : MonoBehaviour
 
     // ----------------- DRAG & DROP HANDLERS -----------------
 
-    public bool CanDrag(IItem item)
+    public bool CanDrag(ItemBase item)
     {
         if (item.UIType == ItemUIType.Chest && CurrentChest.ItemsTaken >= 1) return false;
         return isInventoryOpen;
@@ -185,13 +192,13 @@ public class InventoryManager : MonoBehaviour
 
     private void HandleBeginDrag(GameObject itemObj, PointerEventData data)
     {
-        IItem item = itemObj.GetComponent<IItem>();
+        ItemBase item = itemObj.GetComponent<ItemBase>();
         if (!CanDrag(item)) return;
 
         Current.Obj = itemObj;
 
         UI.BeginDrag(data);
-        inventory.RemoveItem(item);
+        RemoveItem(item);
     }
 
     private void HandleDrag(GameObject itemObj, PointerEventData data)
