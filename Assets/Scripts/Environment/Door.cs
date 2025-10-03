@@ -42,7 +42,6 @@ public class Door : MonoBehaviour
                 : FromRoom.Index;
 
             RoomManager.Instance.SetPlayerRoom(newRoomIndex);
-            Debug.Log($"Player entered room {newRoomIndex}");
         }
     }
 }

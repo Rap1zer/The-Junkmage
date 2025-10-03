@@ -286,6 +286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 847937c18bb43448e89e7942d05a1782, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tickInterval: 0.5
 --- !u!114 &-3427353376249035902
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,5 +301,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseMaxHealth: 10
   baseMoveSpeed: 2
-  AttackDmg: 1
-  AttackCooldown: 1
+  baseAttackDmg: 1
+  baseAttackCooldown: 1

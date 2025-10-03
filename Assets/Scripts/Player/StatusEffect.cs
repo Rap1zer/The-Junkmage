@@ -13,7 +13,7 @@ public abstract class StatusEffect
     public bool IsExpired => Duration > 0f && elapsed >= Duration;
     public bool IsApplied { get; private set; }
 
-    protected float elapsed = 0f;
+    public float elapsed = 0f; // SHOULD BE PROTECTED. Made it public to debug.
     protected EntityEventDispatcher owner; // the dispatcher that owns this effect
 
     public StatusEffect(float duration)
@@ -27,17 +27,19 @@ public abstract class StatusEffect
         owner = mgr;
     }
 
+    public virtual void UpdateElapsedTime(float dt)
+    {
+        if (Duration > 0f) elapsed += dt;
+    }
+
     /// <summary>Called once when effect is added to the manager.</summary>
     public virtual void OnApply() { IsApplied = true; }
-
+    
     /// <summary>Called once when effect is removed or expires.</summary>
     public virtual void OnRemove() { IsApplied = false; }
 
     /// <summary>Called every frame from the manager (deltaTime).</summary>
-    public virtual void Tick(float deltaTime)
-    {
-        if (Duration > 0f) elapsed += deltaTime;
-    }
+    public virtual void Tick(float deltaTime) { }
 
     /// <summary>
     /// Hook to allow an effect to modify incoming damage before it is applied.

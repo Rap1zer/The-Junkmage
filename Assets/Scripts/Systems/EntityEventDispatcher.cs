@@ -6,7 +6,6 @@ using UnityEngine;
 /// Central event dispatcher per entity. Both StatusEffects and Items register handlers here.
 /// This keeps dispatch fast (only call registered handlers) and allows deterministic ordering.
 /// </summary>
-[RequireComponent(typeof(MonoBehaviour))] // placeholder; remove if not needed
 public class EntityEventDispatcher : MonoBehaviour
 {
     // Keep effect list for lifecycle and RemoveAllOfType semantics
@@ -23,14 +22,29 @@ public class EntityEventDispatcher : MonoBehaviour
     // so we can remove them exactly on unregister.
     private readonly Dictionary<object, RegisteredHandlers> registrations = new Dictionary<object, RegisteredHandlers>();
 
+    private float tickTimer = 0f;
+    [SerializeField] private float tickInterval = 0.5f;
+
     private void Update()
     {
         float dt = Time.deltaTime;
+        tickTimer += dt;
+        
+        // Update elapsed time for all effects
+        foreach (var e in effects)
+        {
+            e.UpdateElapsedTime(dt);
+        }
 
-        // Tick only registered tick handlers (items/effects that registered a Tick)
-        // iterate in index order (no allocations)
-        for (int i = 0; i < tickHandlers.Count; ++i)
-            tickHandlers[i](dt);
+        // Only process tick handlers if an interval passed
+        if (tickTimer >= tickInterval)
+        {
+            // We might be slightly above tickInterval; carry the remainder forward
+            tickTimer -= tickInterval;
+
+            for (int i = 0; i < tickHandlers.Count; ++i)
+                tickHandlers[i](tickInterval);
+        }
 
         // Now check for expired effects and remove them
         for (int i = effects.Count - 1; i >= 0; --i)
