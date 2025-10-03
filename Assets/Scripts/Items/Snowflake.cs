@@ -10,10 +10,10 @@ public class Snowflake : ItemBase, IDealDamageHandler
         var dispatcher = target.GetComponent<EntityEventDispatcher>();
         if (dispatcher == null) return;
 
-        // Add two Frost
-        for (int i = 0; i < 5; ++i)
+        // Add Frost
+        for (int i = 0; i < 4; ++i)
         {
-            var frost = new Frost(3f);
+            var frost = new Frost(5f);
             dispatcher.AddEffect(frost);
         }
     }

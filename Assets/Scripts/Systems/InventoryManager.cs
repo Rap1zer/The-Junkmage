@@ -132,7 +132,6 @@ public class InventoryManager : MonoBehaviour
         Inventory.PlaceItem(item, anchorCell);  // Place in inventory
         CurrentChest?.TakeItem(item);           // Remove from chest if applicable
         GameObject.Find("Player").GetComponent<EntityEventDispatcher>().RegisterItemHandlers(item);
-        Debug.Log($"Registered item handlers for {item.name}");
     }
 
     public (CellPos anchorCell, bool canPlace) CanPlaceDraggedItem(Vector2 anchorCanvasPos, ItemBase item)

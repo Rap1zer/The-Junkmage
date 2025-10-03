@@ -25,3 +25,8 @@ public interface ITickHandler
 {
     void Tick(float dt);
 }
+
+public interface IMissedAttackHandler
+{
+    void OnMissedAttack();
+}

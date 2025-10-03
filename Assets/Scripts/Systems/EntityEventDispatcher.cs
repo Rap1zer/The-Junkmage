@@ -12,11 +12,12 @@ public class EntityEventDispatcher : MonoBehaviour
     private readonly List<StatusEffect> effects = new List<StatusEffect>();
 
     // Per-hook registries (preserve registration order)
-    private readonly List<Func<float, GameObject, float>> incomingModifiers = new List<Func<float, GameObject, float>>();
-    private readonly List<Action<float, GameObject>> afterDamageHandlers = new List<Action<float, GameObject>>();
-    private readonly List<Action<float, GameObject>> dealDamageHandlers = new List<Action<float, GameObject>>();
-    private readonly List<Action> roomClearedHandlers = new List<Action>();
-    private readonly List<Action<float>> tickHandlers = new List<Action<float>>();
+    private readonly List<Func<float, GameObject, float>> incomingModifiers = new();
+    private readonly List<Action<float, GameObject>> afterDamageHandlers = new();
+    private readonly List<Action<float, GameObject>> dealDamageHandlers = new();
+    private readonly List<Action> roomClearedHandlers = new();
+    private readonly List<Action<float>> tickHandlers = new();
+    private readonly List<Action> missedAttackHandlers = new();
 
     // Mapping registrant (effect or item) -> the delegates we added for it,
     // so we can remove them exactly on unregister.
@@ -145,6 +146,15 @@ public class EntityEventDispatcher : MonoBehaviour
         for (int i = 0; i < handlers.Length; ++i)
             handlers[i]();
     }
+    
+    // Called when the entity misses an attack
+    public void DispatchMissedAttack()
+    {
+        Debug.Log("Missed attack!");
+        var handlers = missedAttackHandlers.ToArray();
+        for (int i = 0; i < handlers.Length; ++i)
+            handlers[i]();
+    }
 
     // -------------------------
     // Internal registration helpers
@@ -191,6 +201,12 @@ public class EntityEventDispatcher : MonoBehaviour
                 tickHandlers.Add(reg.tick);
             }
 
+            if (se is IMissedAttackHandler miss)
+            {
+                reg.missedAttack = new Action(miss.OnMissedAttack);
+                missedAttackHandlers.Add(reg.missedAttack);
+            }
+
             // ensure lifecycle tracking for non-item effects
             if (!isItem && !effects.Contains(se))
                 effects.Add(se);
@@ -227,6 +243,12 @@ public class EntityEventDispatcher : MonoBehaviour
                 reg.tick = new Action<float>(th.Tick);
                 tickHandlers.Add(reg.tick);
             }
+            
+            if (obj is IMissedAttackHandler miss)
+            {
+                reg.missedAttack = new Action(miss.OnMissedAttack);
+                missedAttackHandlers.Add(reg.missedAttack);
+            }
         }
 
         // store registration (even if empty — makes Unregister safe)
@@ -259,5 +281,6 @@ public class EntityEventDispatcher : MonoBehaviour
         public Action<float, GameObject> dealDamage;
         public Action roomCleared;
         public Action<float> tick;
+        public Action missedAttack;
     }
 }

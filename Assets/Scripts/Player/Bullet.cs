@@ -3,10 +3,9 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    private float dmg = 1f;
-
+    private float dmg;
     private GameObject owner;
-    private bool isPlayerBullet => owner.CompareTag("Player");
+    private bool IsPlayerBullet => owner.CompareTag("Player");
 
     public void Initilaise(float dmg, GameObject owner)
     {
@@ -16,16 +15,19 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // Attack object if hit valid target
-        if ((!isPlayerBullet && other.CompareTag("Player")) || (isPlayerBullet && other.CompareTag("Enemy")))
-        {
-            Attack(other.gameObject);
-        }
+        bool hitEntity = (!IsPlayerBullet && other.CompareTag("Player")) ||
+                             (IsPlayerBullet && other.CompareTag("Enemy"));
+        bool hitValidObj = !((IsPlayerBullet && other.CompareTag("Player")) ||
+                             (!IsPlayerBullet && other.CompareTag("Enemy"))) &&
+                           !other.CompareTag("Bullet");
+        
+        if (hitEntity) Attack(other.gameObject);
 
         // Destroy the bullet after it collides
-        if (isPlayerBullet && !other.CompareTag("Player") || !isPlayerBullet && !other.CompareTag("Enemy"))
+        if (hitValidObj)
         {
-            Destroy(gameObject, 0.1f);
+            if (!hitEntity) owner.GetComponent<EntityEventDispatcher>().DispatchMissedAttack();
+            Destroy(gameObject);
         }
 
     }
@@ -33,8 +35,8 @@ public class Bullet : MonoBehaviour
     private void Attack(GameObject target)
     {
         EntityEventDispatcher dispatcher = owner.GetComponent<EntityEventDispatcher>();
-        if (dispatcher != null) dispatcher.DispatchDealDamage(dmg, target);
+        dispatcher?.DispatchDealDamage(dmg, target);
 
-        target.GetComponent<IDamageable>().TakeDamage(dmg);
+        target.GetComponent<IDamageable>()?.TakeDamage(dmg);
     }
 }
