@@ -16,6 +16,7 @@ public class SpikeController : EnemyBase
 
     public override void Attack()
     {
+        base.Attack();
         var damageable = player.GetComponent<IDamageable>();
         damageable?.TakeDamage(AttackDmg);
     }

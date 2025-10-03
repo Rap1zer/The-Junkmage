@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(EnemyStats), typeof(EntityEventDispatcher))]
 public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
 {
     [Header("Enemy Info")]
@@ -48,8 +49,8 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
 
     private void HandlePlayerEnterRoom(int playerRoomIndex)
     {
-        CurrentState = (playerRoomIndex == roomIndex) 
-            ? EnemyState.Attacking 
+        CurrentState = (playerRoomIndex == roomIndex)
+            ? EnemyState.Attacking
             : EnemyState.Idle;
     }
 
@@ -59,7 +60,10 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
     }
 
     // Must be implemented in subclasses
-    public abstract void Attack();
+    public virtual void Attack()
+    {
+        lastAttackTime = Time.time;
+    }
     protected abstract void DoAttackBehavior();
 
     public virtual void TakeDamage(float dmg, GameObject attacker = null)

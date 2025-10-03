@@ -30,6 +30,7 @@ public class GunnerController : EnemyBase
     public override void Attack()
     {
         if (bulletPrefab == null || firePoint == null) return;
+        base.Attack();
 
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
         bullet.GetComponent<Bullet>().Initilaise(AttackDmg, gameObject);
@@ -37,7 +38,5 @@ public class GunnerController : EnemyBase
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
         if (bulletRb != null)
             bulletRb.linearVelocity = firePoint.up * bulletSpeed;
-
-        lastAttackTime = Time.time;
     }
 }
