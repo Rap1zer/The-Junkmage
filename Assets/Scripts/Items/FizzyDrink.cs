@@ -11,7 +11,7 @@ public class FizzyDrink : ItemBase
     {
         base.Awake();
         stats = GameObject.Find("Player").GetComponent<PlayerStats>();
-        modifier = new StatModifier(StatType.AttackCooldown, 0.25f, ModifierType.Flat);
+        modifier = new StatModifier(StatType.AttackCooldown, -0.25f, ModifierType.PercentMul);
     }
 
     protected override void OnEquip()

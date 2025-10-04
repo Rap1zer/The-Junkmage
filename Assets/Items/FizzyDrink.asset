@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Fizzy drink
   description: "Increase staff and \u2B50\uFE0Fpets attack speed by 20%."
   icon: {fileID: 5159570295271757394, guid: ee8f8204103964f069998c9a68936bfd, type: 3}
-  prefab: {fileID: 0}
+  prefab: {fileID: 5410237761881617018, guid: b1d2281c3d1e541ac99f251df9845978, type: 3}
   shape:
   - values: 01
   - values: 01
