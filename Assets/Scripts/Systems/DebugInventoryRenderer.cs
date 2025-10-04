@@ -48,9 +48,9 @@ public class DebugInventoryRenderer : MonoBehaviour
 
                 if (item == null)
                     renderer.color = Color.gray;
-                else if (item.UIType == ItemUIType.Inventory)
+                else if (item.StorageType == StorageType.Inventory)
                     renderer.color = Color.green;
-                else if (item.UIType == ItemUIType.Chest)
+                else if (item.StorageType == StorageType.Chest)
                     renderer.color = Color.blue;
                 else
                     renderer.color = Color.magenta;

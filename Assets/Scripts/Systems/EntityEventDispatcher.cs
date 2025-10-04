@@ -150,7 +150,6 @@ public class EntityEventDispatcher : MonoBehaviour
     // Called when the entity misses an attack
     public void DispatchMissedAttack()
     {
-        Debug.Log("Missed attack!");
         var handlers = missedAttackHandlers.ToArray();
         for (int i = 0; i < handlers.Length; ++i)
             handlers[i]();

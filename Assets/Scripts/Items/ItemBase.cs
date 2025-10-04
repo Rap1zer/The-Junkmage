@@ -2,6 +2,12 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum StorageType
+{
+    Chest,
+    Inventory
+}
+
 public abstract class ItemBase : MonoBehaviour
 {
     public ItemData ItemData { get; private set; }
@@ -9,21 +15,26 @@ public abstract class ItemBase : MonoBehaviour
     protected EntityEventDispatcher ownerDispatcher;
 
     private GameObject InvContainer;
-    private ItemUIType _uiType = ItemUIType.Chest;
-    public ItemUIType UIType
+    private StorageType _storageType = StorageType.Chest;
+    public StorageType StorageType
     {
-        get => _uiType;
+        get => _storageType;
         set
         {
-            _uiType = value;
-            if (value == ItemUIType.Inventory)
+            _storageType = value;
+            if (value == StorageType.Inventory)
             {
                 if (InvContainer == null) InvContainer = GameObject.Find("Inventory");
                 transform.SetParent(InvContainer.transform, true);
+
+                OnEquip();
+            }
+            else
+            {
+                OnUnequip();
             }
         }
     }
-
     public Guid Id { get; private set; }
     public int RotationState { get; private set; } = 0;
 
@@ -202,6 +213,12 @@ public abstract class ItemBase : MonoBehaviour
             ownerDispatcher = null;
         }
     }
+    
+    // Called when Item is placed in the inventory
+    protected virtual void OnEquip() { }
+    
+    // Called when Item is removed from the inventory
+    protected virtual void OnUnequip() { }
     
     // Default hook implementations (override in subclasses as needed)
     public virtual float OnIncomingDamage(float damage, GameObject attacker = null) => damage;

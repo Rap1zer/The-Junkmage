@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class Scope : ItemBase, IDealDamageHandler, IMissedAttackHandler
 {
-    int critChanceStack = 0;
-    int maxCritChanceStack = 30;
+    float critChanceStack = 0f;
+    float maxCritChanceStack = 50f;
+    private static float stack = 10f;
     
     private PlayerStats stats;
     private List<StatModifier> modifiers = new();
@@ -17,10 +18,10 @@ public class Scope : ItemBase, IDealDamageHandler, IMissedAttackHandler
 
     public void OnDealDamage(float dmg, GameObject target = null)
     {
-        critChanceStack += 3;
+        critChanceStack += stack;
         critChanceStack = Mathf.Min(critChanceStack, maxCritChanceStack);
 
-        int increase = Mathf.Min(3, maxCritChanceStack - critChanceStack);
+        float increase = Mathf.Min(stack, maxCritChanceStack - critChanceStack);
         
         StatModifier newModifier = new StatModifier(StatType.CritChance, increase, ModifierType.Flat);
         modifiers.Add(newModifier);

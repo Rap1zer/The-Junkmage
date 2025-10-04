@@ -57,30 +57,50 @@ public class InventoryGrid
     // UI: Grid rendering
     // -----------------------
 
-    public void DrawGrid(Transform InvContainer, GameObject cellPrefab)
+    public void DrawGrid(Transform gridContainer, GameObject cellPrefab)
     {
+        Debug.Log("Drawing grid");
         for (int row = 0; row < rows; row++)
         {
             for (int col = 0; col < cols; col++)
             {
-                GameObject gridCell = Object.Instantiate(cellPrefab, InvContainer);
+                GameObject gridCell = Object.Instantiate(cellPrefab, gridContainer);
                 CellObjs[row, col] = gridCell;
 
                 RectTransform rt = gridCell.GetComponent<RectTransform>();
                 rt.anchoredPosition = GridToLocal(new CellPos(row, col));
             }
         }
+
+        // Set rect transform bounds of inventory
+        float containerW = cellSize * cols + margin * (cols - 1);
+        float containerH = cellSize * rows + margin * (rows - 1);
+        RectTransform containerRT = gridContainer.GetComponent<RectTransform>();
+        containerRT.sizeDelta = new Vector2(containerW, containerH);
     }
 
-    public CellPos GetNearestGridPosition(Vector2 localPosition)
+    public CellPos GetNearestGridPosition(Vector2 canvasPos)
     {
         Vector2 offset = CalculateGridOffset();
 
-        float localX = localPosition.x + offset.x;
-        float localY = localPosition.y + offset.y;
+        float localX = canvasPos.x + offset.x;
+        float localY = canvasPos.y + offset.y;
 
         int col = Mathf.Clamp(Mathf.RoundToInt(localX / (cellSize + margin)), 0, cols - 1);
         int row = Mathf.Clamp(Mathf.RoundToInt(localY / (cellSize + margin)), 0, rows - 1);
+
+        return new CellPos(row, col);
+    }
+
+    public CellPos GetUnboundedCellPosition(Vector2 canvasPos)
+    {
+        Vector2 offset = CalculateGridOffset();
+
+        float localX = canvasPos.x + offset.x;
+        float localY = canvasPos.y + offset.y;
+
+        int col = Mathf.RoundToInt(localX / (cellSize + margin));
+        int row = Mathf.RoundToInt(localY / (cellSize + margin));
 
         return new CellPos(row, col);
     }

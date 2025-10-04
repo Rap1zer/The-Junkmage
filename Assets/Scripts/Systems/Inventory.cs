@@ -5,20 +5,20 @@ public class Inventory
 {
     public static Inventory Instance { get; private set; }
 
-    public int width = 4;   // columns
-    public int height = 3;  // rows
+    public int cols = 4;   // columns
+    public int rows = 3;  // rows
 
     // Data[row, col]
     public ItemBase[,] Data { get; private set; }
     public event Action<ItemBase, CellPos> OnItemPlaced; // InventoryGrid.OccupyCells()
     public event Action<ItemBase> OnItemRemoved;
 
-    public Inventory(int width, int height)
+    public Inventory(int cols, int rows)
     {
-        // Data is allocated as [rows, cols] => [height, width]
-        Data = new ItemBase[height, width];
-        this.width = width;
-        this.height = height;
+        // Data is allocated as [rows, cols]
+        Data = new ItemBase[rows, cols];
+        this.cols = cols;
+        this.rows = rows;
     }
 
     public bool CanPlaceItem(ItemBase item, CellPos anchorCell)
@@ -26,7 +26,7 @@ public class Inventory
         foreach (var pos in item.GetOccupiedCells(anchorCell))
         {
             // Check bounds
-            if (pos.Row < 0 || pos.Row >= height || pos.Col < 0 || pos.Col >= width)
+            if (pos.Row < 0 || pos.Row >= rows || pos.Col < 0 || pos.Col >= cols)
                 return false;
 
             // Check if the cell is already occupied
@@ -53,13 +53,13 @@ public class Inventory
         return true;
     }
 
-    public void RemoveItem(ItemBase item)
+    public void TryRemoveItem(ItemBase item)
     {
         if (!TryGetItemGridPos(item, out CellPos anchor)) return;
 
         foreach (var pos in item.GetOccupiedCells(anchor))
         {
-            if (pos.Row < 0 || pos.Row >= height || pos.Col < 0 || pos.Col >= width)
+            if (pos.Row < 0 || pos.Row >= rows || pos.Col < 0 || pos.Col >= cols)
             {
                 Debug.LogWarning($"Skipped out-of-bounds cell at Data[{pos.Row},{pos.Col}]");
                 continue;
@@ -74,16 +74,16 @@ public class Inventory
     // cell.x = row, cell.y = col
     public bool IsCellOccupied(CellPos cell)
     {
-        if (cell.Row < 0 || cell.Row >= height || cell.Col < 0 || cell.Col >= width) return false;
+        if (cell.Row < 0 || cell.Row >= rows || cell.Col < 0 || cell.Col >= cols) return false;
         return Data[cell.Row, cell.Col] != null;
     }
 
     public bool ChestItemEquipped(Chest chest)
     {
         // iterate rows then cols
-        for (int r = 0; r < height; r++)
+        for (int r = 0; r < rows; r++)
         {
-            for (int c = 0; c < width; c++)
+            for (int c = 0; c < cols; c++)
             {
                 var it = Data[r, c];
                 if (it != null && chest.chestItems.ContainsKey(it.Id)) return true;
@@ -96,9 +96,9 @@ public class Inventory
     public bool TryGetItemGridPos(ItemBase item, out CellPos position)
     {
         Guid guid = item.Id;
-        for (int r = 0; r < height; r++) // rows first
+        for (int r = 0; r < rows; r++) // rows first
         {
-            for (int c = 0; c < width; c++) // cols second
+            for (int c = 0; c < cols; c++) // cols second
             {
                 if (Data[r, c] != null && Data[r, c].Id == guid)
                 {

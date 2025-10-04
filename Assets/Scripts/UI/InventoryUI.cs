@@ -2,12 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public enum ItemUIType
-{
-    Chest,
-    Inventory
-}
-
 public class InventoryUI
 {
     private Vector2 beginDragPos;
@@ -55,9 +49,8 @@ public class InventoryUI
     public void Drag(PointerEventData eventData)
     {
         invGrid.ClearHighlights();
-
-        Vector2 anchorCanvasPos = GetCurrentItemCanvasPos();
-        (var anchorCell, bool canPlace) = InventoryManager.Instance.CanPlaceDraggedItem(anchorCanvasPos, InventoryManager.Instance.Current.Item);
+        
+        (var anchorCell, bool canPlace) = InventoryManager.Instance.CanPlaceDraggedItem();
         invGrid.HighlightCells(anchorCell, InventoryManager.Instance.Current.Item, canPlace);
     }
 

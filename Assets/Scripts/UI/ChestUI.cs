@@ -18,7 +18,7 @@ public class ChestUI
     {
         for (int i = 0; i < itemObjs.Length; i++)
         {
-            if (itemObjs[i] != null && items[i].UIType == ItemUIType.Chest) UnityEngine.Object.Destroy(itemObjs[i]);
+            if (itemObjs[i] != null && items[i].StorageType == StorageType.Chest) UnityEngine.Object.Destroy(itemObjs[i]);
         }
     }
 

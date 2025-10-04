@@ -50,7 +50,7 @@ GameObject:
   - component: {fileID: 5361593385106299854}
   - component: {fileID: 4774838508034395625}
   m_Layer: 5
-  m_Name: Blazing Boots
+  m_Name: BlazingBoots
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

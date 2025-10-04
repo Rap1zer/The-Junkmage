@@ -2,17 +2,19 @@ using UnityEngine;
 
 public class Frost : StatusEffect
 {
-    private StatModifier[] modifiers =
+    private readonly StatModifier[] modifiers = 
     {
-        new StatModifier(StatType.MoveSpeed, -0.03f, ModifierType.PercentMul),
-        new StatModifier(StatType.DashSpeed, -0.03f, ModifierType.PercentMul),
-        new StatModifier(StatType.AttackCooldown, 0.05f, ModifierType.PercentMul)
+        new(StatType.MoveSpeed, -0.03f, ModifierType.PercentMul),
+        new(StatType.DashSpeed, -0.03f, ModifierType.PercentMul),
+        new(StatType.AttackCooldown, 0.05f, ModifierType.PercentMul)
     };
+    
     public Frost(float duration) : base(duration) { }
 
     public override void OnApply()
     {
         base.OnApply();
+        
         StatsBase stats = owner.GetComponent<StatsBase>();
         if (stats)
         {
