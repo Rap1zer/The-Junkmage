@@ -4,8 +4,8 @@ using UnityEngine;
 public class Scope : ItemBase, IDealDamageHandler, IMissedAttackHandler
 {
     float critChanceStack = 0f;
-    float maxCritChanceStack = 50f;
-    private static float stack = 10f;
+    float maxCritChanceStack = 0.4f;
+    private static float stack = 0.1f;
     
     private PlayerStats stats;
     private List<StatModifier> modifiers = new();
