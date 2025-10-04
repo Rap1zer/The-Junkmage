@@ -59,7 +59,6 @@ public class InventoryGrid
 
     public void DrawGrid(Transform gridContainer, GameObject cellPrefab)
     {
-        Debug.Log("Drawing grid");
         for (int row = 0; row < rows; row++)
         {
             for (int col = 0; col < cols; col++)

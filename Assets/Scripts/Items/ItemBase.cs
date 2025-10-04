@@ -218,7 +218,7 @@ public abstract class ItemBase : MonoBehaviour
     protected virtual void OnEquip() { }
     
     // Called when Item is removed from the inventory
-    protected virtual void OnUnequip() { }
+    protected virtual void OnUnequip() { Debug.Log("OnUnequip"); }
     
     // Default hook implementations (override in subclasses as needed)
     public virtual float OnIncomingDamage(float damage, GameObject attacker = null) => damage;

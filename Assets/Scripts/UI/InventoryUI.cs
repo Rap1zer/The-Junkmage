@@ -10,7 +10,7 @@ public class InventoryUI
     private GameObject cellPrefab;
     private Transform chestContainer;
 
-    private ChestUI chestUI;
+    public ChestUI ChestUI {get; private set;}
     public InventoryGrid invGrid;
 
     public float CellSize { get; private set; } = 100f;
@@ -32,7 +32,7 @@ public class InventoryUI
             chestSlots[i] = itemDropsPos.GetChild(i).GetComponent<RectTransform>();
         }
 
-        chestUI = new ChestUI(chestSlots, chestContainer.gameObject);
+        ChestUI = new ChestUI(chestSlots, chestContainer.gameObject);
         invGrid = new InventoryGrid(InventoryManager.Height, InventoryManager.Width, CellSize, Margin);
     }
 
@@ -88,12 +88,12 @@ public class InventoryUI
     public ItemBase[] HandleChestOpened(Chest chest)
     {
         chestContainer.gameObject.SetActive(true);
-        return chestUI.RenderChestItems(chest.ItemsInChest);
+        return ChestUI.RenderChestItems(chest.ItemsInChest);
     }
 
     public void HandleChestClosed()
     {
-        chestUI.ClearChestItems();
+        ChestUI.ClearChestItems();
         chestContainer.gameObject.SetActive(false);
     }
 }

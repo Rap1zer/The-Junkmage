@@ -80,6 +80,15 @@ public class Chest : MonoBehaviour
             ItemsTaken++;
         }
     }
+    
+    public void UndoTakeItem(ItemBase item)
+    {
+        if (chestItems.ContainsKey(item.Id) && chestItems[item.Id])
+        {
+            chestItems[item.Id] = false;
+            ItemsTaken = Mathf.Max(0, ItemsTaken - 1);
+        }
+    }
 
     public bool IsItemTaken(Guid id)
     {

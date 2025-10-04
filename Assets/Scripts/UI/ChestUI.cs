@@ -4,14 +4,14 @@ using UnityEngine;
 public class ChestUI
 {
     private RectTransform[] chestSlots;
-    private GameObject invContainer;
+    private GameObject chestContainer;
     private GameObject[] itemObjs;
     private ItemBase[] items;
 
-    public ChestUI(RectTransform[] chestSlots, GameObject invContainer)
+    public ChestUI(RectTransform[] chestSlots, GameObject chestContainer)
     {
         this.chestSlots = chestSlots;
-        this.invContainer = invContainer;
+        this.chestContainer = chestContainer;
     }
 
     public void ClearChestItems()
@@ -39,7 +39,7 @@ public class ChestUI
 
     private ItemBase CreateItem(ItemData data, Vector2 pos, out GameObject obj)
     {
-        obj = UnityEngine.Object.Instantiate(data.prefab, invContainer.transform);
+        obj = UnityEngine.Object.Instantiate(data.prefab, chestContainer.transform);
 
         // Initialise the component with the item data
         ItemBase itemBase = obj.GetComponent<ItemBase>();
@@ -49,5 +49,26 @@ public class ChestUI
         obj.GetComponent<RectTransform>().anchoredPosition = pos;
 
         return obj.GetComponent<ItemBase>();
+    }
+    
+    public bool SnapItemBackToChest(ItemBase item)
+    {
+        for (int i = 0; i < chestSlots.Length; i++)
+        {
+            RectTransform slot = chestSlots[i];
+
+            // Check if dropped over this slot
+            Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(null, item.transform.position);
+            if (RectTransformUtility.RectangleContainsScreenPoint(slot, screenPoint))
+            {
+                RectTransform itemRT = item.GetComponent<RectTransform>();
+                itemRT.SetParent(chestContainer.transform, worldPositionStays: false);
+                itemRT.anchoredPosition = slot.anchoredPosition;
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

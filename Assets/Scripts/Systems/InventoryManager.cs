@@ -133,6 +133,7 @@ public class InventoryManager : MonoBehaviour
         UI.PlaceItem(itemObj, anchorCell);      // Snap item to grid
         Inventory.PlaceItem(item, anchorCell);  // Place in inventory
         CurrentChest?.TakeItem(item);           // Remove from chest if applicable
+        Current.Item.StorageType = StorageType.Inventory;
         GameObject.Find("Player").GetComponent<EntityEventDispatcher>().RegisterItemHandlers(item);
     }
 
@@ -185,9 +186,27 @@ public class InventoryManager : MonoBehaviour
             CloseInventory();
         }
     }
+    
+    private bool TryReturnItemToChest()
+    {
+        if (CurrentChest == null) return false;
+        if (Current.Item == null) return false;
+
+        bool snapped = ui.ChestUI.SnapItemBackToChest(Current.Item);
+        if (snapped)
+        {
+            CurrentChest.UndoTakeItem(Current.Item);
+            Current.Item.StorageType = StorageType.Chest;
+            return true;
+        }
+
+        return false;
+    }
+
 
     // ----------------- DRAG & DROP HANDLERS -----------------
-
+    CellPos startCellPos;
+    
     public bool CanDrag(ItemBase item)
     {
         if (item.StorageType == StorageType.Chest && CurrentChest.ItemsTaken >= 1) return false;
@@ -201,6 +220,7 @@ public class InventoryManager : MonoBehaviour
 
         Current.Obj = itemObj;
         UI.BeginDrag(data);
+        startCellPos = item.AnchorGridPos;
         
         TryRemoveItem(itemObj.GetComponent<ItemBase>());
     }
@@ -215,15 +235,18 @@ public class InventoryManager : MonoBehaviour
     {
         if (Current.Item == null || !CanDrag(Current.Item)) return;
 
-        // Try to place item
-        Vector2 anchorCanvasPos = UI.GetCurrentItemCanvasPos();
-        bool placed = TryPlaceDraggedItem();
+        bool itemPlaced = TryPlaceDraggedItem();
 
-        if (!placed && Current.Item.StorageType == StorageType.Chest)
-            UI.UnDragCurrentItemPos();
+        if (!itemPlaced)
+        {
+            bool returnedToChest = TryReturnItemToChest();
 
-        if (placed)
-            Current.Item.StorageType = StorageType.Inventory;
+            if (!returnedToChest)
+            {
+                UI.UnDragCurrentItemPos();
+                if (Current.Item.StorageType == StorageType.Inventory) inventory.PlaceItem(Current.Item, startCellPos);
+            }
+        }
 
         Current.Clear();
     }
