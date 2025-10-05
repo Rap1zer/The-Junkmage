@@ -12,6 +12,7 @@ public class PlayerStats : StatsBase
     [SerializeField] private float baseCritChance = 0.1f;
     [SerializeField] private float baseCritMultiplier = 2f;
     [SerializeField] private float baseBulletSpeed = 14f;
+    [SerializeField] private int baseDefence = 0;
 
     protected override float GetBaseStat(StatType stat)
     {
@@ -26,6 +27,7 @@ public class PlayerStats : StatsBase
             StatType.CritChance => baseCritChance,
             StatType.CritMultiplier => baseCritMultiplier,
             StatType.BulletSpeed => baseBulletSpeed,
+            StatType.Defence => baseDefence,
             _ => 0f
         };
     }

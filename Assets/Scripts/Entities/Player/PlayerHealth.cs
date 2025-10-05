@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerStats))]
@@ -18,10 +19,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public void TakeDamage(float dmg, GameObject attacker = null)
     {
-        EntityEventDispatcher dispatcher = attacker?.GetComponent<EntityEventDispatcher>();
+        EntityEventDispatcher dispatcher = GetComponent<EntityEventDispatcher>();
 
         if (dispatcher != null)
         {
+            dmg = Math.Max(dmg - stats.GetVal(StatType.Defence), 0);
             dmg = dispatcher.DispatchIncomingDamage(dmg, attacker);
         }
 

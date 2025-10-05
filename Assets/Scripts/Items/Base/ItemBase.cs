@@ -12,6 +12,7 @@ public abstract class ItemBase : MonoBehaviour
 {
     public ItemData ItemData { get; private set; }
     protected PlayerController player;
+    protected PlayerStats playerStats;
     protected EntityEventDispatcher ownerDispatcher;
 
     private GameObject InvContainer;
@@ -197,6 +198,7 @@ public abstract class ItemBase : MonoBehaviour
     {
         Id = Guid.NewGuid();
         player = GameObject.Find("Player").GetComponent<PlayerController>();
+        playerStats = player.GetComponent<PlayerStats>();
 
         // find the owning dispatcher on parent (adjust if your ownership model differs)
         ownerDispatcher = GetComponentInParent<EntityEventDispatcher>();

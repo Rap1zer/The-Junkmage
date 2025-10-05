@@ -3930,7 +3930,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54ff3568495b7482fa6041a017c73eb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseMaxHealth: 20
+  baseMaxHealth: 10
   baseMoveSpeed: 8
   baseDashSpeed: 12
   baseDashDuration: 0.2
@@ -3939,6 +3939,7 @@ MonoBehaviour:
   baseCritChance: 0.1
   baseCritMultiplier: 2
   baseBulletSpeed: 14
+  baseDefence: 0
 --- !u!114 &1680841013
 MonoBehaviour:
   m_ObjectHideFlags: 0

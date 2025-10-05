@@ -29,7 +29,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         spawnRoom = RoomManager.Instance.rooms[roomIndex];
 
-        Health = Stats.GetVal(StatType.MaxHealth); // initialize health from stats
+        Health = Stats.GetVal(StatType.MaxHealth); // initialize health from playerStats
         CurrentState = EnemyState.Idle;
 
         RoomManager.Instance.OnPlayerEnterRoom += HandlePlayerEnterRoom;

@@ -7,14 +7,7 @@ public class Scope : ItemBase, IDealDamageHandler, IMissedAttackHandler
     float maxCritChanceStack = 0.4f;
     private static float stack = 0.1f;
     
-    private PlayerStats stats;
     private List<StatModifier> modifiers = new();
-
-    protected override void Awake()
-    {
-        base.Awake();
-        stats = player.GetComponent<PlayerStats>();
-    }
 
     public void OnDealDamage(float dmg, GameObject target = null)
     {
@@ -26,7 +19,7 @@ public class Scope : ItemBase, IDealDamageHandler, IMissedAttackHandler
         StatModifier newModifier = new StatModifier(StatType.CritChance, increase, ModifierType.Flat);
         modifiers.Add(newModifier);
         
-        stats.ApplyModifier(newModifier);
+        playerStats.ApplyModifier(newModifier);
         
         Debug.Log($"Increased crit chance by {increase}");
     }
@@ -35,7 +28,7 @@ public class Scope : ItemBase, IDealDamageHandler, IMissedAttackHandler
     {
         foreach (var modifier in modifiers)
         {
-            stats.RemoveModifier(modifier);
+            playerStats.RemoveModifier(modifier);
         }
         modifiers.Clear();
         

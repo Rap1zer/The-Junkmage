@@ -13,7 +13,8 @@ public enum StatType
     CritMultiplier,
     BulletSpeed,
     AttackDmg,
-    AttackCooldown
+    AttackCooldown,
+    Defence
 }
 
 public abstract class StatsBase : MonoBehaviour
