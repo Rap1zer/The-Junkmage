@@ -16,6 +16,8 @@ public class PlayerMovement : MonoBehaviour
     private float dashCooldownTimer = 0f;
     private Vector2 dashDirection;
 
+    private int originalLayer;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -47,11 +49,11 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         if (IsDashing)
-            rb.velocity = dashDirection * stats.GetVal(StatType.DashSpeed);
+            rb.linearVelocity = dashDirection * stats.GetVal(StatType.DashSpeed);
         else
-            rb.velocity = moveInput * stats.GetVal(StatType.MoveSpeed);
+            rb.linearVelocity = moveInput * stats.GetVal(StatType.MoveSpeed);
     }
-
+    
     void StartDash()
     {
         if (moveInput == Vector2.zero) return;
@@ -61,9 +63,6 @@ public class PlayerMovement : MonoBehaviour
         dashCooldownTimer = stats.GetVal(StatType.DashCooldown);
         dashDirection = moveInput;
 
-        // Make player pass through objects
-        col.isTrigger = true;
-
         // Make player semi-transparent
         if (sprite != null)
         {
@@ -71,14 +70,18 @@ public class PlayerMovement : MonoBehaviour
             c.a = 0.5f; // 50% transparent
             sprite.color = c;
         }
+        
+        // Switch to PlayerDash layer (ignore collisions with certain layers)
+        originalLayer = gameObject.layer;
+        gameObject.layer = LayerMask.NameToLayer("PlayerDash");
     }
 
     void EndDash()
     {
         IsDashing = false;
 
-        // Restore collisions
-        col.isTrigger = false;
+        // Restore layer
+        gameObject.layer = originalLayer;
 
         // Restore opacity
         if (sprite != null)
