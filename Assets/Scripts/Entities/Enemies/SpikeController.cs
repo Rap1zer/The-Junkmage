@@ -18,6 +18,22 @@ public class SpikeController : EnemyBase
     {
         base.Attack();
         var damageable = player.GetComponent<IDamageable>();
-        damageable?.TakeDamage(AttackDmg);
+        damageable?.TakeDamage(AttackDmg, gameObject);
+    }
+    
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.transform.CompareTag("Player"))
+        {
+            playerInRange = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.transform.CompareTag("Player"))
+        {
+            playerInRange = false;
+        }
     }
 }

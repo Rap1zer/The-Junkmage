@@ -5,20 +5,21 @@ public class Bullet : MonoBehaviour
 {
     private float dmg;
     private GameObject owner;
-    private bool IsPlayerBullet => owner.CompareTag("Player");
+    private bool isPLayerBullet;
 
     public void Initilaise(float dmg, GameObject owner)
     {
         this.dmg = dmg;
         this.owner = owner;
+        isPLayerBullet = owner != null && owner.CompareTag("Player");
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        bool hitEntity = (!IsPlayerBullet && other.CompareTag("Player")) ||
-                             (IsPlayerBullet && other.CompareTag("Enemy"));
-        bool hitValidObj = !((IsPlayerBullet && other.CompareTag("Player")) ||
-                             (!IsPlayerBullet && other.CompareTag("Enemy"))) &&
+        bool hitEntity = (!isPLayerBullet && other.CompareTag("Player")) ||
+                             (isPLayerBullet && other.CompareTag("Enemy"));
+        bool hitValidObj = !((isPLayerBullet && other.CompareTag("Player")) ||
+                             (!isPLayerBullet && other.CompareTag("Enemy"))) &&
                            !other.CompareTag("Bullet");
         
         if (hitEntity) Attack(other.gameObject);
@@ -26,7 +27,7 @@ public class Bullet : MonoBehaviour
         // Destroy the bullet after it collides
         if (hitValidObj)
         {
-            if (!hitEntity) owner.GetComponent<EntityEventDispatcher>().DispatchMissedAttack();
+            if (!hitEntity && owner != null) owner.GetComponent<EntityEventDispatcher>().DispatchMissedAttack();
             Destroy(gameObject);
         }
 
@@ -34,9 +35,13 @@ public class Bullet : MonoBehaviour
     
     private void Attack(GameObject target)
     {
-        EntityEventDispatcher dispatcher = owner.GetComponent<EntityEventDispatcher>();
-        dispatcher?.DispatchDealDamage(dmg, target);
+        bool ownerDestoyed = owner == null;
+        if (ownerDestoyed)
+        {
+            EntityEventDispatcher dispatcher = owner.GetComponent<EntityEventDispatcher>();
+            dispatcher?.DispatchDealDamage(dmg, target);
+        }
 
-        target.GetComponent<IDamageable>()?.TakeDamage(dmg);
+        target?.GetComponent<IDamageable>()?.TakeDamage(dmg, ownerDestoyed ? null : owner);
     }
 }
