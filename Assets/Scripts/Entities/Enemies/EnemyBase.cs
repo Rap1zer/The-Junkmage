@@ -7,6 +7,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
     public int roomIndex;
     protected Room spawnRoom;
     protected PlayerController player;
+    protected PlayerMovement playerMovement;
     protected GameManager gameManager;
 
     public EnemyStats Stats { get; protected set; } // reference to the new EnemyStats component
@@ -26,6 +27,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
     protected virtual void Start()
     {
         player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        playerMovement = player.GetComponent<PlayerMovement>();
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         spawnRoom = RoomManager.Instance.rooms[roomIndex];
 

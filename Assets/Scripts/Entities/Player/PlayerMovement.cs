@@ -1,13 +1,17 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(PlayerStats))]
+[RequireComponent(typeof(Collider2D))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D rb;
     private PlayerStats stats;
     private Vector2 moveInput;
+    private Collider2D col;
+    private SpriteRenderer sprite;
 
-    private bool isDashing = false;
+    public bool IsDashing { get; private set; } = false;
     private float dashTimeLeft = 0f;
     private float dashCooldownTimer = 0f;
     private Vector2 dashDirection;
@@ -16,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         stats = GetComponent<PlayerStats>();
+        col = GetComponent<Collider2D>();
+        sprite = GetComponent<SpriteRenderer>();
     }
 
     public void HandleInput()
@@ -27,10 +33,10 @@ public class PlayerMovement : MonoBehaviour
             StartDash();
         }
 
-        if (isDashing)
+        if (IsDashing)
         {
             dashTimeLeft -= Time.deltaTime;
-            if (dashTimeLeft <= 0f) isDashing = false;
+            if (dashTimeLeft <= 0f) EndDash();
         }
 
         if (dashCooldownTimer > 0f) dashCooldownTimer -= Time.deltaTime;
@@ -40,20 +46,47 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isDashing)
-            rb.linearVelocity = dashDirection * stats.GetVal(StatType.DashSpeed);
+        if (IsDashing)
+            rb.velocity = dashDirection * stats.GetVal(StatType.DashSpeed);
         else
-            rb.linearVelocity = moveInput * stats.GetVal(StatType.MoveSpeed);
+            rb.velocity = moveInput * stats.GetVal(StatType.MoveSpeed);
     }
 
     void StartDash()
     {
         if (moveInput == Vector2.zero) return;
 
-        isDashing = true;
+        IsDashing = true;
         dashTimeLeft = stats.GetVal(StatType.DashDuration);
         dashCooldownTimer = stats.GetVal(StatType.DashCooldown);
         dashDirection = moveInput;
+
+        // Make player pass through objects
+        col.isTrigger = true;
+
+        // Make player semi-transparent
+        if (sprite != null)
+        {
+            Color c = sprite.color;
+            c.a = 0.5f; // 50% transparent
+            sprite.color = c;
+        }
+    }
+
+    void EndDash()
+    {
+        IsDashing = false;
+
+        // Restore collisions
+        col.isTrigger = false;
+
+        // Restore opacity
+        if (sprite != null)
+        {
+            Color c = sprite.color;
+            c.a = 1f;
+            sprite.color = c;
+        }
     }
 
     void RotateToMouse()

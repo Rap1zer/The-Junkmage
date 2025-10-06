@@ -10,7 +10,7 @@ public class SpikeController : EnemyBase
         Vector2 direction = (player.transform.position - transform.position).normalized;
         rb.linearVelocity = direction * Speed;
 
-        if (AttackCooled() && playerInRange)
+        if (AttackCooled() && playerInRange && !playerMovement.IsDashing)
             Attack();
     }
 

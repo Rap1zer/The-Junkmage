@@ -36,7 +36,7 @@ public class Bullet : MonoBehaviour
     private void Attack(GameObject target)
     {
         bool ownerDestoyed = owner == null;
-        if (ownerDestoyed)
+        if (!ownerDestoyed)
         {
             EntityEventDispatcher dispatcher = owner.GetComponent<EntityEventDispatcher>();
             dispatcher?.DispatchDealDamage(dmg, target);

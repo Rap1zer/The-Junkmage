@@ -5,8 +5,24 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
     private PlayerStats stats;
+    private PlayerMovement movement;
+    private EntityEventDispatcher dispatcher;
 
-    public float CurrentHealth { get; private set; }
+    private float currentHealth;
+    private float CurrentHealth
+    {
+        get => currentHealth;
+        set
+        {
+            currentHealth = value;
+            if (CurrentHealth <= 0)
+            {
+                Die();
+                OnDeath?.Invoke();
+            }
+        }
+        
+    }
 
     public event System.Action OnDeath;
     public event System.Action<float> OnHealthChanged;
@@ -15,11 +31,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         stats = GetComponent<PlayerStats>();
         CurrentHealth = (int)stats.GetVal(StatType.MaxHealth);
+        dispatcher = GetComponent<EntityEventDispatcher>();
+        movement = GetComponent<PlayerMovement>();
     }
 
     public void TakeDamage(float dmg, GameObject attacker = null)
     {
-        EntityEventDispatcher dispatcher = GetComponent<EntityEventDispatcher>();
+        if (movement.IsDashing) return;
         
         if (dispatcher != null)
         {
@@ -31,12 +49,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         if (dispatcher != null)
             dispatcher.DispatchAfterDamageTaken(dmg, attacker);
-
-        if (CurrentHealth <= 0)
-        {
-            Die();
-            OnDeath?.Invoke();
-        }
     }
 
     public void Heal(int amount)

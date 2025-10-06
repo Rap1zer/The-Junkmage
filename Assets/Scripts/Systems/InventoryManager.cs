@@ -134,7 +134,6 @@ public class InventoryManager : MonoBehaviour
         Inventory.PlaceItem(item, anchorCell);  // Place in inventory
         CurrentChest?.TakeItem(item);           // Remove from chest if applicable
         Current.Item.StorageType = StorageType.Inventory;
-        GameObject.Find("Player").GetComponent<EntityEventDispatcher>().RegisterItemHandlers(item);
     }
 
     public (CellPos anchorCell, bool canPlace) CanPlaceDraggedItem()
@@ -148,7 +147,6 @@ public class InventoryManager : MonoBehaviour
 
     private void TryRemoveItem(ItemBase item)
     {
-        GameObject.Find("Player").GetComponent<EntityEventDispatcher>().UnregisterItemHandlers(item);
         inventory.TryRemoveItem(item);
     }
 

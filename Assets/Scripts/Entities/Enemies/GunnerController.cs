@@ -24,7 +24,7 @@ public class GunnerController : EnemyBase
         float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
         transform.rotation = Quaternion.Euler(0f, 0f, angle);
 
-        if (AttackCooled()) Attack();
+        if (AttackCooled()&& !playerMovement.IsDashing) Attack();
     }
 
     public override void Attack()

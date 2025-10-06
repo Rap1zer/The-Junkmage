@@ -28,10 +28,21 @@ public abstract class ItemBase : MonoBehaviour
                 if (InvContainer == null) InvContainer = GameObject.Find("Inventory");
                 transform.SetParent(InvContainer.transform, true);
 
+                if (ownerDispatcher != null)
+                {
+                    Debug.Log("registering handler");
+                    ownerDispatcher.RegisterItemHandlers(this);
+                }
+                
                 OnEquip();
             }
             else
             {
+                if (ownerDispatcher != null)
+                {
+                    Debug.Log("Unregistering handler");
+                    ownerDispatcher.UnregisterItemHandlers(this);
+                }
                 OnUnequip();
             }
         }
@@ -201,9 +212,7 @@ public abstract class ItemBase : MonoBehaviour
         playerStats = player.GetComponent<PlayerStats>();
 
         // find the owning dispatcher on parent (adjust if your ownership model differs)
-        ownerDispatcher = GetComponentInParent<EntityEventDispatcher>();
-        if (ownerDispatcher != null)
-            ownerDispatcher.RegisterItemHandlers(this);
+        ownerDispatcher = player.GetComponent<EntityEventDispatcher>();
     }
 
     // ensure we unregister when destroyed / unequipped

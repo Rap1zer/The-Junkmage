@@ -174,7 +174,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abe6bba94943444ae869a9945298a681, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomIndex: 3
+  roomIndex: 1
   playerInRange: 0
 --- !u!114 &-2491575489123075733
 MonoBehaviour:
@@ -188,7 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 347be8a730ed441d08233c71109f8d99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseMaxHealth: 10
+  baseMaxHealth: 5
   baseMoveSpeed: 2
   baseAttackDmg: 1
   baseAttackCooldown: 1
