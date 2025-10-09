@@ -3,6 +3,11 @@ using UnityEngine;
 public class Room
 {
     public int Index { get; private set; }
+    
+    public float MinX { get; private set; }
+    public float MaxX { get; private set; }
+    public float MinY { get; private set; }
+    public float MaxY { get; private set; }
 
     private int enemyCount;
     public int EnemyCount

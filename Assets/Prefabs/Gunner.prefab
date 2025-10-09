@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4997672305662813601}
   - component: {fileID: 737738260045147782}
   - component: {fileID: 7604329742604746309}
+  - component: {fileID: 7434126620794133517}
   m_Layer: 7
   m_Name: Gunner
   m_TagString: Enemy
@@ -184,7 +185,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomIndex: 1
   bulletPrefab: {fileID: 6446100217759873899, guid: c5a4515b58995430ab73ec8f3734c0a1, type: 3}
+  firePoint: {fileID: 2462633596569754418}
   bulletSpeed: 11
+  attackRange: 8
+  retreatRange: 4
+  detectionRange: 20
+  attackEndMultiplier: 2
+  retreatExitMultiplier: 1.4
 --- !u!114 &737738260045147782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,6 +221,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tickInterval: 0.5
+--- !u!114 &7434126620794133517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2489771570938699428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71f19f56914f4313b48e942fd6eba281, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  moveSpeed: 3.5
+  acceleration: 12
+  strafeSpeed: 2.4
+  strafeRadius: 1.5
+  strafeDuration: 1.2
 --- !u!1 &2720097900498029537
 GameObject:
   m_ObjectHideFlags: 0
@@ -239,7 +263,7 @@ Transform:
   m_GameObject: {fileID: 2720097900498029537}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: 0, y: -0.83, z: 0}
+  m_LocalPosition: {x: 0, y: 0.83, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -271,7 +295,7 @@ Transform:
   m_GameObject: {fileID: 7948844636265260797}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.58, z: 0}
+  m_LocalPosition: {x: 0, y: 0.58, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

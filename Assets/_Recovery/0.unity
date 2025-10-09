@@ -662,6 +662,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gunner (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4997672305662813601, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
+      propertyPath: attackBuffer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4997672305662813601, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
+      propertyPath: retreatBuffer
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4997672305662813601, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
+      propertyPath: detectionRange
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4997672305662813601, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
+      propertyPath: attackEndMultiplier
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4997672305662813601, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
+      propertyPath: retreatExitMultiplier
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5339866365424909854, guid: 331b0f15c9a3742bfb1fee1cd9ed9ef3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.547351
