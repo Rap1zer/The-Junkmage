@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Snowflake
   m_EditorClassIdentifier: 
   itemName: Snowflake
-  description: "Gives staff and \u2B50\uFE0Fpets 1 Frost per hit."
+  description: "Gives staff and \u2B50\uFE0Fpets 2 Frost per hit."
   icon: {fileID: -7167651861497909295, guid: 199ddf33375104c118f00eba6da385bb, type: 3}
   prefab: {fileID: 5410237761881617018, guid: 87222bef68b1d46239c8483431bf9285, type: 3}
   shape:

@@ -63,7 +63,7 @@ public class EntityDebugInspector : MonoBehaviour
         {
             foreach (var eff in effects)
             {
-                GUILayout.Label($"- {eff.GetType().Name}  |  {eff.elapsed:F1}/{eff.Duration:F1}", labelStyle);
+                GUILayout.Label($"- {eff.GetType().Name}  |  {eff.startTime:F1}/{eff.duration:F1}", labelStyle);
             }
         }
 

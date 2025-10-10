@@ -31,12 +31,6 @@ public class EntityEventDispatcher : MonoBehaviour
         float dt = Time.deltaTime;
         tickTimer += dt;
         
-        // Update elapsed time for all effects
-        foreach (var e in effects)
-        {
-            e.UpdateElapsedTime(dt);
-        }
-
         // Only process tick handlers if an interval passed
         if (tickTimer >= tickInterval)
         {
@@ -53,6 +47,7 @@ public class EntityEventDispatcher : MonoBehaviour
             var e = effects[i];
             if (e.IsExpired)
             {
+                Debug.Log("expired");
                 // RemoveEffect will unregister handlers and call OnRemove
                 RemoveEffect(e);
             }

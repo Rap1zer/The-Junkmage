@@ -2,11 +2,12 @@ using UnityEngine;
 
 public class EnemyStats : StatsBase
 {
-    [Header("Base Stats")]
-    [SerializeField] private float baseMaxHealth = 10f;
-    [SerializeField] private float baseMoveSpeed = 2f;
-    [SerializeField] private float baseAttackDmg = 1f;
-    [SerializeField] private float baseAttackCooldown = 1f;
+    [Header("Universal Base Stats")]
+    [SerializeField] protected float baseMaxHealth = 10f;
+    [SerializeField] protected float baseMoveSpeed = 2f;
+    [SerializeField] protected float baseAcceleration = 10f;
+    [SerializeField] protected float baseAttackDmg = 1f;
+    [SerializeField] protected float baseAttackCooldown = 1f;
 
     protected override float GetBaseStat(StatType stat)
     {
@@ -14,9 +15,10 @@ public class EnemyStats : StatsBase
         {
             StatType.MaxHealth => baseMaxHealth,
             StatType.MoveSpeed => baseMoveSpeed,
+            StatType.Acceleration => baseAcceleration,
             StatType.AttackDmg => baseAttackDmg,
             StatType.AttackCooldown => baseAttackCooldown,
-            _ => 0f
+            _ => -1f
         };
     }
 }

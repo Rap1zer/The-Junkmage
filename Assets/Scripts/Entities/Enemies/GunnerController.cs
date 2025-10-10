@@ -7,7 +7,6 @@ public class GunnerController : EnemyBase
     [Header("Shooting")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform firePoint;
-    [SerializeField] private float bulletSpeed = 9f;
 
     [Header("Ranges")]
     [SerializeField] private float attackRange = 8f;
@@ -19,11 +18,13 @@ public class GunnerController : EnemyBase
     [SerializeField] private float retreatExitMultiplier = 1.4f; // Switch from retreating to chasing
 
     private EnemyMovement movement;
+    private GunnerStats stats;
 
     protected override void Start()
     {
         base.Start();
         movement = GetComponent<EnemyMovement>();
+        stats = GetComponent<GunnerStats>();
         if (firePoint == null)
             firePoint = transform.Find("Fire Point");
         
@@ -128,7 +129,7 @@ public class GunnerController : EnemyBase
 
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
         if (rb != null)
-            rb.linearVelocity = -firePoint.up * bulletSpeed;
+            rb.linearVelocity = -firePoint.up * stats.GetVal(StatType.BulletSpeed);
     }
     
     private void OnDrawGizmosSelected()

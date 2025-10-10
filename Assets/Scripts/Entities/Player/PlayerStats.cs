@@ -28,7 +28,7 @@ public class PlayerStats : StatsBase
             StatType.CritMultiplier => baseCritMultiplier,
             StatType.BulletSpeed => baseBulletSpeed,
             StatType.Defence => baseDefence,
-            _ => 0f
+            _ => -1f
         };
     }
 }

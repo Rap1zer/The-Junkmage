@@ -3,23 +3,24 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class EnemyMovement : MonoBehaviour, IMovementController
 {
-    [Header("Movement")]
-    public float moveSpeed = 3.5f;
-    public float acceleration = 10f;
-
     [Header("Strafing")]
     public float strafeSpeed = 2f;
     public float strafeRadius = 1.5f;
     public float strafeDuration = 1.2f;
 
     private Rigidbody2D rb;
+    private EnemyStats stats;
     private float strafeEndTime;
     private Vector2 strafeDir;
     private bool isStrafing;
 
+    private float MoveSpeed => stats.GetVal(StatType.MoveSpeed);
+    private float Acceleration => stats.GetVal(StatType.Acceleration);
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        stats = gameObject.GetComponent<EnemyStats>();
     }
 
     private void FixedUpdate()
@@ -37,8 +38,8 @@ public class EnemyMovement : MonoBehaviour, IMovementController
             return;
         }
 
-        Vector2 desired = dir.normalized * moveSpeed;
-        rb.linearVelocity = Vector2.MoveTowards(rb.linearVelocity, desired, acceleration * Time.deltaTime);
+        Vector2 desired = dir.normalized * MoveSpeed;
+        rb.linearVelocity = Vector2.MoveTowards(rb.linearVelocity, desired, Acceleration * Time.deltaTime);
     }
 
     public void StrafeAround(Vector2 center)
@@ -56,12 +57,12 @@ public class EnemyMovement : MonoBehaviour, IMovementController
 
     public void Retreat(Vector2 away)
     {
-        rb.linearVelocity = Vector2.MoveTowards(rb.linearVelocity, away * moveSpeed, acceleration * Time.deltaTime);
+        rb.linearVelocity = Vector2.MoveTowards(rb.linearVelocity, away * MoveSpeed, Acceleration * Time.deltaTime);
     }
 
     public void StopImmediate()
     {
-        rb.linearVelocity = Vector2.MoveTowards(rb.linearVelocity, Vector2.zero, acceleration * Time.deltaTime);
+        rb.linearVelocity = Vector2.MoveTowards(rb.linearVelocity, Vector2.zero, Acceleration * Time.deltaTime);
     }
 
     // Interface placeholders (simplified version)

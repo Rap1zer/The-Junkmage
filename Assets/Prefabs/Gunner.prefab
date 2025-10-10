@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 516204937276225170}
   - component: {fileID: 5025293364500038380}
   - component: {fileID: 4997672305662813601}
-  - component: {fileID: 737738260045147782}
   - component: {fileID: 7604329742604746309}
   - component: {fileID: 7434126620794133517}
+  - component: {fileID: 718761620344286766}
   m_Layer: 7
   m_Name: Gunner
   m_TagString: Enemy
@@ -184,30 +184,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomIndex: 1
+  stateChangeCooldown: 0.3
   bulletPrefab: {fileID: 6446100217759873899, guid: c5a4515b58995430ab73ec8f3734c0a1, type: 3}
   firePoint: {fileID: 2462633596569754418}
-  bulletSpeed: 11
   attackRange: 8
   retreatRange: 4
   detectionRange: 20
   attackEndMultiplier: 2
   retreatExitMultiplier: 1.4
---- !u!114 &737738260045147782
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2489771570938699428}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 347be8a730ed441d08233c71109f8d99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  baseMaxHealth: 4
-  baseMoveSpeed: 2
-  baseAttackDmg: 1
-  baseAttackCooldown: 1
 --- !u!114 &7604329742604746309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -233,11 +217,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71f19f56914f4313b48e942fd6eba281, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
-  moveSpeed: 3.5
-  acceleration: 12
   strafeSpeed: 2.4
   strafeRadius: 1.5
   strafeDuration: 1.2
+--- !u!114 &718761620344286766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2489771570938699428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9dc04d45eab402bb3bd299459106079, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GunnerStats
+  baseMaxHealth: 6
+  baseMoveSpeed: 2
+  baseAcceleration: 10
+  baseAttackDmg: 1
+  baseAttackCooldown: 1
+  baseBulletSpeed: 10
 --- !u!1 &2720097900498029537
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,11 +2,13 @@ using UnityEngine;
 
 public class Frost : StatusEffect
 {
+    // Frost reduces move speed, dash speed, bullet speed, and increases attack cooldown.
     private readonly StatModifier[] modifiers = 
     {
-        new(StatType.MoveSpeed, -0.03f, ModifierType.PercentMul),
-        new(StatType.DashSpeed, -0.03f, ModifierType.PercentMul),
-        new(StatType.AttackCooldown, 0.05f, ModifierType.PercentMul)
+        new(StatType.MoveSpeed, -0.1f, ModifierType.PercentMul),
+        new(StatType.DashSpeed, -0.1f, ModifierType.PercentMul),
+        new(StatType.AttackCooldown, 0.1f, ModifierType.PercentAdd),
+        new(StatType.BulletSpeed,  -0.1f, ModifierType.PercentMul),
     };
     
     public Frost(float duration) : base(duration) { }
@@ -15,7 +17,6 @@ public class Frost : StatusEffect
     {
         base.OnApply();
         
-        StatsBase stats = owner.GetComponent<StatsBase>();
         if (stats)
         {
             foreach (StatModifier modifier in modifiers)
@@ -28,7 +29,7 @@ public class Frost : StatusEffect
     public override void OnRemove()
     {
         base.OnRemove();
-        StatsBase stats = owner.GetComponent<StatsBase>();
+        
         if (stats)
         {
             foreach (StatModifier modifier in modifiers)

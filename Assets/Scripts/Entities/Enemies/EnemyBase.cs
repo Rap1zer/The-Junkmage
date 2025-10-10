@@ -28,11 +28,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy, IDamageable
         get => currentState;
         protected set
         {
-            if (Time.time - lastStateChangeTime < stateChangeCooldown)
-            {
-                Debug.Log($"Current state: {currentState}, Cannot change to {value}");
-                return;
-            }
+            if (Time.time - lastStateChangeTime < stateChangeCooldown) return;
             if (value == currentState) return;
             
             currentState = value;

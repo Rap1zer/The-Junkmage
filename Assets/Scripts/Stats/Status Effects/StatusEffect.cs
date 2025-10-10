@@ -9,27 +9,25 @@ using System;
 public abstract class StatusEffect
 {
     public readonly Guid Id;          // optional id/name for debugging / removal
-    public float Duration;             // seconds; <= 0 => infinite
-    public bool IsExpired => Duration > 0f && elapsed >= Duration;
+    public float duration;             // seconds; <= 0 => infinite
+    public bool IsExpired => duration > 0f && startTime + duration <= Time.time;
     public bool IsApplied { get; private set; }
 
-    public float elapsed = 0f; // SHOULD BE PROTECTED. Made it public to debug.
+    public float startTime = 0f; // SHOULD BE PROTECTED. Made it public to debug.
     protected EntityEventDispatcher owner; // the dispatcher that owns this effect
+    protected StatsBase stats;
 
     public StatusEffect(float duration)
     {
         Id = Guid.NewGuid();
-        Duration = duration;
+        this.duration = duration;
+        startTime = Time.time;
     }
 
     internal void SetOwner(EntityEventDispatcher mgr)
     {
         owner = mgr;
-    }
-
-    public virtual void UpdateElapsedTime(float dt)
-    {
-        if (Duration > 0f) elapsed += dt;
+        stats = owner.GetComponent<StatsBase>();
     }
 
     /// <summary>Called once when effect is added to the manager.</summary>

@@ -11,7 +11,7 @@ public class Snowflake : ItemBase, IDealDamageHandler
         if (dispatcher == null) return;
 
         // Add Frost
-        for (int i = 0; i < 4; ++i)
+        for (int i = 0; i < 2; ++i)
         {
             var frost = new Frost(5f);
             dispatcher.AddEffect(frost);

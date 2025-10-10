@@ -5,6 +5,7 @@ public enum StatType
 {
     MaxHealth,
     MoveSpeed,
+    Acceleration,
     DashSpeed,
     DashDuration,
     DashCooldown,
@@ -14,7 +15,7 @@ public enum StatType
     BulletSpeed,
     AttackDmg,
     AttackCooldown,
-    Defence
+    Defence,
 }
 
 public abstract class StatsBase : MonoBehaviour
@@ -54,6 +55,10 @@ public abstract class StatsBase : MonoBehaviour
     public float GetVal(StatType stat)
     {
         float baseValue = GetBaseStat(stat);
+        if (Mathf.Approximately(baseValue, -1f))
+        {
+            return 0;
+        }
         float flat = 0f;
         float percentAdd = 0f;
         float percentMul = 1f;
