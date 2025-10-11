@@ -7,7 +7,7 @@ public class StatSheet : ScriptableObject
     public List<StatEntry> entries = new();
 
     // Runtime cache for quick lookups (not serialized)
-    private Dictionary<StatType, float> cache;
+    private Dictionary<Stat, float> cache;
 
     private void OnEnable()
     {
@@ -26,11 +26,11 @@ public class StatSheet : ScriptableObject
     {
         if (entries == null)
         {
-            cache = new Dictionary<StatType, float>();
+            cache = new Dictionary<Stat, float>();
             return;
         }
 
-        cache = new Dictionary<StatType, float>(entries.Count);
+        cache = new Dictionary<Stat, float>(entries.Count);
         foreach (var e in entries)
         {
             cache[e.type] = e.baseValue;
@@ -40,7 +40,7 @@ public class StatSheet : ScriptableObject
     /// <summary>
     /// Returns the base value for the requested stat, or -1f if not present.
     /// </summary>
-    public float GetBaseValue(StatType stat)
+    public float GetBaseValue(Stat stat)
     {
         if (cache != null && cache.TryGetValue(stat, out var v))
             return v;

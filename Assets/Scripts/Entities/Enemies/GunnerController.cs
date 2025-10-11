@@ -1,4 +1,4 @@
-using JunkMage.Entities.Enemies;
+using JunkMage.Entities.Enemies.Movement;
 using UnityEngine;
 
 namespace JunkMage.Entities.Enemies
@@ -10,28 +10,31 @@ namespace JunkMage.Entities.Enemies
         [SerializeField] private GameObject bulletPrefab;
         [SerializeField] private Transform firePoint;
 
-        private float AttackRange => stats != null ? stats.GetVal(StatType.AttackRange) : 8f;
-        private float RetreatRange => stats != null ? stats.GetVal(StatType.RetreatRange) : 4f;
-        private float DetectionRange => stats != null ? stats.GetVal(StatType.DetectionRange) : 20f;
+        private float AttackRange => Stats != null ? Stats.GetVal(Stat.AttackRange) : 8f;
+        private float RetreatRange => Stats != null ? Stats.GetVal(Stat.RetreatRange) : 4f;
+        private float DetectionRange => Stats != null ? Stats.GetVal(Stat.DetectionRange) : 20f;
 
-        private float AttackEndMultiplier => stats != null ? stats.GetVal(StatType.AttackEndMultiplier) : 1.5f;
-        private float RetreatEndMultiplier => stats != null ? stats.GetVal(StatType.RetreatEndMultiplier) : 1.4f;
-
-
-        private EnemyMovement movement;
-        private EnemyStats stats;
+        private float AttackEndMultiplier => Stats != null ? Stats.GetVal(Stat.AttackEndMultiplier) : 1.5f;
+        private float RetreatEndMultiplier => Stats != null ? Stats.GetVal(Stat.RetreatEndMultiplier) : 1.4f;
+        
+        private MoveToTarget moveToBehaviour;
+        private StrafeAroundTarget strafeBehavior;
+        private Retreat retreatBehavior;
 
         protected override void Start()
         {
             base.Start();
-            movement = GetComponent<EnemyMovement>();
-            stats = GetComponent<EnemyStats>();
+            Stats = GetComponent<EnemyStats>();
             if (firePoint == null)
                 firePoint = transform.Find("Fire Point");
+            
+            moveToBehaviour = new MoveToTarget();
+            strafeBehavior = new StrafeAroundTarget();
+            retreatBehavior = new Retreat();
         
-            stats.ApplyModifier(new StatModifier(StatType.AttackRange, Random.Range(-0.1f, 0.1f), ModifierType.PercentAdd));
-            stats.ApplyModifier(new StatModifier(StatType.RetreatRange, Random.Range(-0.1f, 0.1f), ModifierType.PercentAdd));
-            stats.ApplyModifier(new StatModifier(StatType.DetectionRange, Random.Range(-0.1f, 0.1f), ModifierType.PercentAdd));
+            Stats.ApplyModifier(new StatModifier(Stat.AttackRange, Random.Range(-0.1f, 0.1f), ModifierType.PercentAdd));
+            Stats.ApplyModifier(new StatModifier(Stat.RetreatRange, Random.Range(-0.1f, 0.1f), ModifierType.PercentAdd));
+            Stats.ApplyModifier(new StatModifier(Stat.DetectionRange, Random.Range(-0.1f, 0.1f), ModifierType.PercentAdd));
         }
 
         protected override void LookForPlayer()
@@ -61,8 +64,9 @@ namespace JunkMage.Entities.Enemies
                 CurrentState = EnemyState.Attacking;
                 return;
             }
-
-            movement.MoveTo(player.transform.position, 1.5f);
+            
+            Movement.SetBehavior(moveToBehaviour);
+            Movement.Move(new MovementContext {Target = player.transform.position } );
             FacePlayer(toPlayer);
         }
 
@@ -75,7 +79,8 @@ namespace JunkMage.Entities.Enemies
             float dist = toPlayer.magnitude;
         
             // Stand still or strafe slightly while attacking
-            movement.StrafeAround(player.transform.position);
+            Movement.SetBehavior(strafeBehavior);
+            Movement.Move(new MovementContext {Target = player.transform.position } ); 
 
             // Smoothly face the player
             FacePlayer(toPlayer);
@@ -98,9 +103,10 @@ namespace JunkMage.Entities.Enemies
         protected override void DoFleeBehavior()
         {
             if (player == null) return;
-
+            
+            Movement.SetBehavior(retreatBehavior);
             Vector2 away = (transform.position - player.transform.position).normalized;
-            movement.Retreat(away);
+            Movement.Move(new MovementContext {Target = away } ); 
 
             float dist = Vector2.Distance(transform.position, player.transform.position);
             if (dist > RetreatRange * RetreatEndMultiplier)
@@ -130,7 +136,7 @@ namespace JunkMage.Entities.Enemies
 
             Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
             if (rb != null)
-                rb.linearVelocity = -firePoint.up * stats.GetVal(StatType.BulletSpeed);
+                rb.linearVelocity = -firePoint.up * Stats.GetVal(Stat.BulletSpeed);
         }
     
         private void OnDrawGizmosSelected()

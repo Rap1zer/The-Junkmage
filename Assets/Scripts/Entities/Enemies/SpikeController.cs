@@ -11,7 +11,8 @@ namespace JunkMage.Entities.Enemies
         {
             // Chase player
             Vector2 direction = (player.transform.position - transform.position).normalized;
-            rb.linearVelocity = direction * Speed;
+            Debug.Log(Stats.HasStat(Stat.MoveSpeed));
+            rb.linearVelocity = direction * Stats.GetVal(Stat.MoveSpeed);
 
             if (AttackCooled() && playerInRange && !playerMovement.IsDashing)
                 Attack();

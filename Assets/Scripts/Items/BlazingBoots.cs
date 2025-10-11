@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BlazingBoots : ItemBase
 {
-    private StatModifier speedModifier = new(StatType.MoveSpeed, 2f, ModifierType.Flat);
+    private StatModifier speedModifier = new(Stat.MoveSpeed, 2f, ModifierType.Flat);
     
     protected override void OnEquip()
     {

@@ -25,14 +25,14 @@ public class PlayerCombat : MonoBehaviour
 
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
 
-        int dmg = (int)(UnityEngine.Random.value < stats.GetVal(StatType.CritChance)
-            ? (stats.GetVal(StatType.AttackDmg) * stats.GetVal(StatType.CritMultiplier))
-            : stats.GetVal(StatType.AttackDmg));
+        int dmg = (int)(UnityEngine.Random.value < stats.GetVal(Stat.CritChance)
+            ? (stats.GetVal(Stat.AttackDmg) * stats.GetVal(Stat.CritMultiplier))
+            : stats.GetVal(Stat.AttackDmg));
 
         bullet.GetComponent<Bullet>().Initilaise(dmg, gameObject);
 
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
         if (bulletRb != null)
-            bulletRb.linearVelocity = firePoint.up * stats.GetVal(StatType.BulletSpeed);
+            bulletRb.linearVelocity = firePoint.up * stats.GetVal(Stat.BulletSpeed);
     }
 }

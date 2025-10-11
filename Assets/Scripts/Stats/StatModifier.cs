@@ -7,11 +7,11 @@ public enum ModifierType
 
 public class StatModifier
 {
-    public StatType Stat { get; }
+    public Stat Stat { get; }
     public float Amount { get; }
     public ModifierType Type { get; }
 
-    public StatModifier(StatType stat, float amount, ModifierType type)
+    public StatModifier(Stat stat, float amount, ModifierType type)
     {
         Stat = stat;
         Amount = amount;

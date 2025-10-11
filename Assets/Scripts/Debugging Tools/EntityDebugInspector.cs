@@ -73,7 +73,7 @@ public class EntityDebugInspector : MonoBehaviour
         if (stats != null)
         {
             GUILayout.Label("Stats:", headerStyle);
-            foreach (StatType type in System.Enum.GetValues(typeof(StatType)))
+            foreach (Stat type in System.Enum.GetValues(typeof(Stat)))
             {
                 GUILayout.Label($"{type,-15}: {stats.GetVal(type):F2}", labelStyle);
             }

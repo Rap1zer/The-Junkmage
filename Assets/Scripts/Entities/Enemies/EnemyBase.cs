@@ -1,4 +1,5 @@
 using System.Collections;
+using JunkMage.Entities.Enemies.Movement;
 using UnityEngine;
 
 namespace JunkMage.Entities.Enemies
@@ -12,7 +13,7 @@ namespace JunkMage.Entities.Enemies
         Investigating // Player was seen or something happened
     }
 
-    [RequireComponent(typeof(EnemyStats), typeof(EntityEventDispatcher))]
+    [RequireComponent(typeof(EnemyStats), typeof(EntityEventDispatcher), typeof(EnemyMovement))]
     public abstract class EnemyBase : MonoBehaviour, IDamageable
     {
         [Header("Enemy Info")]
@@ -34,6 +35,10 @@ namespace JunkMage.Entities.Enemies
         protected float lastDamagedTime = -Mathf.Infinity;
 
         private EnemyState currentState;
+        protected EnemyMovement Movement { get; private set; }
+        
+        private Wander wander;
+        
         public EnemyState CurrentState
         {
             get => currentState;
@@ -46,25 +51,15 @@ namespace JunkMage.Entities.Enemies
                 lastStateChangeTime = Time.time;
             }
         }
-
-        protected float cooldownTime;
-    
-        protected Vector2 wanderTarget;
-        protected float wanderRadius = 6f;
-        protected float wanderSpeedMultiplier = 0.5f;
-        protected float wanderTimer = 0f;
-        protected float wanderInterval = 6f; // seconds before picking a new target
-    
-        // Optional convenience properties
-        protected float Speed => Stats.GetVal(StatType.MoveSpeed);
-        protected float AttackDmg => Stats.GetVal(StatType.AttackDmg);
+        protected float AttackDmg => Stats.HasStat(Stat.AttackDmg) ? Stats.GetVal(Stat.AttackDmg) : 1f;
 
         protected virtual void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
             Stats = GetComponent<EnemyStats>();
-            cooldownTime = AddVariation(Stats.GetVal(StatType.AttackCooldown), 0.2f);
+            Movement = GetComponent<EnemyMovement>();
             lastStateChangeTime = -Mathf.Infinity;
+            wander = new Wander();
         }
 
         protected virtual void Start()
@@ -73,7 +68,7 @@ namespace JunkMage.Entities.Enemies
             playerMovement = player.GetComponent<PlayerMovement>();
             spawnRoom = RoomManager.Instance.rooms[roomIndex];
 
-            Health = Stats.GetVal(StatType.MaxHealth); // initialize health from playerStats
+            Health = Stats.GetVal(Stat.MaxHealth); // initialize health from playerStats
             CurrentState = EnemyState.Idle;
 
             RoomManager.Instance.OnPlayerEnterRoom += HandlePlayerEnterRoom;
@@ -128,7 +123,7 @@ namespace JunkMage.Entities.Enemies
 
         protected bool AttackCooled()
         {
-            return Time.time >= lastAttackTime + Stats.GetVal(StatType.AttackCooldown);
+            return Time.time >= lastAttackTime + Stats.GetVal(Stat.AttackCooldown);
         }
 
         // Must be implemented in subclasses
@@ -143,77 +138,15 @@ namespace JunkMage.Entities.Enemies
 
         protected virtual void DoIdleBehavior()
         {
-            wanderTimer -= Time.deltaTime;
-
-            if (wanderTimer <= 0f || Vector2.Distance(transform.position, wanderTarget) <= 0.1f)
-            {
-                PickNewWanderTarget();
-                wanderTimer = AddVariation(wanderInterval, 0.3f);
-            }
-
-            // Calculate direction toward target
-            Vector2 direction = (wanderTarget - (Vector2)transform.position).normalized;
-
-            // --- Avoid nearby enemies ---
-            Collider2D[] hits = new Collider2D[10]; // preallocate or reuse array
-            int hitCount = Physics2D.OverlapCircleNonAlloc(transform.position, 1f, hits, LayerMask.GetMask("Enemy"));
-            Vector2 avoidance = Vector2.zero;
-            for (int i = 0; i < hitCount; i++)
-            {
-                if (hits[i].gameObject == gameObject) continue;
-                avoidance += ((Vector2)transform.position - (Vector2)hits[i].transform.position).normalized;
-            }
-            if (avoidance != Vector2.zero)
-                direction = (direction + avoidance.normalized).normalized;
-
-            // Move
-            rb.linearVelocity = direction * (Speed * wanderSpeedMultiplier);
-
-            // --- Smooth rotation ---
-            if (direction != Vector2.zero)
-            {
-                float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
-                float smoothAngle = Mathf.LerpAngle(transform.eulerAngles.z, targetAngle, Time.deltaTime * 5f); // smooth factor
-                transform.rotation = Quaternion.Euler(0f, 0f, smoothAngle);
-            }
-        }
-
-
-
-        private void PickNewWanderTarget()
-        {
-            LayerMask wallLayer = LayerMask.GetMask("Wall");
-
-            for (int i = 0; i < 10; i++) // try 10 times max
-            {
-                float r = Mathf.Sqrt(Random.value) * wanderRadius; // bias toward edges
-                Vector2 randomOffset = Random.insideUnitCircle.normalized * r;
-                Vector2 candidate = (Vector2)transform.position + randomOffset;
-
-                // Cast a ray toward candidate
-                Vector2 direction = candidate - (Vector2)transform.position;
-                float distance = direction.magnitude;
-                direction.Normalize();
-
-                // If ray does NOT hit a wall, the candidate is valid
-                if (!Physics2D.Raycast(transform.position, direction, distance, wallLayer))
-                {
-                    wanderTarget = candidate;
-                    return;
-                }
-            }
-
-            // fallback: stay in place if no valid target found
-            wanderTarget = transform.position;
+            Movement.SetBehavior(wander);
+            Movement.Move(new MovementContext());
         }
 
         protected virtual void LookForPlayer() { }
         protected virtual void DoChaseBehavior() { }
         protected virtual void DoFleeBehavior() { }
         protected virtual void DoInvestigateBehavior() { }
-
-        private float AddVariation(float val, float percent) => val + Random.Range(-val * percent, val * percent);
-
+        
         public virtual void TakeDamage(float dmg, GameObject attacker = null)
         {
             lastDamagedTime = Time.time;

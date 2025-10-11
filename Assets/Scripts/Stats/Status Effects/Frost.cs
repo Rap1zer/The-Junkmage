@@ -5,10 +5,10 @@ public class Frost : StatusEffect
     // Frost reduces move speed, dash speed, bullet speed, and increases attack cooldown.
     private readonly StatModifier[] modifiers = 
     {
-        new(StatType.MoveSpeed, -0.1f, ModifierType.PercentMul),
-        new(StatType.DashSpeed, -0.1f, ModifierType.PercentMul),
-        new(StatType.AttackCooldown, 0.1f, ModifierType.PercentAdd),
-        new(StatType.BulletSpeed,  -0.05f, ModifierType.PercentMul),
+        new(Stat.MoveSpeed, -0.1f, ModifierType.PercentMul),
+        new(Stat.DashSpeed, -0.1f, ModifierType.PercentMul),
+        new(Stat.AttackCooldown, 0.1f, ModifierType.PercentAdd),
+        new(Stat.BulletSpeed,  -0.05f, ModifierType.PercentMul),
     };
     
     public Frost(float duration) : base(duration) { }

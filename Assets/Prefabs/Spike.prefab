@@ -175,6 +175,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomIndex: 1
+  stateChangeCooldown: 0.3
   playerInRange: 0
 --- !u!114 &-2491575489123075733
 MonoBehaviour:
@@ -188,10 +189,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 347be8a730ed441d08233c71109f8d99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseMaxHealth: 5
-  baseMoveSpeed: 2
-  baseAttackDmg: 1
-  baseAttackCooldown: 1
+  baseStatsList: []
+  enemyStatSheet: {fileID: 11400000, guid: be9df7d8f432343a2b884804f6ecaf0f, type: 2}
+  enemyBaseStats: []
 --- !u!114 &8788468847247101123
 MonoBehaviour:
   m_ObjectHideFlags: 0

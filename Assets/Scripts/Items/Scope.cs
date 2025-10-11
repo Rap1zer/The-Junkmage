@@ -16,7 +16,7 @@ public class Scope : ItemBase, IDealDamageHandler, IMissedAttackHandler
 
         float increase = Mathf.Min(stack, maxCritChanceStack - critChanceStack);
         
-        StatModifier newModifier = new StatModifier(StatType.CritChance, increase, ModifierType.Flat);
+        StatModifier newModifier = new StatModifier(Stat.CritChance, increase, ModifierType.Flat);
         modifiers.Add(newModifier);
         
         playerStats.ApplyModifier(newModifier);

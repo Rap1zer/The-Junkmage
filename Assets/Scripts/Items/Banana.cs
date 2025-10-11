@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Banana : ItemBase
 {
-    private StatModifier maxHealthModifier = new(StatType.MaxHealth, 2f, ModifierType.Flat);
+    private StatModifier maxHealthModifier = new(Stat.MaxHealth, 2f, ModifierType.Flat);
     
     protected override void OnEquip()
     {

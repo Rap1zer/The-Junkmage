@@ -49,9 +49,9 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         if (IsDashing)
-            rb.linearVelocity = dashDirection * stats.GetVal(StatType.DashSpeed);
+            rb.linearVelocity = dashDirection * stats.GetVal(Stat.DashSpeed);
         else
-            rb.linearVelocity = moveInput * stats.GetVal(StatType.MoveSpeed);
+            rb.linearVelocity = moveInput * stats.GetVal(Stat.MoveSpeed);
     }
     
     void StartDash()
@@ -59,8 +59,8 @@ public class PlayerMovement : MonoBehaviour
         if (moveInput == Vector2.zero) return;
 
         IsDashing = true;
-        dashTimeLeft = stats.GetVal(StatType.DashDuration);
-        dashCooldownTimer = stats.GetVal(StatType.DashCooldown);
+        dashTimeLeft = stats.GetVal(Stat.DashDuration);
+        dashCooldownTimer = stats.GetVal(Stat.DashCooldown);
         dashDirection = moveInput;
 
         // Make player semi-transparent

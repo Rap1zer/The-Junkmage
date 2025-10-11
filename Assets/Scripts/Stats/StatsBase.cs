@@ -11,7 +11,7 @@ public abstract class StatsBase : MonoBehaviour
     [SerializeField, HideInInspector] protected List<StatEntry> baseStatsList = new();
 
     // Modifiers per stat (unchanged)
-    protected Dictionary<StatType, List<StatModifier>> modifiers = new();
+    protected Dictionary<Stat, List<StatModifier>> modifiers = new();
 
     protected virtual void Awake()
     {
@@ -37,7 +37,12 @@ public abstract class StatsBase : MonoBehaviour
         }
     }
 
-    public float GetVal(StatType stat)
+    public bool HasStat(Stat stat)
+    {
+        return !Mathf.Approximately(GetBaseStat(stat), -1f);
+    }
+
+    public float GetVal(Stat stat)
     {
         float baseValue = GetBaseStat(stat);
         if (Mathf.Approximately(baseValue, -1f))
@@ -64,7 +69,7 @@ public abstract class StatsBase : MonoBehaviour
     /// Gets the base stat value. Prefers the assigned StatSheet. Falls back to the legacy list.
     /// Returns -1f if stat not found.
     /// </summary>
-    protected virtual float GetBaseStat(StatType stat)
+    private float GetBaseStat(Stat stat)
     {
         if (baseStatsSheet != null)
             return baseStatsSheet.GetBaseValue(stat);

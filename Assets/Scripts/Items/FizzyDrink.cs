@@ -9,7 +9,7 @@ public class FizzyDrink : ItemBase
     {
         base.Awake();
         playerStats = GameObject.Find("Player").GetComponent<PlayerStats>();
-        modifier = new StatModifier(StatType.BulletSpeed, 0.30f, ModifierType.PercentMul);
+        modifier = new StatModifier(Stat.BulletSpeed, 0.30f, ModifierType.PercentMul);
     }
 
     protected override void OnEquip()

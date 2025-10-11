@@ -30,7 +30,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     void Awake()
     {
         stats = GetComponent<PlayerStats>();
-        CurrentHealth = (int)stats.GetVal(StatType.MaxHealth);
+        CurrentHealth = (int)stats.GetVal(Stat.MaxHealth);
         dispatcher = GetComponent<EntityEventDispatcher>();
         movement = GetComponent<PlayerMovement>();
     }
@@ -41,7 +41,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         
         if (dispatcher != null)
         {
-            dmg = Math.Max(dmg - stats.GetVal(StatType.Defence), 0);
+            dmg = Math.Max(dmg - stats.GetVal(Stat.Defence), 0);
             dmg = dispatcher.DispatchIncomingDamage(dmg, attacker);
         }
 
@@ -53,7 +53,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public void Heal(int amount)
     {
-        CurrentHealth = Mathf.Clamp(CurrentHealth + amount, 0, (int)stats.GetVal(StatType.MaxHealth));
+        CurrentHealth = Mathf.Clamp(CurrentHealth + amount, 0, (int)stats.GetVal(Stat.MaxHealth));
         OnHealthChanged?.Invoke(CurrentHealth);
     }
 

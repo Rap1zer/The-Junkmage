@@ -4,17 +4,17 @@ using System.Collections.Generic;
 [System.Serializable]
 public class StatEntry
 {
-    public StatType type;
+    public Stat type;
     public float baseValue;
 
-    public StatEntry(StatType type, float baseValue)
+    public StatEntry(Stat type, float baseValue)
     {
         this.type = type;
         this.baseValue = baseValue;
     }
 }
 
-public enum StatType
+public enum Stat
 {
     MaxHealth = 0,
     MoveSpeed = 10,
