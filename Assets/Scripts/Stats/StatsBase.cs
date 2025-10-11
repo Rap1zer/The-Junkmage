@@ -18,11 +18,26 @@ public enum StatType
     Defence,
 }
 
+[System.Serializable]
+public class StatEntry
+{
+    public StatType type;
+    public float baseValue;
+}
+
 public abstract class StatsBase : MonoBehaviour
 {
-    // Active modifiers for each stat
-    protected Dictionary<StatType, List<StatModifier>> modifiers
-        = new Dictionary<StatType, List<StatModifier>>();
+    [SerializeField] protected List<StatEntry> baseStatsList = new();
+    protected Dictionary<StatType, float> baseStatsDict;
+
+    protected Dictionary<StatType, List<StatModifier>> modifiers = new();
+
+    protected virtual void Awake()
+    {
+        baseStatsDict = new Dictionary<StatType, float>(baseStatsList.Count);
+        foreach (var entry in baseStatsList)
+            baseStatsDict[entry.type] = entry.baseValue;
+    }
 
     public void ApplyModifier(StatModifier modifier)
     {
@@ -30,54 +45,34 @@ public abstract class StatsBase : MonoBehaviour
             modifiers[modifier.Stat] = new List<StatModifier>();
 
         modifiers[modifier.Stat].Add(modifier);
-
-        // Example: Clamp health if needed (optional to override in subclasses)
-        // if (modifier.Stat == StatType.MaxHealth)
-        // {
-        //     CurrentHealth = Mathf.Clamp(CurrentHealth, 0, (int)GetVal(StatType.MaxHealth));
-        // }
     }
 
     public void RemoveModifier(StatModifier modifier)
     {
-        if (modifiers.TryGetValue(modifier.Stat, out List<StatModifier> list))
+        if (modifiers.TryGetValue(modifier.Stat, out var list))
         {
             list.Remove(modifier);
-
             if (list.Count == 0)
-            {
                 modifiers.Remove(modifier.Stat);
-            }
         }
     }
 
-    // Compute final stat value from base + modifiers
     public float GetVal(StatType stat)
     {
         float baseValue = GetBaseStat(stat);
         if (Mathf.Approximately(baseValue, -1f))
-        {
-            return 0;
-        }
-        float flat = 0f;
-        float percentAdd = 0f;
-        float percentMul = 1f;
+            return 0f;
 
-        if (modifiers.TryGetValue(stat, out var statModifiers))
+        float flat = 0f, percentAdd = 0f, percentMul = 1f;
+        if (modifiers.TryGetValue(stat, out var list))
         {
-            foreach (var m in statModifiers)
+            foreach (var m in list)
             {
                 switch (m.Type)
                 {
-                    case ModifierType.Flat:
-                        flat += m.Amount;
-                        break;
-                    case ModifierType.PercentAdd:
-                        percentAdd += m.Amount;
-                        break;
-                    case ModifierType.PercentMul:
-                        percentMul *= (1 + m.Amount);
-                        break;
+                    case ModifierType.Flat: flat += m.Amount; break;
+                    case ModifierType.PercentAdd: percentAdd += m.Amount; break;
+                    case ModifierType.PercentMul: percentMul *= (1 + m.Amount); break;
                 }
             }
         }
@@ -85,6 +80,6 @@ public abstract class StatsBase : MonoBehaviour
         return (baseValue + flat) * (1 + percentAdd) * percentMul;
     }
 
-    // Subclasses must provide their base stat values
-    protected abstract float GetBaseStat(StatType stat);
+    protected virtual float GetBaseStat(StatType stat)
+        => baseStatsDict != null && baseStatsDict.TryGetValue(stat, out float val) ? val : -1f;
 }
