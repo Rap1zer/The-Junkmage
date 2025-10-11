@@ -26,8 +26,8 @@ public class PlayerCombat : MonoBehaviour
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
 
         int dmg = (int)(UnityEngine.Random.value < stats.GetVal(StatType.CritChance)
-            ? (stats.GetVal(StatType.BulletDmg) * stats.GetVal(StatType.CritMultiplier))
-            : stats.GetVal(StatType.BulletDmg));
+            ? (stats.GetVal(StatType.AttackDmg) * stats.GetVal(StatType.CritMultiplier))
+            : stats.GetVal(StatType.AttackDmg));
 
         bullet.GetComponent<Bullet>().Initilaise(dmg, gameObject);
 

@@ -3889,29 +3889,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54ff3568495b7482fa6041a017c73eb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseStatsList:
-  - type: 0
-    baseValue: 5
-  - type: 1
-    baseValue: 8
-  - type: 3
-    baseValue: 12
-  - type: 4
-    baseValue: 0.2
-  - type: 5
-    baseValue: 1
-  - type: 6
-    baseValue: 1
-  - type: 7
-    baseValue: 0.1
-  - type: 8
-    baseValue: 2
-  - type: 9
-    baseValue: 14
-  - type: 9
-    baseValue: 14
-  - type: 9
-    baseValue: 14
+  baseStatsList: []
+  playerStatSheet: {fileID: 11400000, guid: 61043950d8a494d7293e36331e6192c6, type: 2}
   playerBaseStats: []
 --- !u!114 &1680841013
 MonoBehaviour:

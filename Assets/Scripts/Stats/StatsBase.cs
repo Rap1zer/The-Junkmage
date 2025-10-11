@@ -1,42 +1,22 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public enum StatType
-{
-    MaxHealth,
-    MoveSpeed,
-    Acceleration,
-    DashSpeed,
-    DashDuration,
-    DashCooldown,
-    BulletDmg,
-    CritChance,
-    CritMultiplier,
-    BulletSpeed,
-    AttackDmg,
-    AttackCooldown,
-    Defence,
-}
-
-[System.Serializable]
-public class StatEntry
-{
-    public StatType type;
-    public float baseValue;
-}
-
 public abstract class StatsBase : MonoBehaviour
 {
-    [SerializeField] protected List<StatEntry> baseStatsList = new();
-    protected Dictionary<StatType, float> baseStatsDict;
+    [Header("Prefer using a StatSheet ScriptableObject")]
+    [Tooltip("Assign a StatSheet ScriptableObject to use shared base stats. If none is assigned, the legacy baseStatsList will be used.")]
+    protected StatSheet baseStatsSheet;
 
+    // Legacy support for scenes that still use lists (you can remove later)
+    [SerializeField, HideInInspector] protected List<StatEntry> baseStatsList = new();
+
+    // Modifiers per stat (unchanged)
     protected Dictionary<StatType, List<StatModifier>> modifiers = new();
 
     protected virtual void Awake()
     {
-        baseStatsDict = new Dictionary<StatType, float>(baseStatsList.Count);
-        foreach (var entry in baseStatsList)
-            baseStatsDict[entry.type] = entry.baseValue;
+        // Nothing needed on Awake for ScriptableObject approach.
+        // We keep the legacy list around for backward compatibility.
     }
 
     public void ApplyModifier(StatModifier modifier)
@@ -80,6 +60,22 @@ public abstract class StatsBase : MonoBehaviour
         return (baseValue + flat) * (1 + percentAdd) * percentMul;
     }
 
+    /// <summary>
+    /// Gets the base stat value. Prefers the assigned StatSheet. Falls back to the legacy list.
+    /// Returns -1f if stat not found.
+    /// </summary>
     protected virtual float GetBaseStat(StatType stat)
-        => baseStatsDict != null && baseStatsDict.TryGetValue(stat, out float val) ? val : -1f;
+    {
+        if (baseStatsSheet != null)
+            return baseStatsSheet.GetBaseValue(stat);
+
+        if (baseStatsList != null)
+        {
+            foreach (var e in baseStatsList)
+                if (e.type == stat)
+                    return e.baseValue;
+        }
+
+        return -1f;
+    }
 }
