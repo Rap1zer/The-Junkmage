@@ -8,29 +8,28 @@ public class GunnerController : EnemyBase
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform firePoint;
 
-    [Header("Ranges")]
-    [SerializeField] private float attackRange = 8f;
-    [SerializeField] private float retreatRange = 4f;
-    [SerializeField] private float detectionRange = 14f;
-    
-    [Header("Buffers")]
-    [SerializeField] private float attackEndMultiplier = 1.5f; // Switch from attacking to chasing
-    [SerializeField] private float retreatExitMultiplier = 1.4f; // Switch from retreating to chasing
+    private float AttackRange => stats != null ? stats.GetVal(StatType.AttackRange) : 8f;
+    private float RetreatRange => stats != null ? stats.GetVal(StatType.RetreatRange) : 4f;
+    private float DetectionRange => stats != null ? stats.GetVal(StatType.DetectionRange) : 20f;
+
+    private float AttackEndMultiplier => stats != null ? stats.GetVal(StatType.AttackEndMultiplier) : 1.5f;
+    private float RetreatEndMultiplier => stats != null ? stats.GetVal(StatType.RetreatEndMultiplier) : 1.4f;
+
 
     private EnemyMovement movement;
-    private GunnerStats stats;
+    private EnemyStats stats;
 
     protected override void Start()
     {
         base.Start();
         movement = GetComponent<EnemyMovement>();
-        stats = GetComponent<GunnerStats>();
+        stats = GetComponent<EnemyStats>();
         if (firePoint == null)
             firePoint = transform.Find("Fire Point");
         
-        attackRange = attackRange * Random.Range(0.9f, 1.1f);
-        retreatRange = retreatRange * Random.Range(0.9f, 1.1f);
-        detectionRange = detectionRange * Random.Range(0.9f, 1.1f);
+        stats.ApplyModifier(new StatModifier(StatType.AttackRange, Random.Range(-0.1f, 0.1f), ModifierType.PercentAdd));
+        stats.ApplyModifier(new StatModifier(StatType.RetreatRange, Random.Range(-0.1f, 0.1f), ModifierType.PercentAdd));
+        stats.ApplyModifier(new StatModifier(StatType.DetectionRange, Random.Range(-0.1f, 0.1f), ModifierType.PercentAdd));
     }
 
     protected override void LookForPlayer()
@@ -38,7 +37,7 @@ public class GunnerController : EnemyBase
         if (player == null) return;
 
         float dist = Vector2.Distance(transform.position, player.transform.position);
-        if (dist <= detectionRange)
+        if (dist <= DetectionRange)
             CurrentState = EnemyState.Chasing;
     }
 
@@ -49,13 +48,13 @@ public class GunnerController : EnemyBase
         Vector2 toPlayer = player.transform.position - transform.position;
         float dist = toPlayer.magnitude;
 
-        if (dist > detectionRange)
+        if (dist > DetectionRange)
         {
             CurrentState = EnemyState.Idle;
             return;
         }
 
-        if (dist <= attackRange)
+        if (dist <= AttackRange)
         {
             CurrentState = EnemyState.Attacking;
             return;
@@ -79,13 +78,13 @@ public class GunnerController : EnemyBase
         // Smoothly face the player
         FacePlayer(toPlayer);
 
-        if (dist < retreatRange)
+        if (dist < RetreatRange)
         {
             CurrentState = EnemyState.Fleeing;
             return;
         }
 
-        if (dist > attackRange * attackEndMultiplier)
+        if (dist > AttackRange * AttackEndMultiplier)
         {
             CurrentState = EnemyState.Chasing;
             return;
@@ -102,7 +101,7 @@ public class GunnerController : EnemyBase
         movement.Retreat(away);
 
         float dist = Vector2.Distance(transform.position, player.transform.position);
-        if (dist > retreatRange * retreatExitMultiplier)
+        if (dist > RetreatRange * RetreatEndMultiplier)
             CurrentState = EnemyState.Chasing;
 
         FacePlayer(-away);
@@ -136,24 +135,24 @@ public class GunnerController : EnemyBase
     {
         // Attack Range (Orange) - When the enemy starts attacking
         Gizmos.color = new Color(1f, 0.5f, 0f, 0.75f); // Orange
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.DrawWireSphere(transform.position, AttackRange);
 
         // Retreat Range (Red) - When the enemy starts fleeing
         Gizmos.color = new Color(1f, 0.2f, 0.2f, 0.75f); // Red
-        Gizmos.DrawWireSphere(transform.position, retreatRange);
+        Gizmos.DrawWireSphere(transform.position, RetreatRange);
 
         // Detection Range (Yellow) - When the enemy switches from Idle to Chasing
         Gizmos.color = new Color(1f, 1f, 0f, 0.5f); // Yellow (more transparent)
-        Gizmos.DrawWireSphere(transform.position, detectionRange);
+        Gizmos.DrawWireSphere(transform.position, DetectionRange);
         
         // Extended Retreat Range (Light Blue) - The threshold to stop fleeing
-        // The fleeing logic uses 'retreatRange * retreatExitMultiplier'
+        // The fleeing logic uses 'retreatRange * RetreatEndMultiplier'
         Gizmos.color = new Color(0.5f, 0.8f, 1f, 0.6f); // Light Blue
-        Gizmos.DrawWireSphere(transform.position, retreatRange * retreatExitMultiplier);
+        Gizmos.DrawWireSphere(transform.position, RetreatRange * RetreatEndMultiplier);
         
         // Extended Attack Range (Green) - The threshold to stop attacking and start chasing again
         // The attacking logic uses 'attackRange * attackEndMultiplier'
         Gizmos.color = new Color(0f, 1f, 0f, 0.6f); // Green
-        Gizmos.DrawWireSphere(transform.position, attackRange * attackEndMultiplier);
+        Gizmos.DrawWireSphere(transform.position, AttackRange * AttackEndMultiplier);
     }
 }

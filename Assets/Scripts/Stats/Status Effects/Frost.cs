@@ -8,7 +8,7 @@ public class Frost : StatusEffect
         new(StatType.MoveSpeed, -0.1f, ModifierType.PercentMul),
         new(StatType.DashSpeed, -0.1f, ModifierType.PercentMul),
         new(StatType.AttackCooldown, 0.1f, ModifierType.PercentAdd),
-        new(StatType.BulletSpeed,  -0.1f, ModifierType.PercentMul),
+        new(StatType.BulletSpeed,  -0.05f, ModifierType.PercentMul),
     };
     
     public Frost(float duration) : base(duration) { }

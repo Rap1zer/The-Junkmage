@@ -3,13 +3,12 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class EnemyMovement : MonoBehaviour, IMovementController
 {
-    [Header("Strafing")]
-    public float strafeSpeed = 2f;
-    public float strafeRadius = 1.5f;
-    public float strafeDuration = 1.2f;
-
     private Rigidbody2D rb;
     private EnemyStats stats;
+    
+    private float StrafeSpeed => stats != null ? stats.GetVal(StatType.StrafeSpeed) : 0f;
+    private float StrafeDuration => stats != null ? stats.GetVal(StatType.StrafeDuration) : 0f;
+    
     private float strafeEndTime;
     private Vector2 strafeDir;
     private bool isStrafing;
@@ -49,10 +48,10 @@ public class EnemyMovement : MonoBehaviour, IMovementController
         Vector2 dirToCenter = (center - rb.position).normalized;
         Vector2 perpendicular = new Vector2(-dirToCenter.y, dirToCenter.x) * (Random.value > 0.5f ? 1 : -1);
         strafeDir = perpendicular;
-        strafeEndTime = Time.time + strafeDuration;
+        strafeEndTime = Time.time + StrafeDuration;
         isStrafing = true;
 
-        rb.linearVelocity = strafeDir * strafeSpeed;
+        rb.linearVelocity = strafeDir * StrafeSpeed;
     }
 
     public void Retreat(Vector2 away)

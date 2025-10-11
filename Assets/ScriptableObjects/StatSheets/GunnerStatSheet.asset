@@ -25,3 +25,19 @@ MonoBehaviour:
     baseValue: 1
   - type: 9
     baseValue: 0.5
+  - type: 15
+    baseValue: 8
+  - type: 16
+    baseValue: 4
+  - type: 17
+    baseValue: 20
+  - type: 18
+    baseValue: 2
+  - type: 19
+    baseValue: 1.4
+  - type: 12
+    baseValue: 2.4
+  - type: 13
+    baseValue: 1.5
+  - type: 12
+    baseValue: 1.2
