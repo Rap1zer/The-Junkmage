@@ -4,13 +4,13 @@ using UnityEngine;
 namespace JunkMage.Entities.Enemies
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class EnemyMovement : MonoBehaviour, IMovementController
+    public class EnemyMovement : MonoBehaviour
     {
         private Rigidbody2D rb;
         private EnemyStats stats;
     
-        private float StrafeSpeed => stats != null ? stats.GetVal(StatType.StrafeSpeed) : 0f;
-        private float StrafeDuration => stats != null ? stats.GetVal(StatType.StrafeDuration) : 0f;
+        private float StrafeSpeed => stats != null ? stats.GetVal(StatType.StrafeSpeed) : 5f;
+        private float StrafeDuration => stats != null ? stats.GetVal(StatType.StrafeDuration) : 2f;
     
         private float strafeEndTime;
         private Vector2 strafeDir;
@@ -66,13 +66,5 @@ namespace JunkMage.Entities.Enemies
         {
             rb.linearVelocity = Vector2.MoveTowards(rb.linearVelocity, Vector2.zero, Acceleration * Time.deltaTime);
         }
-
-        // Interface placeholders (simplified version)
-        public void RequestStrafe(Vector2 toPlayer) => StrafeAround(rb.position - toPlayer);
-        public void ImmediateStrafe(Vector2 toPlayer) => StrafeAround(rb.position - toPlayer);
-        public void UpdateStrafe(Vector2 toPlayer) { }
-        public void SetHoldSuppressed(bool suppressed) { }
-        public bool IsAtPosition(Vector2 pos, float threshold) => Vector2.Distance(rb.position, pos) <= threshold;
-        public bool IsHolding() => false;
     }
 }
