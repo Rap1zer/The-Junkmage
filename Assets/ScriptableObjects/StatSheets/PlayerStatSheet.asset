@@ -15,23 +15,25 @@ MonoBehaviour:
   entries:
   - type: 0
     baseValue: 5
-  - type: 1
-    baseValue: 8
-  - type: 3
-    baseValue: 30
-  - type: 4
-    baseValue: 0.2
-  - type: 5
-    baseValue: 1
-  - type: 6
-    baseValue: 14
   - type: 10
-    baseValue: 0.1
-  - type: 9
+    baseValue: 8
+  - type: 30
+    baseValue: 30
+  - type: 40
+    baseValue: 0.2
+  - type: 50
     baseValue: 1
-  - type: 7
+  - type: 60
+    baseValue: 14
+  - type: 80
     baseValue: 0.1
-  - type: 8
+  - type: 100
+    baseValue: 1
+  - type: 110
+    baseValue: 0.1
+  - type: 90
     baseValue: 2
-  - type: 11
+  - type: 120
     baseValue: 0
+  - type: 70
+    baseValue: 1

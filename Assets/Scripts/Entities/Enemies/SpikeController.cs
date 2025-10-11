@@ -1,39 +1,43 @@
+using JunkMage.Entities.Enemies;
 using UnityEngine;
 
-public class SpikeController : EnemyBase
+namespace JunkMage.Entities.Enemies
 {
-    public bool playerInRange = false;
-
-    protected override void DoAttackBehavior()
+    public class SpikeController : EnemyBase
     {
-        // Chase player
-        Vector2 direction = (player.transform.position - transform.position).normalized;
-        rb.linearVelocity = direction * Speed;
+        public bool playerInRange = false;
 
-        if (AttackCooled() && playerInRange && !playerMovement.IsDashing)
-            Attack();
-    }
-
-    public override void Attack()
-    {
-        base.Attack();
-        var damageable = player.GetComponent<IDamageable>();
-        damageable?.TakeDamage(AttackDmg, gameObject);
-    }
-    
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        if (other.transform.CompareTag("Player"))
+        protected override void DoAttackBehavior()
         {
-            playerInRange = true;
+            // Chase player
+            Vector2 direction = (player.transform.position - transform.position).normalized;
+            rb.linearVelocity = direction * Speed;
+
+            if (AttackCooled() && playerInRange && !playerMovement.IsDashing)
+                Attack();
         }
-    }
 
-    private void OnCollisionExit2D(Collision2D other)
-    {
-        if (other.transform.CompareTag("Player"))
+        public override void Attack()
         {
-            playerInRange = false;
+            base.Attack();
+            var damageable = player.GetComponent<IDamageable>();
+            damageable?.TakeDamage(AttackDmg, gameObject);
+        }
+    
+        private void OnCollisionEnter2D(Collision2D other)
+        {
+            if (other.transform.CompareTag("Player"))
+            {
+                playerInRange = true;
+            }
+        }
+
+        private void OnCollisionExit2D(Collision2D other)
+        {
+            if (other.transform.CompareTag("Player"))
+            {
+                playerInRange = false;
+            }
         }
     }
 }

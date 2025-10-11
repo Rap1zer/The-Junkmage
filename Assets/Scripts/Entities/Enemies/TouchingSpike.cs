@@ -1,3 +1,4 @@
+using JunkMage.Entities.Enemies;
 using UnityEngine;
 
 public class TouchingSpike : MonoBehaviour
