@@ -1,4 +1,5 @@
 using JunkMage.Entities.Enemies;
+using JunkMage.Entities.Enemies.Movement;
 using UnityEngine;
 
 namespace JunkMage.Entities.Enemies
@@ -6,23 +7,29 @@ namespace JunkMage.Entities.Enemies
     public class SpikeController : EnemyBase
     {
         public bool playerInRange = false;
+        
+        private MoveToTarget moveToTarget;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            moveToTarget = new MoveToTarget();
+        }
 
         protected override void DoAttackBehavior()
         {
             // Chase player
-            Vector2 direction = (player.transform.position - transform.position).normalized;
-            Debug.Log(Stats.HasStat(Stat.MoveSpeed));
-            rb.linearVelocity = direction * Stats.GetVal(Stat.MoveSpeed);
+            Movement.SetBehavior(moveToTarget);
+            Movement.Move(new MovementContext {Target = player.transform.position});
 
             if (AttackCooled() && playerInRange && !playerMovement.IsDashing)
                 Attack();
         }
 
-        public override void Attack()
+        protected override void Attack()
         {
             base.Attack();
-            var damageable = player.GetComponent<IDamageable>();
-            damageable?.TakeDamage(AttackDmg, gameObject);
+            playerHealth?.TakeDamage(AttackDmg, gameObject);
         }
     
         private void OnCollisionEnter2D(Collision2D other)

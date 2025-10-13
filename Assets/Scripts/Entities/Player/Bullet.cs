@@ -16,9 +16,9 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        bool hitEntity = (!isPLayerBullet && other.CompareTag("Player")) ||
+        bool hitEntity = (!isPLayerBullet && other.CompareTag("Player") && !other.GetComponent<PlayerMovement>().IsDashing) ||
                              (isPLayerBullet && other.CompareTag("Enemy"));
-        bool hitValidObj = !((isPLayerBullet && other.CompareTag("Player")) ||
+        bool hitValidObj = !((isPLayerBullet && other.CompareTag("Player") && !other.GetComponent<PlayerMovement>().IsDashing) ||
                              (!isPLayerBullet && other.CompareTag("Enemy"))) &&
                            !other.CompareTag("Bullet");
         

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5454916174721836411}
   - component: {fileID: -2491575489123075733}
   - component: {fileID: 8788468847247101123}
+  - component: {fileID: 4859931372010498586}
   m_Layer: 7
   m_Name: Spike
   m_TagString: Enemy
@@ -147,7 +148,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 50
+  m_Mass: 4
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 0
@@ -205,6 +206,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tickInterval: 0.5
+--- !u!114 &4859931372010498586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3360943659272257181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71f19f56914f4313b48e942fd6eba281, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JunkMage.Entities.Enemies.Movement.EnemyMovement
 --- !u!1 &5152238288666365362
 GameObject:
   m_ObjectHideFlags: 0

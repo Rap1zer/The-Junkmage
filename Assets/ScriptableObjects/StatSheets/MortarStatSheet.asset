@@ -10,14 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2680503a18b440c19cea2792907d9992, type: 3}
-  m_Name: SpikeStatSheet
+  m_Name: MortarStatSheet
   m_EditorClassIdentifier: Assembly-CSharp::StatSheet
   entries:
   - type: 0
-    baseValue: 9
-  - type: 10
     baseValue: 6
-  - type: 100
+  - type: 10
     baseValue: 2
   - type: 20
-    baseValue: 15
+    baseValue: 10
+  - type: 110
+    baseValue: 2.4
+  - type: 100
+    baseValue: 2
+  - type: 180
+    baseValue: 2.4
+  - type: 150
+    baseValue: 2
+  - type: 160
+    baseValue: 5
+  - type: 170
+    baseValue: 25

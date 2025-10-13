@@ -37,5 +37,7 @@ MonoBehaviour:
     baseValue: 2.4
   - type: 140
     baseValue: 1.5
-  - type: 12
-    baseValue: 1.2
+  - type: 110
+    baseValue: 1
+  - type: 180
+    baseValue: 2

@@ -193,6 +193,8 @@ GameObject:
   - component: {fileID: 4234208220651888104}
   - component: {fileID: -6232510587560456594}
   - component: {fileID: -3427353376249035902}
+  - component: {fileID: -9162954927499410499}
+  - component: {fileID: 7865643643928068562}
   m_Layer: 7
   m_Name: Mortar
   m_TagString: Untagged
@@ -305,7 +307,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 347be8a730ed441d08233c71109f8d99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseMaxHealth: 10
-  baseMoveSpeed: 2
-  baseAttackDmg: 1
-  baseAttackCooldown: 1
+  baseStatsList: []
+  enemyStatSheet: {fileID: 11400000, guid: 306141103bb7d484fb63c1fe6e747573, type: 2}
+  enemyBaseStats: []
+--- !u!114 &-9162954927499410499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2304953029719872978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31f1865dfb5414fd9a8833803cb62647, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  roomIndex: 0
+  stateChangeCooldown: 0.3
+  PlayerInRoom: 0
+  dmgZone: {fileID: 2377947584533203612, guid: f6fcf42808b824b11af0700cab0c287a, type: 3}
+  dmgZoneCount: 2
+--- !u!114 &7865643643928068562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2304953029719872978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71f19f56914f4313b48e942fd6eba281, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JunkMage.Entities.Enemies.Movement.EnemyMovement

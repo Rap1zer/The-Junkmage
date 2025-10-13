@@ -8,6 +8,8 @@ TagManager:
   - Enemy
   - InventoryCell
   - Bullet
+  - Floor
+  - Room
   layers:
   - Default
   - TransparentFX

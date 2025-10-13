@@ -124,7 +124,7 @@ namespace JunkMage.Entities.Enemies
             transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
         }
 
-        public override void Attack()
+        protected override void Attack()
         {
             base.Attack();
             if (bulletPrefab == null || firePoint == null) return;

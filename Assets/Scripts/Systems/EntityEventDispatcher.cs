@@ -47,7 +47,6 @@ public class EntityEventDispatcher : MonoBehaviour
             var e = effects[i];
             if (e.IsExpired)
             {
-                Debug.Log("expired");
                 // RemoveEffect will unregister handlers and call OnRemove
                 RemoveEffect(e);
             }
