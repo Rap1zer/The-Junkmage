@@ -13,6 +13,7 @@ namespace JunkMage.Entities.Enemies.Movement
         public void UpdateMovement(Rigidbody2D rb, EnemyStats stats, MovementContext ctx)
         {
             float speed = stats.HasStat(Stat.MoveSpeed) ? stats.GetVal(Stat.MoveSpeed) : 4f;
+            speed = speed * 0.6f;
             
             Transform transform = rb.transform;
             GameObject gameObject = rb.gameObject;
@@ -29,7 +30,11 @@ namespace JunkMage.Entities.Enemies.Movement
 
             // --- Avoid nearby enemies ---
             Collider2D[] hits = new Collider2D[10]; // preallocate or reuse array
-            int hitCount = Physics2D.OverlapCircleNonAlloc(transform.position, 1f, hits, LayerMask.GetMask("Enemy"));
+            ContactFilter2D contactFilter = new ContactFilter2D();
+            contactFilter.SetLayerMask(LayerMask.GetMask("Enemy"));
+            contactFilter.useTriggers = false;
+            int hitCount = Physics2D.OverlapCircle(transform.position, 1.5f, contactFilter, hits);
+            
             Vector2 avoidance = Vector2.zero;
             for (int i = 0; i < hitCount; i++)
             {
