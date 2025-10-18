@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace JunkMage.Player
+namespace JunkMage.Stats
 {
     [CreateAssetMenu(fileName = "StatSheet", menuName = "Scriptable Objects/Stat Sheet", order = 0)]
     public class StatSheet : ScriptableObject

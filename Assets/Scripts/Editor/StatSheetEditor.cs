@@ -1,6 +1,6 @@
-using JunkMage.Player;
+using JunkMage.Stats;
 
-namespace Editor
+namespace JunkMage.Editor
 {
     #if UNITY_EDITOR
     using UnityEditor;

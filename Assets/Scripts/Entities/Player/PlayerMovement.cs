@@ -1,4 +1,4 @@
-using JunkMage.Player;
+using JunkMage.Stats;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(PlayerStats))]

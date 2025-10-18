@@ -1,4 +1,4 @@
-using JunkMage.Player;
+using JunkMage.Stats;
 using UnityEngine;
 
 public class EnemyStats : StatsBase

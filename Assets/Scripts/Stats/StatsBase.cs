@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using JunkMage.Player;
+using JunkMage.Stats;
 
 public abstract class StatsBase : MonoBehaviour
 {
@@ -37,8 +37,6 @@ public abstract class StatsBase : MonoBehaviour
     public float GetVal(Stat stat)
     {
         float baseValue = GetBaseStat(stat);
-        if (Mathf.Approximately(baseValue, -1f))
-            return 0f;
 
         float flat = 0f, percentAdd = 0f, percentMul = 1f;
         if (modifiers.TryGetValue(stat, out var list))
@@ -64,8 +62,17 @@ public abstract class StatsBase : MonoBehaviour
     private float GetBaseStat(Stat stat)
     {
         if (baseStatsSheet != null)
-            return baseStatsSheet.GetBaseValue(stat);
+        {
+            float val = baseStatsSheet.GetBaseValue(stat);
+            if (!Mathf.Approximately(val, -1f))
+                return val;
+        }
 
-        return -1f;
+        // Fallback: default value from StatDefinition
+        var def = StatDefinitionDatabase.Instance.GetDefinition(stat);
+        if (def != null)
+            return def.defaultValue;
+
+        return 0f; // last fallback if not found anywhere
     }
 }

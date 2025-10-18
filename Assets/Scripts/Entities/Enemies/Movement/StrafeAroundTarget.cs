@@ -11,8 +11,8 @@ namespace JunkMage.Entities.Enemies.Movement
         public void UpdateMovement(Rigidbody2D rb, EnemyStats stats, MovementContext ctx)
         {
             Vector2 center = ctx.Target ?? rb.position;
-            float strafeSpeed = stats.HasStat(Stat.StrafeSpeed) ? stats.GetVal(Stat.StrafeSpeed) : 4f;
-            float strafeDuration = stats.HasStat(Stat.StrafeDuration) ? stats.GetVal(Stat.StrafeDuration) : 2f;
+            float strafeSpeed = stats.GetVal(Stat.StrafeSpeed);
+            float strafeDuration = stats.GetVal(Stat.StrafeDuration);
 
             if (!isStrafing)
             {

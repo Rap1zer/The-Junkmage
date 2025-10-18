@@ -1,10 +1,11 @@
 using UnityEngine;
 
-namespace JunkMage.Player
+namespace JunkMage.Stats
 {
     [CreateAssetMenu(fileName = "StatDefinition", menuName = "Stats/Stat Definition", order = 0)]
     public class StatDefinition : ScriptableObject
     {
+        
         // Map to enum for compatibility. Keep this in sync with your Stat enum.
         public Stat stat;
 

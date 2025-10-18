@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using JunkMage.Player;
+using JunkMage.Stats;
 using UnityEngine;
 
 public enum StorageType

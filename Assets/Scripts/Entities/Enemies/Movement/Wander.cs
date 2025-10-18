@@ -12,7 +12,7 @@ namespace JunkMage.Entities.Enemies.Movement
         
         public void UpdateMovement(Rigidbody2D rb, EnemyStats stats, MovementContext ctx)
         {
-            float speed = stats.HasStat(Stat.MoveSpeed) ? stats.GetVal(Stat.MoveSpeed) : 4f;
+            float speed = stats.GetVal(Stat.MoveSpeed);
             speed = speed * 0.6f;
             
             Transform transform = rb.transform;

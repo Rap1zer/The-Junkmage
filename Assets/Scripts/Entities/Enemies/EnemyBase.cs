@@ -57,8 +57,8 @@ namespace JunkMage.Entities.Enemies
 
         protected bool PlayerInRoom { get; private set;  } = false;
 
-        protected float AttackDmg => Stats.HasStat(Stat.AttackDmg) ? Stats.GetVal(Stat.AttackDmg) : 1f;
-        protected float AttackCooldown => Stats.HasStat(Stat.AttackCooldown) ? Stats.GetVal(Stat.AttackCooldown) : 1f;
+        protected float AttackDmg => Stats.GetVal(Stat.AttackDmg);
+        protected float AttackCooldown => Stats.GetVal(Stat.AttackCooldown);
 
         #endregion
 

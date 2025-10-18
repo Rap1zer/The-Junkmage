@@ -1,5 +1,5 @@
 using JunkMage.Entities.Player;
-using JunkMage.Player;
+using JunkMage.Stats;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

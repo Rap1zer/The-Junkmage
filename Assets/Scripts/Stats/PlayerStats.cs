@@ -1,8 +1,8 @@
 using System;
-using JunkMage.Player;
+using JunkMage.Stats;
 using UnityEngine;
 
-namespace JunkMage.Player
+namespace JunkMage.Stats
 {
     public class PlayerStats : StatsBase
     {
