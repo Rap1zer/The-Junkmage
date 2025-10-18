@@ -1,7 +1,7 @@
 using JunkMage.Environment;
 using UnityEngine;
 
-namespace Systems
+namespace JunkMage.Combat
 {
     public class RoomManager : MonoBehaviour
     {

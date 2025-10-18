@@ -1,3 +1,4 @@
+using JunkMage.Systems;
 using UnityEngine;
 
 public class EventHookDebugger : MonoBehaviour,
@@ -15,14 +16,14 @@ public class EventHookDebugger : MonoBehaviour,
         return dmg;
     }
 
-    public void OnAfterDamageTaken(float dmg, GameObject attacker)
+    public void OnAfterDamageTaken(DamageInfo dmgInfo)
     {
-        Debug.Log($"[HookDebug] AfterDamage hook fired: {dmg}");
+        Debug.Log($"[HookDebug] AfterDamage hook fired: {dmgInfo.Dmg}");
     }
 
-    public void OnDealDamage(float dmg, GameObject target)
+    public void OnDealDamage(DamageInfo dmgInfo)
     {
-        Debug.Log($"[HookDebug] DealDamage hook fired: {dmg}");
+        Debug.Log($"[HookDebug] DealDamage hook fired: {dmgInfo.Dmg}");
     }
 
     public void OnRoomCleared()

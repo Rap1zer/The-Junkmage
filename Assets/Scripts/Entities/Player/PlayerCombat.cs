@@ -1,4 +1,5 @@
 using JunkMage.Player;
+using JunkMage.Systems;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerStats))]
@@ -27,11 +28,19 @@ public class PlayerCombat : MonoBehaviour
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
         bullet.transform.localScale = new Vector3(stats.GetVal(Stat.BulletSize), stats.GetVal(Stat.BulletSize), 1f);
 
-        int dmg = (int)(UnityEngine.Random.value < stats.GetVal(Stat.CritChance)
+        bool isCrit = Random.value < stats.GetVal(Stat.CritChance);
+        float dmg = isCrit
             ? (stats.GetVal(Stat.AttackDmg) * stats.GetVal(Stat.CritMultiplier))
-            : stats.GetVal(Stat.AttackDmg));
+            : stats.GetVal(Stat.AttackDmg);
 
-        bullet.GetComponent<Bullet>().Initilaise(dmg, gameObject);
+        DamageInfo dmgInfo = new DamageInfo
+        {
+            Dmg = dmg,
+            IsCrit = isCrit,
+            Attacker = gameObject
+        };
+
+        bullet.GetComponent<Bullet>().Initialise(dmgInfo);
 
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
         if (bulletRb != null)

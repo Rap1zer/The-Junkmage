@@ -1,13 +1,14 @@
+using JunkMage.Systems;
 using UnityEngine;
 
 public class Snowflake : ItemBase, IDealDamageHandler
 {
-    public void OnDealDamage(float dmg, GameObject target = null)
+    public void OnDealDamage(DamageInfo dmgInfo)
     {
-        if (target == null) return;
+        if (dmgInfo.Target == null) return;
 
         // Get the target's dispatcher
-        var dispatcher = target.GetComponent<EntityEventDispatcher>();
+        var dispatcher = dmgInfo.Target.GetComponent<EntityEventDispatcher>();
         if (dispatcher == null) return;
 
         // Add Frost

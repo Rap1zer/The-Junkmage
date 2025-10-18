@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JunkMage.Systems;
 using UnityEngine;
 
 public class Scope : ItemBase, IDealDamageHandler, IMissedAttackHandler
@@ -9,7 +10,7 @@ public class Scope : ItemBase, IDealDamageHandler, IMissedAttackHandler
     
     private List<StatModifier> modifiers = new();
 
-    public void OnDealDamage(float dmg, GameObject target = null)
+    public void OnDealDamage(DamageInfo dmgInfo)
     {
         critChanceStack += stack;
         critChanceStack = Mathf.Min(critChanceStack, maxCritChanceStack);

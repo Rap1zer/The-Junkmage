@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StatSheet
   values:
   - statDef: {fileID: 11400000, guid: 72dd8ea7c58a44df5979096e7e9f2e5d, type: 2}
-    baseValue: 6
+    baseValue: 4
   - statDef: {fileID: 11400000, guid: b740117de5d8347cb9487de907f8fe69, type: 2}
     baseValue: 2
   - statDef: {fileID: 11400000, guid: 28b832b33de3a4d8181dcc61bbcf7b12, type: 2}

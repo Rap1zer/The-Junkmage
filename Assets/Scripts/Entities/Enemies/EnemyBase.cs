@@ -1,8 +1,12 @@
+using System;
 using System.Collections;
 using JunkMage.Environment;
 using JunkMage.Entities.Enemies.Movement;
-using Systems;
+using JunkMage.Combat;
+using JunkMage.Systems;
+using JunkMage.UI;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace JunkMage.Entities.Enemies
 {
@@ -31,12 +35,17 @@ namespace JunkMage.Entities.Enemies
         [SerializeField] private float stateChangeCooldown = 0.3f;
         [SerializeField] protected float idleToAttackingBufferStart = 0.2f;
         [SerializeField] protected float idleToAttackingBufferEnd = 0.4f;
-        private float lastStateChangeTime;
+        private float lastStateChangeTime = -Mathf.Infinity;
 
         private EnemyState currentState;
         private Wander wander;
 
         private float lastAttackTime = -Mathf.Infinity;
+
+        // Events
+        public event Action<DamageInfo> OnTakeDamage;
+        private UIManager uiManager;
+        
         #endregion
 
         #region === Components & Stats ===
@@ -75,8 +84,11 @@ namespace JunkMage.Entities.Enemies
         {
             Stats = GetComponent<EnemyStats>();
             Movement = GetComponent<EnemyMovement>();
+            
             wander = new Wander();
-            lastStateChangeTime = -Mathf.Infinity;
+            
+            uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+            uiManager.RegisterEnemy(this);
         }
 
         protected virtual void Start()
@@ -148,9 +160,11 @@ namespace JunkMage.Entities.Enemies
 
         #region === Combat ===
 
-        public virtual void TakeDamage(float dmg, GameObject attacker = null)
+        public virtual void TakeDamage(DamageInfo dmgInfo)
         {
-            Health -= dmg;
+            if (dmgInfo.Attacker == player) OnTakeDamage?.Invoke(dmgInfo);
+            
+            Health -= dmgInfo.Dmg;
             if (Health <= 0)
                 Die();
         }

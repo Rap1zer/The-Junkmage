@@ -1,5 +1,6 @@
 using JunkMage.Entities.Enemies;
 using JunkMage.Entities.Enemies.Movement;
+using JunkMage.Systems;
 using UnityEngine;
 
 namespace JunkMage.Entities.Enemies
@@ -29,7 +30,15 @@ namespace JunkMage.Entities.Enemies
         protected override void Attack()
         {
             base.Attack();
-            playerHealth?.TakeDamage(AttackDmg, gameObject);
+
+            DamageInfo dmgInfo = new DamageInfo
+            {
+                Dmg = AttackDmg,
+                Attacker = gameObject,
+                Target = player
+            };
+            
+            playerHealth?.TakeDamage(dmgInfo);
         }
     
         private void OnCollisionEnter2D(Collision2D other)

@@ -36,7 +36,7 @@ MonoBehaviour:
   - statDef: {fileID: 11400000, guid: eb4bbba113dbc47489262817bc1340fb, type: 2}
     baseValue: 0
   - statDef: {fileID: 11400000, guid: cd7c0804315be438eb2912c206344ed4, type: 2}
-    baseValue: 0.7
+    baseValue: 0.6
   entries:
   - type: 0
     baseValue: 5

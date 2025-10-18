@@ -1,3 +1,4 @@
+using JunkMage.Systems;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
@@ -6,11 +7,13 @@ public class Bullet : MonoBehaviour
     private float dmg;
     private GameObject owner;
     private bool isPLayerBullet;
+    private bool isCrit;
 
-    public void Initilaise(float dmg, GameObject owner)
+    public void Initialise(DamageInfo dmgInfo)
     {
-        this.dmg = dmg;
-        this.owner = owner;
+        this.dmg = dmgInfo.Dmg;
+        this.isCrit = dmgInfo.IsCrit;
+        this.owner = dmgInfo.Attacker;
         isPLayerBullet = owner != null && owner.CompareTag("Player");
     }
 
@@ -36,12 +39,22 @@ public class Bullet : MonoBehaviour
     private void Attack(GameObject target)
     {
         bool ownerDestoyed = owner == null;
+        
+        DamageInfo dmgInfo = new DamageInfo
+        {
+            Dmg = dmg,
+            IsCrit = isCrit,
+            Attacker = ownerDestoyed ? null : owner,
+            Target = target
+        };
+        
         if (!ownerDestoyed)
         {
             EntityEventDispatcher dispatcher = owner.GetComponent<EntityEventDispatcher>();
-            dispatcher?.DispatchDealDamage(dmg, target);
+            
+            dispatcher?.DispatchDealDamage(dmgInfo);
         }
 
-        target?.GetComponent<IDamageable>()?.TakeDamage(dmg, ownerDestoyed ? null : owner);
+        target?.GetComponent<IDamageable>()?.TakeDamage(dmgInfo);
     }
 }

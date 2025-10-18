@@ -1,4 +1,5 @@
 using JunkMage.Entities.Enemies.Movement;
+using JunkMage.Systems;
 using UnityEngine;
 
 namespace JunkMage.Entities.Enemies
@@ -130,10 +131,16 @@ namespace JunkMage.Entities.Enemies
 
             GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
             bullet.transform.localScale = new Vector3(Stats.GetVal(Stat.BulletSize), Stats.GetVal(Stat.BulletSize), 1f);
+
+            DamageInfo dmgInfo = new DamageInfo
+            {
+                Dmg = AttackDmg,
+                Attacker = gameObject
+            };
             
             var b = bullet.GetComponent<Bullet>();
             if (b != null)
-                b.Initilaise(AttackDmg, gameObject);
+                b.Initialise(dmgInfo);
 
             Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
             if (rb != null)

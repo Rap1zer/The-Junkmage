@@ -1,3 +1,4 @@
+using JunkMage.Systems;
 using UnityEngine;
 
 public interface IIncomingModifier
@@ -8,12 +9,12 @@ public interface IIncomingModifier
 
 public interface IAfterDamageHandler
 {
-    void OnAfterDamageTaken(float damage, GameObject attacker);
+    void OnAfterDamageTaken(DamageInfo dmgInfo);
 }
 
 public interface IDealDamageHandler
 {
-    void OnDealDamage(float damage, GameObject target);
+    void OnDealDamage(DamageInfo dmgInfo);
 }
 
 public interface IRoomClearedHandler

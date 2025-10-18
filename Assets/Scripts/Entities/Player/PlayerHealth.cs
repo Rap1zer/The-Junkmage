@@ -1,5 +1,6 @@
 using System;
 using JunkMage.Player;
+using JunkMage.Systems;
 using UnityEngine;
 
 namespace JunkMage.Entities.Player
@@ -47,20 +48,20 @@ namespace JunkMage.Entities.Player
             CurrentHealth = (int)stats.GetVal(Stat.MaxHealth);
         }
 
-        public void TakeDamage(float dmg, GameObject attacker = null)
+        public void TakeDamage(DamageInfo dmgInfo)
         {
             if (movement.IsDashing) return;
         
             if (dispatcher != null)
             {
-                dmg = Math.Max(dmg - stats.GetVal(Stat.Defence), 0);
-                dmg = dispatcher.DispatchIncomingDamage(dmg, attacker);
+                dmgInfo.Dmg = Math.Max(dmgInfo.Dmg - stats.GetVal(Stat.Defence), 0);
+                dmgInfo.Dmg = dispatcher.DispatchIncomingDamage(dmgInfo.Dmg, dmgInfo.Attacker);
             }
 
-            CurrentHealth -= dmg;
+            CurrentHealth -= dmgInfo.Dmg;
 
             if (dispatcher != null)
-                dispatcher.DispatchAfterDamageTaken(dmg, attacker);
+                dispatcher.DispatchAfterDamageTaken(dmgInfo);
         }
 
         public void Heal(int amount)

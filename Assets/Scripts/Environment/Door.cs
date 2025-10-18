@@ -1,5 +1,5 @@
 using JunkMage.Environment;
-using Systems;
+using JunkMage.Combat;
 using UnityEngine;
 
 public class Door : MonoBehaviour

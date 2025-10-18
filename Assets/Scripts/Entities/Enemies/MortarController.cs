@@ -1,4 +1,5 @@
 using JunkMage.Environment;
+using JunkMage.Systems;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -49,7 +50,13 @@ namespace JunkMage.Entities.Enemies
 
         public void OnHit()
         {
-            playerHealth.TakeDamage(2, gameObject);
+            DamageInfo dmgInfo = new DamageInfo
+            {
+                Dmg = AttackDmg,
+                Attacker = gameObject,
+                Target = player
+            };
+            playerHealth.TakeDamage(dmgInfo);
         }
     }
 }

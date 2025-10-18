@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JunkMage.Systems;
 using UnityEngine;
 
 /// <summary>
@@ -13,8 +14,8 @@ public class EntityEventDispatcher : MonoBehaviour
 
     // Per-hook registries (preserve registration order)
     private readonly List<Func<float, GameObject, float>> incomingModifiers = new();
-    private readonly List<Action<float, GameObject>> afterDamageHandlers = new();
-    private readonly List<Action<float, GameObject>> dealDamageHandlers = new();
+    private readonly List<Action<DamageInfo>> afterDamageHandlers = new();
+    private readonly List<Action<DamageInfo>> dealDamageHandlers = new();
     private readonly List<Action> roomClearedHandlers = new();
     private readonly List<Action<float>> tickHandlers = new();
     private readonly List<Action> missedAttackHandlers = new();
@@ -118,19 +119,19 @@ public class EntityEventDispatcher : MonoBehaviour
     }
 
     // After damage has been subtracted from this entity's health
-    public void DispatchAfterDamageTaken(float dmg, GameObject attacker = null)
+    public void DispatchAfterDamageTaken(DamageInfo dmgInfo)
     {
         var handlers = afterDamageHandlers.ToArray();
         for (int i = 0; i < handlers.Length; ++i)
-            handlers[i](dmg, attacker);
+            handlers[i](dmgInfo);
     }
 
     // Called on the attacker entity after it deals damage to a target
-    public void DispatchDealDamage(float dmg, GameObject target = null)
+    public void DispatchDealDamage(DamageInfo dmgInfo)
     {
         var handlers = dealDamageHandlers.ToArray();
         for (int i = 0; i < handlers.Length; ++i)
-            handlers[i](dmg, target);
+            handlers[i](dmgInfo);
     }
 
     // Called when the entity clears a room (or equivalent event)
@@ -172,13 +173,13 @@ public class EntityEventDispatcher : MonoBehaviour
 
             if (se is IAfterDamageHandler after)
             {
-                reg.afterDamage = new Action<float, GameObject>(after.OnAfterDamageTaken);
+                reg.afterDamage = new Action<DamageInfo>(after.OnAfterDamageTaken);
                 afterDamageHandlers.Add(reg.afterDamage);
             }
 
             if (se is IDealDamageHandler deal)
             {
-                reg.dealDamage = new Action<float, GameObject>(deal.OnDealDamage);
+                reg.dealDamage = new Action<DamageInfo>(deal.OnDealDamage);
                 dealDamageHandlers.Add(reg.dealDamage);
             }
 
@@ -215,13 +216,13 @@ public class EntityEventDispatcher : MonoBehaviour
 
             if (obj is IAfterDamageHandler after)
             {
-                reg.afterDamage = new Action<float, GameObject>(after.OnAfterDamageTaken);
+                reg.afterDamage = new Action<DamageInfo>(after.OnAfterDamageTaken);
                 afterDamageHandlers.Add(reg.afterDamage);
             }
 
             if (obj is IDealDamageHandler deal)
             {
-                reg.dealDamage = new Action<float, GameObject>(deal.OnDealDamage);
+                reg.dealDamage = new Action<DamageInfo>(deal.OnDealDamage);
                 dealDamageHandlers.Add(reg.dealDamage);
             }
 
@@ -270,8 +271,8 @@ public class EntityEventDispatcher : MonoBehaviour
     private class RegisteredHandlers
     {
         public Func<float, GameObject, float> incoming;
-        public Action<float, GameObject> afterDamage;
-        public Action<float, GameObject> dealDamage;
+        public Action<DamageInfo> afterDamage;
+        public Action<DamageInfo> dealDamage;
         public Action roomCleared;
         public Action<float> tick;
         public Action missedAttack;

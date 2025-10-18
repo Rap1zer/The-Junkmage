@@ -1,6 +1,7 @@
 using UnityEngine;
+using JunkMage.Systems;
 
 public interface IDamageable
 {
-    void TakeDamage(float dmg, GameObject attacker = null);
+    void TakeDamage(DamageInfo dmgInfo);
 }
