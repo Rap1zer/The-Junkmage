@@ -67,7 +67,10 @@ public abstract class StatsBase : MonoBehaviour
         // Fallback: default value from StatDefinition
         var def = StatDefinitionDatabase.Instance?.GetDefinition(stat);
         if (def != null)
+        {
+            Debug.LogWarning($"[StatsBase] StatSheet has no assigned value for {stat}. Using default value in definition.");
             return def.defaultValue;
+        }
 
         // Last fallback
         Debug.LogWarning($"[StatsBase] No base value found for stat {stat}. Returning 0f.");

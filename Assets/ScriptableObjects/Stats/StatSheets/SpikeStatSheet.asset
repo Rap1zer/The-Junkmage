@@ -21,12 +21,5 @@ MonoBehaviour:
     baseValue: 2
   - statDef: {fileID: 11400000, guid: 28b832b33de3a4d8181dcc61bbcf7b12, type: 2}
     baseValue: 15
-  entries:
-  - type: 0
-    baseValue: 7
-  - type: 10
-    baseValue: 6
-  - type: 100
-    baseValue: 2
-  - type: 20
-    baseValue: 15
+  - statDef: {fileID: 11400000, guid: 023e9745ecece4290bef9b5db9858ace, type: 2}
+    baseValue: 1

@@ -9,13 +9,13 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private PlayerStats stats;
     private Vector2 moveInput;
-    private Collider2D col;
     private SpriteRenderer sprite;
 
     public bool IsDashing { get; private set; } = false;
     private float dashTimeLeft = 0f;
     private float dashCooldownTimer = 0f;
     private Vector2 dashDirection;
+    public float DashCooldownRemaining => dashCooldownTimer;
 
     private int originalLayer;
 
@@ -23,7 +23,6 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         stats = GetComponent<PlayerStats>();
-        col = GetComponent<Collider2D>();
         sprite = GetComponent<SpriteRenderer>();
     }
 

@@ -87,7 +87,7 @@ namespace JunkMage.Entities.Enemies
             
             wander = new Wander();
             
-            uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+            uiManager = GameObject.Find("Game Manager").GetComponent<UIManager>();
             uiManager.RegisterEnemy(this);
         }
 
