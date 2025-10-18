@@ -10,9 +10,6 @@ namespace JunkMage.Stats
         [Tooltip("Assign a StatSheet asset containing the player's default base stats.")]
         [SerializeField] private StatSheet playerStatSheet;
 
-        // legacy serialized list for scenes that haven't migrated yet (kept hidden in inspector)
-        [SerializeField, HideInInspector] private System.Collections.Generic.List<StatEntry> playerBaseStats;
-
         public event Action OnSetMaxHealth;
         
         void Awake()
