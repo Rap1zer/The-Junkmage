@@ -6,11 +6,8 @@ namespace JunkMage.Stats
     [CreateAssetMenu(fileName = "StatSheet", menuName = "Scriptable Objects/Stat Sheet", order = 0)]
     public class StatSheet : ScriptableObject
     {
-        [Header("Preferred: StatDef-backed entries")]
+        [Header("Stat entries (use StatDefinition assets)")]
         public List<StatValueEntry> values = new();
-
-        [Header("Legacy (kept for compatibility)")]
-        public List<StatEntry> entries = new();
 
         // runtime cache (Stat -> baseValue). Build via RebuildCache().
         private Dictionary<Stat, float> cache;
@@ -20,22 +17,21 @@ namespace JunkMage.Stats
             RebuildCache();
         }
 
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
         // Keep OnValidate cheap: rebuild internal cache only (no asset writes).
         private void OnValidate()
         {
             RebuildCache();
         }
-#endif
+    #endif
 
         /// <summary>
-        /// Rebuilds runtime cache. Preference order:
-        ///  1) values[] using statDef.stat
-        ///  2) legacy entries[]
+        /// Rebuilds runtime cache. Preference:
+        ///  - values[] using statDef.stat
         /// </summary>
         public void RebuildCache()
         {
-            var newCache = new Dictionary<Stat,float>();
+            var newCache = new Dictionary<Stat, float>();
 
             if (values != null)
             {
@@ -43,20 +39,8 @@ namespace JunkMage.Stats
                 {
                     var sv = values[i];
                     if (sv == null || sv.statDef == null) continue;
-                    // statDef.stat is the enum mapping; use it.
+                    // Use the enum mapping stored on the referenced StatDefinition
                     newCache[sv.statDef.stat] = sv.baseValue;
-                }
-            }
-
-            // Fill missing stats from legacy entries if not already present.
-            if (entries != null)
-            {
-                for (int i = 0; i < entries.Count; i++)
-                {
-                    var e = entries[i];
-                    if (e == null) continue;
-                    if (!newCache.ContainsKey(e.type))
-                        newCache[e.type] = e.baseValue;
                 }
             }
 
@@ -65,7 +49,7 @@ namespace JunkMage.Stats
         }
 
         /// <summary>
-        /// Same contract as before: returns base value or -1f if missing.
+        /// Returns base value or -1f if missing (same contract as before).
         /// </summary>
         public float GetBaseValue(Stat stat)
         {
@@ -74,7 +58,7 @@ namespace JunkMage.Stats
             return -1f;
         }
     }
-    
+
     [System.Serializable]
     public class StatValueEntry
     {
@@ -92,5 +76,4 @@ namespace JunkMage.Stats
             baseValue = value;
         }
     }
-
 }

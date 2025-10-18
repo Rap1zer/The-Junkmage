@@ -4,8 +4,8 @@ using JunkMage.Stats;
 
 public abstract class StatsBase : MonoBehaviour
 {
-    [Header("Prefer using a StatSheet ScriptableObject")]
-    [Tooltip("Assign a StatSheet ScriptableObject to use shared base stats. If none is assigned, the legacy baseStatsList will be used.")]
+    [Header("Use a StatSheet ScriptableObject")]
+    [Tooltip("Assign a StatSheet ScriptableObject to use shared base stats.")]
     protected StatSheet baseStatsSheet;
 
     // Modifiers per stat (unchanged)
@@ -27,11 +27,6 @@ public abstract class StatsBase : MonoBehaviour
             if (list.Count == 0)
                 modifiers.Remove(modifier.Stat);
         }
-    }
-
-    public bool HasStat(Stat stat)
-    {
-        return !Mathf.Approximately(GetBaseStat(stat), -1f);
     }
 
     public float GetVal(Stat stat)
@@ -56,8 +51,9 @@ public abstract class StatsBase : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets the base stat value. Prefers the assigned StatSheet. Falls back to the legacy list.
-    /// Returns -1f if stat not found.
+    /// Gets the base stat value. Prefers the assigned StatSheet.
+    /// Falls back to the StatDefinition defaultValue.
+    /// If nothing found, returns 0f.
     /// </summary>
     private float GetBaseStat(Stat stat)
     {
@@ -69,10 +65,12 @@ public abstract class StatsBase : MonoBehaviour
         }
 
         // Fallback: default value from StatDefinition
-        var def = StatDefinitionDatabase.Instance.GetDefinition(stat);
+        var def = StatDefinitionDatabase.Instance?.GetDefinition(stat);
         if (def != null)
             return def.defaultValue;
 
-        return 0f; // last fallback if not found anywhere
+        // Last fallback
+        Debug.LogWarning($"[StatsBase] No base value found for stat {stat}. Returning 0f.");
+        return 0f;
     }
 }

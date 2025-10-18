@@ -1,6 +1,7 @@
 using JunkMage.Stats;
 using JunkMage.Systems;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(PlayerStats))]
 public class PlayerCombat : MonoBehaviour
@@ -27,7 +28,7 @@ public class PlayerCombat : MonoBehaviour
 
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
         bullet.transform.localScale = new Vector3(stats.GetVal(Stat.BulletSize), stats.GetVal(Stat.BulletSize), 1f);
-
+        
         bool isCrit = Random.value < stats.GetVal(Stat.CritChance);
         float dmg = isCrit
             ? (stats.GetVal(Stat.AttackDmg) * stats.GetVal(Stat.CritMultiplier))
