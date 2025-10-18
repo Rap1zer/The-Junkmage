@@ -12,6 +12,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2680503a18b440c19cea2792907d9992, type: 3}
   m_Name: BuggedStatSheet
   m_EditorClassIdentifier: Assembly-CSharp::StatSheet
+  values:
+  - statDef: {fileID: 11400000, guid: 72dd8ea7c58a44df5979096e7e9f2e5d, type: 2}
+    baseValue: 6
+  - statDef: {fileID: 11400000, guid: b740117de5d8347cb9487de907f8fe69, type: 2}
+    baseValue: 2
+  - statDef: {fileID: 11400000, guid: 28b832b33de3a4d8181dcc61bbcf7b12, type: 2}
+    baseValue: 10
+  - statDef: {fileID: 11400000, guid: fd2f74848db304c8cbca132c0f64f502, type: 2}
+    baseValue: 9
+  - statDef: {fileID: 11400000, guid: 512d153cc640244bbbb8ef8284ec98fa, type: 2}
+    baseValue: 1
+  - statDef: {fileID: 11400000, guid: cd7c0804315be438eb2912c206344ed4, type: 2}
+    baseValue: 0.5
+  - statDef: {fileID: 11400000, guid: 1f60c48d70406452fb9d732ad2150573, type: 2}
+    baseValue: 8
+  - statDef: {fileID: 11400000, guid: 5be731b7dec15402ba7f33f6d70a4fdc, type: 2}
+    baseValue: 4
+  - statDef: {fileID: 11400000, guid: dc7b0edbf70334ce788e7cfbf8c6276f, type: 2}
+    baseValue: 20
+  - statDef: {fileID: 11400000, guid: 37670fd004ecd42a59164b9be9ed659c, type: 2}
+    baseValue: 1.4
+  - statDef: {fileID: 11400000, guid: 907236da3e8b244b588b37cba12e2222, type: 2}
+    baseValue: 2.4
+  - statDef: {fileID: 11400000, guid: 8f0c13e5827884373ae426127af4d112, type: 2}
+    baseValue: 1.5
+  - statDef: {fileID: 0}
+    baseValue: 1.2
   entries:
   - type: 0
     baseValue: 6

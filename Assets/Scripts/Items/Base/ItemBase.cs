@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JunkMage.Player;
 using UnityEngine;
 
 public enum StorageType
@@ -30,7 +31,6 @@ public abstract class ItemBase : MonoBehaviour
 
                 if (ownerDispatcher != null)
                 {
-                    Debug.Log("registering handler");
                     ownerDispatcher.RegisterItemHandlers(this);
                 }
                 
@@ -40,7 +40,6 @@ public abstract class ItemBase : MonoBehaviour
             {
                 if (ownerDispatcher != null)
                 {
-                    Debug.Log("Unregistering handler");
                     ownerDispatcher.UnregisterItemHandlers(this);
                 }
                 OnUnequip();

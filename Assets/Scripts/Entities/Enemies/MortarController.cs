@@ -10,6 +10,7 @@ namespace JunkMage.Entities.Enemies
         [FormerlySerializedAs("dmgIndicator")] [SerializeField] private GameObject dmgZone;
         [SerializeField] private int dmgZoneCount = 2;
         private Room myRoom;
+        private float randomCooldown = 0f;
 
         protected override void Start()
         {
@@ -28,7 +29,11 @@ namespace JunkMage.Entities.Enemies
         
         protected override void DoAttackBehavior()
         {
-            if (AttackCooled() && PlayerInRoom) Attack();
+            if (AttackCooled(randomCooldown) && PlayerInRoom)
+            {
+                Attack();
+                randomCooldown = Random.Range(-0.5f, 1f);
+            }
         }
 
         protected override void Attack()

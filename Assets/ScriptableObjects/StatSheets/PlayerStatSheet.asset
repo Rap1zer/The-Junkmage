@@ -12,6 +12,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2680503a18b440c19cea2792907d9992, type: 3}
   m_Name: PlayerStatSheet
   m_EditorClassIdentifier: Assembly-CSharp::StatSheet
+  values:
+  - statDef: {fileID: 11400000, guid: 72dd8ea7c58a44df5979096e7e9f2e5d, type: 2}
+    baseValue: 5
+  - statDef: {fileID: 11400000, guid: b740117de5d8347cb9487de907f8fe69, type: 2}
+    baseValue: 8
+  - statDef: {fileID: 11400000, guid: e8d82a3f09bf24c258348c37bc8b30a9, type: 2}
+    baseValue: 30
+  - statDef: {fileID: 11400000, guid: 382ae23d52ed1494fb6da5d3edb0962d, type: 2}
+    baseValue: 0.2
+  - statDef: {fileID: 11400000, guid: a314a55c1fda04ce9925e1ea13da5d8d, type: 2}
+    baseValue: 1
+  - statDef: {fileID: 11400000, guid: fd2f74848db304c8cbca132c0f64f502, type: 2}
+    baseValue: 14
+  - statDef: {fileID: 11400000, guid: a1ab8df4c2c914469a48903510a200b8, type: 2}
+    baseValue: 0.1
+  - statDef: {fileID: 11400000, guid: 512d153cc640244bbbb8ef8284ec98fa, type: 2}
+    baseValue: 1
+  - statDef: {fileID: 11400000, guid: 023e9745ecece4290bef9b5db9858ace, type: 2}
+    baseValue: 0.1
+  - statDef: {fileID: 11400000, guid: 789657cc4f97a4802b7235beee2e812d, type: 2}
+    baseValue: 2
+  - statDef: {fileID: 11400000, guid: eb4bbba113dbc47489262817bc1340fb, type: 2}
+    baseValue: 0
+  - statDef: {fileID: 11400000, guid: cd7c0804315be438eb2912c206344ed4, type: 2}
+    baseValue: 0.7
   entries:
   - type: 0
     baseValue: 5
@@ -36,4 +61,4 @@ MonoBehaviour:
   - type: 120
     baseValue: 0
   - type: 70
-    baseValue: 1
+    baseValue: 0.7

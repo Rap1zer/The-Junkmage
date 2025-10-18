@@ -1,3 +1,4 @@
+using JunkMage.Player;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerStats))]
@@ -24,6 +25,7 @@ public class PlayerCombat : MonoBehaviour
         if (bulletPrefab == null || firePoint == null || InventoryManager.Instance.isInventoryOpen) return;
 
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        bullet.transform.localScale = new Vector3(stats.GetVal(Stat.BulletSize), stats.GetVal(Stat.BulletSize), 1f);
 
         int dmg = (int)(UnityEngine.Random.value < stats.GetVal(Stat.CritChance)
             ? (stats.GetVal(Stat.AttackDmg) * stats.GetVal(Stat.CritMultiplier))

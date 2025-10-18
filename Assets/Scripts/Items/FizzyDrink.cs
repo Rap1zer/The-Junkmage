@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JunkMage.Player;
 using UnityEngine;
 
 public class FizzyDrink : ItemBase

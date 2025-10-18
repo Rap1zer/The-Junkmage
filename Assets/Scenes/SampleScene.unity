@@ -4366,17 +4366,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 63221224}
     m_Modifications:
-    - target: {fileID: -9162954927499410499, guid: 554b04c022afe4a439d7ab218a2b3e10, type: 3}
-      propertyPath: roomIndex
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 2304953029719872978, guid: 554b04c022afe4a439d7ab218a2b3e10, type: 3}
       propertyPath: m_Name
       value: Mortar
-      objectReference: {fileID: 0}
-    - target: {fileID: 2304953029719872978, guid: 554b04c022afe4a439d7ab218a2b3e10, type: 3}
-      propertyPath: m_TagString
-      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 3258947447144499473, guid: 554b04c022afe4a439d7ab218a2b3e10, type: 3}
       propertyPath: m_LocalPosition.x

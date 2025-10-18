@@ -1,65 +1,78 @@
 using System;
+using JunkMage.Player;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerStats))]
-public class PlayerHealth : MonoBehaviour, IDamageable
+namespace JunkMage.Entities.Player
 {
-    private PlayerStats stats;
-    private PlayerMovement movement;
-    private EntityEventDispatcher dispatcher;
-
-    private float currentHealth;
-    private float CurrentHealth
+    [RequireComponent(typeof(PlayerStats))]
+    public class PlayerHealth : MonoBehaviour, IDamageable
     {
-        get => currentHealth;
-        set
+        private PlayerStats stats;
+        private PlayerMovement movement;
+        private EntityEventDispatcher dispatcher;
+        
+        public event Action OnSetCurrentHealth;
+
+        private float currentHealth;
+        public float CurrentHealth
         {
-            currentHealth = value;
-            if (CurrentHealth <= 0)
+            get => currentHealth;
+            private set
             {
-                Die();
-                OnDeath?.Invoke();
+                currentHealth = value;
+
+                OnSetCurrentHealth?.Invoke();
+                
+                if (CurrentHealth <= 0)
+                {
+                    Die();
+                    OnDeath?.Invoke();
+                }
             }
+        
         }
-        
-    }
 
-    public event System.Action OnDeath;
-    public event System.Action<float> OnHealthChanged;
+        public event System.Action OnDeath;
+        public event System.Action<float> OnHealthChanged;
 
-    void Awake()
-    {
-        stats = GetComponent<PlayerStats>();
-        CurrentHealth = (int)stats.GetVal(Stat.MaxHealth);
-        dispatcher = GetComponent<EntityEventDispatcher>();
-        movement = GetComponent<PlayerMovement>();
-    }
-
-    public void TakeDamage(float dmg, GameObject attacker = null)
-    {
-        if (movement.IsDashing) return;
-        
-        if (dispatcher != null)
+        void Awake()
         {
-            dmg = Math.Max(dmg - stats.GetVal(Stat.Defence), 0);
-            dmg = dispatcher.DispatchIncomingDamage(dmg, attacker);
+            stats = GetComponent<PlayerStats>();
+            dispatcher = GetComponent<EntityEventDispatcher>();
+            movement = GetComponent<PlayerMovement>();
         }
 
-        CurrentHealth -= dmg;
+        void Start()
+        {
+            CurrentHealth = (int)stats.GetVal(Stat.MaxHealth);
+        }
 
-        if (dispatcher != null)
-            dispatcher.DispatchAfterDamageTaken(dmg, attacker);
-    }
+        public void TakeDamage(float dmg, GameObject attacker = null)
+        {
+            if (movement.IsDashing) return;
+        
+            if (dispatcher != null)
+            {
+                dmg = Math.Max(dmg - stats.GetVal(Stat.Defence), 0);
+                dmg = dispatcher.DispatchIncomingDamage(dmg, attacker);
+            }
 
-    public void Heal(int amount)
-    {
-        CurrentHealth = Mathf.Clamp(CurrentHealth + amount, 0, (int)stats.GetVal(Stat.MaxHealth));
-        OnHealthChanged?.Invoke(CurrentHealth);
-    }
+            CurrentHealth -= dmg;
 
-    private void Die()
-    {
-        //Debug.Log("Player died");
-        // TODO: trigger events
+            if (dispatcher != null)
+                dispatcher.DispatchAfterDamageTaken(dmg, attacker);
+        }
+
+        public void Heal(int amount)
+        {
+            CurrentHealth = Mathf.Clamp(CurrentHealth + amount, 0, (int)stats.GetVal(Stat.MaxHealth));
+            OnHealthChanged?.Invoke(CurrentHealth);
+        }
+
+        private void Die()
+        {
+            //Debug.Log("Player died");
+            // TODO: trigger events
+        }
     }
 }

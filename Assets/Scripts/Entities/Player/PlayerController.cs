@@ -1,3 +1,5 @@
+using JunkMage.Entities.Player;
+using JunkMage.Player;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerStats))]

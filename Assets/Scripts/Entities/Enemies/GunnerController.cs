@@ -113,7 +113,6 @@ namespace JunkMage.Entities.Enemies
                 CurrentState = EnemyState.Chasing;
 
             FacePlayer(-away);
-            if (AttackCooled()) Attack();
         }
 
         private void FacePlayer(Vector2 toPlayer)
@@ -130,6 +129,8 @@ namespace JunkMage.Entities.Enemies
             if (bulletPrefab == null || firePoint == null) return;
 
             GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+            bullet.transform.localScale = new Vector3(Stats.GetVal(Stat.BulletSize), Stats.GetVal(Stat.BulletSize), 1f);
+            
             var b = bullet.GetComponent<Bullet>();
             if (b != null)
                 b.Initilaise(AttackDmg, gameObject);

@@ -29,6 +29,8 @@ namespace JunkMage.Entities.Enemies
 
         [Header("State")]
         [SerializeField] private float stateChangeCooldown = 0.3f;
+        [SerializeField] protected float idleToAttackingBufferStart = 0.2f;
+        [SerializeField] protected float idleToAttackingBufferEnd = 0.4f;
         private float lastStateChangeTime;
 
         private EnemyState currentState;
@@ -124,7 +126,9 @@ namespace JunkMage.Entities.Enemies
         {
             if (playerRoomIndex == roomIndex)
             {
-                StartCoroutine(DelayedAttackState(Random.Range(0.2f, 0.4f)));
+                StartCoroutine(DelayedAttackState(
+                    Random.Range(idleToAttackingBufferStart, idleToAttackingBufferEnd)
+                    ));
                 PlayerInRoom = true;
             }
             else
@@ -137,8 +141,8 @@ namespace JunkMage.Entities.Enemies
             CurrentState = EnemyState.Attacking;
         }
 
-        protected bool AttackCooled() =>
-            Time.time >= lastAttackTime + AttackCooldown;
+        protected bool AttackCooled(float extraCooldown = 0f) =>
+            Time.time >= lastAttackTime + AttackCooldown +  extraCooldown;
 
         #endregion
 

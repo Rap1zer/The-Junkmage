@@ -197,7 +197,7 @@ GameObject:
   - component: {fileID: 7865643643928068562}
   m_Layer: 7
   m_Name: Mortar
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -322,9 +322,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31f1865dfb5414fd9a8833803cb62647, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  roomIndex: 0
+  roomIndex: 3
   stateChangeCooldown: 0.3
-  PlayerInRoom: 0
+  idleToAttackingBufferStart: 0.4
+  idleToAttackingBufferEnd: 1
   dmgZone: {fileID: 2377947584533203612, guid: f6fcf42808b824b11af0700cab0c287a, type: 3}
   dmgZoneCount: 2
 --- !u!114 &7865643643928068562

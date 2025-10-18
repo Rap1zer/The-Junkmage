@@ -8,7 +8,7 @@ public class DamageZone : MonoBehaviour
     public AnimationCurve scaleCurve;
     
     private float timer = 0f;
-    private readonly float duration = 2.5f;
+    private readonly float duration = 2f;
     
     private Vector3 startScale = new Vector3(1f, 1f, 1f);
     private Vector3 targetScale = new Vector3(3f, 3f, 1f);

@@ -12,9 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2680503a18b440c19cea2792907d9992, type: 3}
   m_Name: SpikeStatSheet
   m_EditorClassIdentifier: Assembly-CSharp::StatSheet
+  values:
+  - statDef: {fileID: 11400000, guid: 72dd8ea7c58a44df5979096e7e9f2e5d, type: 2}
+    baseValue: 7
+  - statDef: {fileID: 11400000, guid: b740117de5d8347cb9487de907f8fe69, type: 2}
+    baseValue: 6
+  - statDef: {fileID: 11400000, guid: 512d153cc640244bbbb8ef8284ec98fa, type: 2}
+    baseValue: 2
+  - statDef: {fileID: 11400000, guid: 28b832b33de3a4d8181dcc61bbcf7b12, type: 2}
+    baseValue: 15
   entries:
   - type: 0
-    baseValue: 9
+    baseValue: 7
   - type: 10
     baseValue: 6
   - type: 100
