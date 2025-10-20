@@ -6,30 +6,33 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovement))]
 [RequireComponent(typeof(PlayerCombat))]
 [RequireComponent(typeof(PlayerHealth))]
-public class PlayerController : MonoBehaviour, IPlayerItemConsumer
+public class PlayerController : MonoBehaviour
 {
-    private PlayerStats stats;
-    private PlayerMovement movement;
-    private PlayerCombat combat;
+    public PlayerStats Stats { get; private set; }
+    public PlayerMovement Movement { get; private set; }
+    public PlayerCombat Combat { get; private set; }
+    public PlayerMana Mana { get; private set; }
+    
     private EntityEventDispatcher dispatcher;
 
     void Awake()
     {
-        stats = GetComponent<PlayerStats>();
-        movement = GetComponent<PlayerMovement>();
-        combat = GetComponent<PlayerCombat>();
+        Stats = GetComponent<PlayerStats>();
+        Movement = GetComponent<PlayerMovement>();
+        Combat = GetComponent<PlayerCombat>();
+        Mana = GetComponent<PlayerMana>();
         dispatcher = GetComponent<EntityEventDispatcher>();
     }
 
     void Update()
     {
-        movement.HandleInput();
-        combat.HandleInput();
+        Movement.HandleInput();
+        Combat.HandleInput();
     }
 
     public void ApplyStatModifier(StatModifier modifier)
     {
-        stats.ApplyModifier(modifier);
+        Stats.ApplyModifier(modifier);
     }
 
     public void ApplyStatusEffect(StatusEffect effect)

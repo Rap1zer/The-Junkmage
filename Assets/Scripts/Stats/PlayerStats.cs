@@ -11,6 +11,7 @@ namespace JunkMage.Stats
         [SerializeField] private StatSheet playerStatSheet;
 
         public event Action OnSetMaxHealth;
+        public event Action OnSetMaxMana;
         
         void Awake()
         {
@@ -22,6 +23,7 @@ namespace JunkMage.Stats
         public override void ApplyModifier(StatModifier modifier)
         {
             if (modifier.Stat == Stat.MaxHealth) OnSetMaxHealth?.Invoke();
+            if (modifier.Stat == Stat.MaxMana) OnSetMaxMana?.Invoke();
             base.ApplyModifier(modifier);
         }
     }

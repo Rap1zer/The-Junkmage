@@ -1,3 +1,4 @@
+using JunkMage.Entities.Player;
 using JunkMage.Stats;
 using JunkMage.Systems;
 using UnityEngine;
@@ -10,16 +11,22 @@ public class PlayerCombat : MonoBehaviour
     public Transform firePoint;
 
     private PlayerStats stats;
+    private PlayerMana mana;
 
     void Awake()
     {
         stats = GetComponent<PlayerStats>();
+        mana = GetComponent<PlayerMana>();
     }
 
     public void HandleInput()
     {
-        if (Input.GetMouseButtonDown(0))
+        float manaCost = stats.GetVal(Stat.AttackManaCost);
+        if (Input.GetMouseButtonDown(0) && mana.CurrentMana >= manaCost)
+        {
+            mana.CurrentMana -= manaCost;
             Shoot();
+        }
     }
 
     void Shoot()

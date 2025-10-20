@@ -27,7 +27,6 @@ namespace JunkMage.Entities.Player
                 if (CurrentHealth <= 0)
                 {
                     Die();
-                    OnDeath?.Invoke();
                 }
             }
         
@@ -45,7 +44,7 @@ namespace JunkMage.Entities.Player
 
         void Start()
         {
-            CurrentHealth = (int)stats.GetVal(Stat.MaxHealth);
+            CurrentHealth = stats.GetVal(Stat.MaxHealth);
         }
 
         public void TakeDamage(DamageInfo dmgInfo)
@@ -67,11 +66,11 @@ namespace JunkMage.Entities.Player
         public void Heal(int amount)
         {
             CurrentHealth = Mathf.Clamp(CurrentHealth + amount, 0, (int)stats.GetVal(Stat.MaxHealth));
-            OnHealthChanged?.Invoke(CurrentHealth);
         }
 
         private void Die()
         {
+            OnDeath?.Invoke();
             //Debug.Log("Player died");
             // TODO: trigger events
         }

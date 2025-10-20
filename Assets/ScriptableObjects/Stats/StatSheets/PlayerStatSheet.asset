@@ -37,28 +37,9 @@ MonoBehaviour:
     baseValue: 0
   - statDef: {fileID: 11400000, guid: cd7c0804315be438eb2912c206344ed4, type: 2}
     baseValue: 0.6
-  entries:
-  - type: 0
-    baseValue: 5
-  - type: 10
-    baseValue: 8
-  - type: 30
-    baseValue: 30
-  - type: 40
-    baseValue: 0.2
-  - type: 50
+  - statDef: {fileID: 11400000, guid: fd10f1cb4a34740519b1fd64a292d8c9, type: 2}
+    baseValue: 10
+  - statDef: {fileID: 11400000, guid: 1c07e8659f6ba4de2bb47ca021b05d1b, type: 2}
     baseValue: 1
-  - type: 60
-    baseValue: 14
-  - type: 80
-    baseValue: 0.1
-  - type: 100
+  - statDef: {fileID: 11400000, guid: 5d6aee6a3366c474f9796636d640c473, type: 2}
     baseValue: 1
-  - type: 110
-    baseValue: 0.1
-  - type: 90
-    baseValue: 2
-  - type: 120
-    baseValue: 0
-  - type: 70
-    baseValue: 0.7

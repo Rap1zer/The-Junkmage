@@ -16,20 +16,25 @@ namespace JunkMage.UI
         private float MaxHealth => playerStats.GetVal(Stat.MaxHealth);
         private float CurrentHealth => playerHealth.CurrentHealth;
         
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Awake()
         {
-            playerHealth.OnSetCurrentHealth += SetCurrentCurrentHealth;
-            playerStats.OnSetMaxHealth += UpdateMaxHealth;
+            playerHealth.OnSetCurrentHealth += SetCurrentHealthUI;
+            playerStats.OnSetMaxHealth += SetMaxHealthUI;
         }
 
-        private void SetCurrentCurrentHealth()
+        void Start()
+        {
+            SetCurrentHealthUI();
+            SetMaxHealthUI();
+        }
+
+        private void SetCurrentHealthUI()
         {
             healthBarText.text = CurrentHealth + "/" +  MaxHealth;
             healthBarSlider.value = CurrentHealth;
         }
 
-        private void UpdateMaxHealth()
+        private void SetMaxHealthUI()
         {
             healthBarText.text = CurrentHealth + "/" +  MaxHealth;
             healthBarSlider.maxValue = MaxHealth;
