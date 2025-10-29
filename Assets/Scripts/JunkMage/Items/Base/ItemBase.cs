@@ -11,45 +11,48 @@ public enum StorageType
 
 public abstract class ItemBase : MonoBehaviour
 {
-    public ItemData ItemData { get; private set; }
-    protected PlayerController player;
+    private ItemData ItemData { get; set; }
+    
+    private GameObject player;
     protected PlayerStats playerStats;
-    protected EntityEventDispatcher ownerDispatcher;
+    private EntityEventDispatcher playerDispatcher;
 
-    private GameObject InvContainer;
-    private StorageType _storageType = StorageType.Chest;
+    private GameObject inventoryContainer;
+    private StorageType storageType = StorageType.Chest;
     public StorageType StorageType
     {
-        get => _storageType;
+        get => storageType;
         set
         {
-            _storageType = value;
+            storageType = value;
             if (value == StorageType.Inventory)
             {
-                if (InvContainer == null) InvContainer = GameObject.Find("Inventory");
-                transform.SetParent(InvContainer.transform, true);
+                if (inventoryContainer == null) inventoryContainer = GameObject.Find("Inventory");
+                transform.SetParent(inventoryContainer.transform, true);
 
-                if (ownerDispatcher != null)
+                if (playerDispatcher != null)
                 {
-                    ownerDispatcher.RegisterItemHandlers(this);
+                    playerDispatcher.RegisterItemHandlers(this);
                 }
                 
                 OnEquip();
             }
             else
             {
-                if (ownerDispatcher != null)
+                if (playerDispatcher != null)
                 {
-                    ownerDispatcher.UnregisterItemHandlers(this);
+                    playerDispatcher.UnregisterItemHandlers(this);
                 }
                 OnUnequip();
             }
         }
     }
+    
     public Guid Id { get; private set; }
-    public int RotationState { get; private set; } = 0;
+    private int rotationState;
 
     public bool[,] CurrentShape { get; private set; }
+    
     public bool[,] CurrentStars { get; private set; }
     private int currStarOffsetRow;
     private int currStarOffsetCol;
@@ -67,16 +70,16 @@ public abstract class ItemBase : MonoBehaviour
 
     public float Rotate()
     {
-        RotationState = RotationState < 3 ? RotationState + 1 : 0;
+        rotationState = rotationState < 3 ? rotationState + 1 : 0;
         CurrentShape = UpdateRotatedBoolArray(ItemData.Get2DBoolArray(ItemData.shape));
         CurrentStars = UpdateRotatedBoolArray(ItemData.Get2DBoolArray(ItemData.stars));
         UpdateStarOffset();
-        return RotationState * 90f;
+        return rotationState * 90f;
     }
 
     private void UpdateStarOffset()
     {
-        switch (RotationState)
+        switch (rotationState)
         {
             case 0: // 0 degrees
             case 2: // 180 degrees clockwise
@@ -95,7 +98,7 @@ public abstract class ItemBase : MonoBehaviour
     {
         bool[,] rotatedArray = new bool[original.GetLength(0), original.GetLength(1)];
 
-        switch (RotationState)
+        switch (rotationState)
         {
             case 0:
                 rotatedArray = original;
@@ -167,20 +170,20 @@ public abstract class ItemBase : MonoBehaviour
     protected virtual void Awake()
     {
         Id = Guid.NewGuid();
-        player = GameObject.Find("Player").GetComponent<PlayerController>();
+        player = GameObject.Find("Player");
         playerStats = player.GetComponent<PlayerStats>();
 
         // find the owning dispatcher on parent (adjust if your ownership model differs)
-        ownerDispatcher = player.GetComponent<EntityEventDispatcher>();
+        playerDispatcher = player.GetComponent<EntityEventDispatcher>();
     }
 
     // ensure we unregister when destroyed / unequipped
     protected virtual void OnDestroy()
     {
-        if (ownerDispatcher != null)
+        if (playerDispatcher != null)
         {
-            ownerDispatcher.UnregisterItemHandlers(this);
-            ownerDispatcher = null;
+            playerDispatcher.UnregisterItemHandlers(this);
+            playerDispatcher = null;
         }
     }
     
@@ -189,7 +192,4 @@ public abstract class ItemBase : MonoBehaviour
     
     // Called when Item is removed from the inventory
     protected virtual void OnUnequip() { Debug.Log("OnUnequip"); }
-    
-    // Default hook implementations (override in subclasses as needed)
-    public virtual float OnIncomingDamage(float damage, GameObject attacker = null) => damage;
 }
