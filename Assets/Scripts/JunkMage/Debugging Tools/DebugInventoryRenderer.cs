@@ -41,7 +41,7 @@ public class DebugInventoryRenderer : MonoBehaviour
         {
             for (int col = 0; col < cols; col++)
             {
-                Image renderer = debugCells[row, col].GetComponent<Image>();
+                Image renderer = debugCells[row, col].GetComponent<Image>(); // here
                 if (renderer == null) continue;
 
                 var item = inventoryData[row, col];

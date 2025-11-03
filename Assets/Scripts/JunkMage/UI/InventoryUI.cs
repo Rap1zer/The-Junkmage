@@ -16,7 +16,7 @@ public class InventoryUI
     private readonly float cellSize = 100f;
     private readonly float margin = 10f;
 
-    public InventoryUI(Canvas canvas, GameObject cellPrefab, Transform chestContainer)
+    public InventoryUI(Canvas canvas, GameObject cellPrefab, Transform chestContainer, int rows, int cols)
     {
         this.canvas = canvas;
         this.cellPrefab = cellPrefab;
@@ -31,10 +31,10 @@ public class InventoryUI
         }
 
         chestUI = new ChestUI(chestSlots1, chestContainer.gameObject);
-        invGrid = new InventoryGrid(InventoryManager.Height, InventoryManager.Width, cellSize, margin);
+        invGrid = new InventoryGrid(rows, cols, cellSize, margin);
     }
 
-    public void DrawGrid(Transform container)
+    public void DrawGrid(Transform container, int rows, int cols)
     {
         invGrid.DrawGrid(container, cellPrefab);
     }
@@ -44,43 +44,41 @@ public class InventoryUI
         beginDragPos = eventData.pointerDrag.GetComponent<RectTransform>().anchoredPosition;
     }
 
-    public void Drag(PointerEventData eventData)
+    public void Drag(ItemBase item, CellPos anchorCell, bool canPlace)
     {
         invGrid.ClearHighlights();
-        
-        (var anchorCell, bool canPlace) = InventoryManager.Instance.CanPlaceDraggedItem();
-        invGrid.HighlightCells(anchorCell, InventoryManager.Instance.Current.Item, canPlace);
+        invGrid.HighlightCells(anchorCell, item, canPlace);
     }
 
-    public void EndDrag(PointerEventData eventData)
+    public void EndDrag(PointerEventData eventData, ItemBase item)
     {
         beginDragPos = default;
-        InventoryDragEvents.RaiseEndDrag(InventoryManager.Instance.Current.Obj, eventData);
+        InventoryDragEvents.RaiseEndDrag(item.gameObject, eventData);
     }
 
-    public void UnDragCurrentItemPos()
+    public void UnDragCurrentItemPos(ItemBase item)
     {
-        RectTransform itemRT = InventoryManager.Instance.Current.Obj.transform as RectTransform;
-        itemRT.anchoredPosition = beginDragPos;
+        RectTransform itemRT = item.transform as RectTransform;
+        if (itemRT) itemRT.anchoredPosition = beginDragPos;
     }
 
     // Snap item's position to grid
-    public void PlaceItem(GameObject itemObj, CellPos startingCell)
+    public void PlaceItem(ItemBase item, CellPos startingCell)
     {
-        Vector3 anchorWorldPos = ItemAnchorPos(itemObj.GetComponent<ItemBase>());
+        Vector3 anchorWorldPos = ItemAnchorPos(item);
         Vector3 targetCellPos = invGrid.CellObjs[startingCell.Row, startingCell.Col].transform.position;
 
         // compute how far off the item is
-        Vector3 offset = anchorWorldPos - itemObj.transform.position;
+        Vector3 offset = anchorWorldPos - item.transform.position;
 
         // move item so pivot lands exactly on target cell
-        itemObj.transform.position = targetCellPos - offset;
+        item.transform.position = targetCellPos - offset;
     }
 
-    public Vector2 GetCurrentItemCanvasPos()
+    public Vector2 GetCurrentItemCanvasPos(ItemBase item)
     {
         RectTransform canvasRT = canvas.GetComponent<RectTransform>();
-        return canvasRT.InverseTransformPoint(ItemAnchorPos(InventoryManager.Instance.Current.Item));
+        return canvasRT.InverseTransformPoint(ItemAnchorPos(item));
     }
 
     public bool TryReturnItemToChest(ItemBase item)

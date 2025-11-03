@@ -10,6 +10,7 @@ public class PlayerCombat : MonoBehaviour
 {
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform firePoint;
+    [SerializeField] private InventoryPresenter inventory;
 
     private PlayerStats stats;
     private PlayerMana mana;
@@ -32,7 +33,7 @@ public class PlayerCombat : MonoBehaviour
 
     void Shoot()
     {
-        if (bulletPrefab == null || firePoint == null || InventoryManager.Instance.IsInventoryOpen) return;
+        if (bulletPrefab == null || firePoint == null || inventory.IsInventoryOpen) return;
 
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
         bullet.transform.localScale = new Vector3(stats.GetVal(Stat.BulletSize), stats.GetVal(Stat.BulletSize), 1f);

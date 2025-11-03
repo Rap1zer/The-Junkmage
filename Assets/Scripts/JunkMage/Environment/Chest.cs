@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JunkMage.Systems;
 using UnityEngine;
 
 public class Chest : MonoBehaviour
@@ -9,14 +10,14 @@ public class Chest : MonoBehaviour
 
     public ItemDatabase itemDatabase;
 
-    private bool inPlayerRange = false;
-    private bool chestOpened = false;
+    private bool inPlayerRange;
+    private bool chestOpened;
 
     public ItemData[] ItemsInChest { get; private set; } = new ItemData[itemPoolCount];
     public int ItemsTaken { get; private set; }
 
     // Dictionary to track items: Key = Item ID, Value = taken or not
-    public Dictionary<Guid, bool> chestItems { get; private set; } = new Dictionary<Guid, bool>();
+    public Dictionary<Guid, bool> ChestItems { get; } = new();
 
     // Event fired when chest opens
     public event Action<Chest> OnChestOpened;
@@ -24,7 +25,8 @@ public class Chest : MonoBehaviour
 
     void Start()
     {
-        InventoryManager.Instance.RegisterChest(this);
+        InventoryPresenter inventory = GameObject.Find("Game Manager").GetComponent<InventoryPresenter>();
+        inventory.RegisterChest(this);
     }
 
     void Update()
@@ -42,7 +44,7 @@ public class Chest : MonoBehaviour
 
         int itemCount = Mathf.Min(itemPoolCount, itemDatabase.items.Length);
         ItemsInChest = new ItemData[itemCount];
-        chestItems.Clear(); // Reset the dictionary
+        ChestItems.Clear(); // Reset the dictionary
 
         // Randomly select items from database
         for (int i = 0; i < itemCount; i++)
@@ -63,36 +65,36 @@ public class Chest : MonoBehaviour
     {
         if (!chestOpened) return;
 
-        chestItems.Clear();
+        ChestItems.Clear();
         foreach (var item in items)
         {
-            chestItems[item.Id] = false; // initialize as not taken
+            ChestItems[item.Id] = false; // initialize as not taken
         }
     }
 
-    public bool CanTakeItem(ItemBase item) => chestItems.ContainsKey(item.Id) && !chestItems[item.Id];
+    public bool CanTakeItem(ItemBase item) => ChestItems.ContainsKey(item.Id) && !ChestItems[item.Id];
 
     public void TakeItem(ItemBase item)
     {
         if (CanTakeItem(item))
         {
-            chestItems[item.Id] = true; // mark item as taken
+            ChestItems[item.Id] = true; // mark item as taken
             ItemsTaken++;
         }
     }
     
     public void UndoTakeItem(ItemBase item)
     {
-        if (chestItems.ContainsKey(item.Id) && chestItems[item.Id])
+        if (ChestItems.ContainsKey(item.Id) && ChestItems[item.Id])
         {
-            chestItems[item.Id] = false;
+            ChestItems[item.Id] = false;
             ItemsTaken = Mathf.Max(0, ItemsTaken - 1);
         }
     }
 
     public bool IsItemTaken(Guid id)
     {
-        return chestItems.ContainsKey(id) && chestItems[id];
+        return ChestItems.ContainsKey(id) && ChestItems[id];
     }
 
     void OnTriggerEnter2D(Collider2D other)

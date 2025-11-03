@@ -29,14 +29,4 @@ public class PlayerController : MonoBehaviour
         Movement.HandleInput();
         Combat.HandleInput();
     }
-
-    public void ApplyStatModifier(StatModifier modifier)
-    {
-        Stats.ApplyModifier(modifier);
-    }
-
-    public void ApplyStatusEffect(StatusEffect effect)
-    {
-        dispatcher.AddEffect(effect);
-    }
 }

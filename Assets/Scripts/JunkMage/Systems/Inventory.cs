@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class Inventory
 {
-    private int cols;   // columns
-    private int rows;  // rows
+    private readonly int cols;   // columns
+    private readonly int rows;  // rows
     
     public ItemBase[,] Data { get; }
     public event Action<ItemBase, CellPos> OnItemPlaced; // InventoryGrid.OccupyCells()
@@ -35,7 +35,7 @@ public class Inventory
     }
 
 
-    public bool PlaceItem(ItemBase item, CellPos anchorCell)
+    public bool TryPlaceItem(ItemBase item, CellPos anchorCell)
     {
         if (!CanPlaceItem(item, anchorCell)) return false;
 
@@ -58,7 +58,7 @@ public class Inventory
         {
             if (pos.Row < 0 || pos.Row >= rows || pos.Col < 0 || pos.Col >= cols)
             {
-                Debug.LogWarning($"Skipped out-of-bounds cell at Data[{pos.Row},{pos.Col}]");
+                UnityEngine.Debug.LogWarning($"Skipped out-of-bounds cell at Data[{pos.Row},{pos.Col}]");
                 continue;
             }
 
@@ -69,28 +69,31 @@ public class Inventory
     }
 
     // cell.x = row, cell.y = col
-    public bool IsCellOccupied(CellPos cell)
+    private bool IsCellOccupied(CellPos cell)
     {
         if (cell.Row < 0 || cell.Row >= rows || cell.Col < 0 || cell.Col >= cols) return false;
         return Data[cell.Row, cell.Col] != null;
     }
 
-    public bool ChestItemEquipped(Chest chest)
+    public bool IsChestItemEquipped(Chest chest)
     {
+        if (chest == null) return false;
+        if (chest.ChestItems == null) return false;
+        
         // iterate rows then cols
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < cols; c++)
             {
-                var it = Data[r, c];
-                if (it != null && chest.chestItems.ContainsKey(it.Id)) return true;
+                ItemBase item = Data[r, c];
+                if (item != null && chest.ChestItems.ContainsKey(item.Id)) return true;
             }
         }
 
         return false;
     }
 
-    public bool TryGetItemGridPos(ItemBase item, out CellPos position)
+    private bool TryGetItemGridPos(ItemBase item, out CellPos position)
     {
         Guid guid = item.Id;
         for (int r = 0; r < rows; r++) // rows first
