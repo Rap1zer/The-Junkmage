@@ -21,7 +21,7 @@ namespace JunkMage.Systems
             if (DraggableItem.IsDragging && Input.GetKeyDown(KeyCode.R))
                 presenter.RotateItem();
 
-            if (debugRenderer != null && presenter != null)
+            if (debugRenderer != null && presenter?.GridData != null)
                 debugRenderer.Refresh(presenter.GridData); // presenter exposes model.Data
         }
 

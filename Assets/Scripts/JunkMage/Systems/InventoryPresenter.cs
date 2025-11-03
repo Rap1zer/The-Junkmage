@@ -65,7 +65,7 @@ namespace JunkMage.Systems
         public void ToggleInventory()
         {
             IsInventoryOpen = !IsInventoryOpen;
-            inventoryContainer.gameObject.SetActive(!inventoryContainer.gameObject.activeSelf);
+            inventoryContainer.gameObject.SetActive(IsInventoryOpen);
         }
 
         private void OpenInventory()
@@ -173,7 +173,7 @@ namespace JunkMage.Systems
     
         public bool CanDrag(ItemBase item)
         {
-            if (item.StorageType == StorageType.Chest && currentChest.ItemsTaken >= 1) return false;
+            if (item.StorageType == StorageType.Chest && currentChest != null && currentChest.ItemsTaken >= 1) return false;
             return IsInventoryOpen;
         }
 
@@ -186,7 +186,7 @@ namespace JunkMage.Systems
             ui.BeginDrag(data);
             startCellPos = item.AnchorGridPos;
         
-            TryRemoveItem(itemObj.GetComponent<ItemBase>());
+            TryRemoveItem(item);
         }
 
         private void HandleDrag(GameObject itemObj, PointerEventData data)
@@ -199,9 +199,10 @@ namespace JunkMage.Systems
         public void HandleEndDrag(GameObject itemObj, PointerEventData eventData)
         {
             if (Current.Item == null || !CanDrag(Current.Item)) return;
+            
+            ui.EndDrag();
 
             bool itemPlaced = TryPlaceDraggedItem();
-
             if (!itemPlaced)
             {
                 bool returnedToChest = TryReturnItemToChest();

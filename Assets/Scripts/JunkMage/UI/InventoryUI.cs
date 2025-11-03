@@ -50,10 +50,9 @@ public class InventoryUI
         invGrid.HighlightCells(anchorCell, item, canPlace);
     }
 
-    public void EndDrag(PointerEventData eventData, ItemBase item)
+    public void EndDrag()
     {
         beginDragPos = default;
-        InventoryDragEvents.RaiseEndDrag(item.gameObject, eventData);
     }
 
     public void UnDragCurrentItemPos(ItemBase item)
