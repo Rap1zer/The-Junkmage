@@ -18,23 +18,17 @@ namespace JunkMage.UI
         
         void Awake()
         {
-            playerHealth.OnSetCurrentHealth += SetCurrentHealthUI;
-            playerStats.OnSetMaxHealth += SetMaxHealthUI;
+            playerHealth.OnCurrentHealthChanged += UpdateCurrentHealthUI;
+            playerStats.OnSetMaxHealth += UpdateMaxHealthUI;
         }
 
-        void Start()
-        {
-            SetCurrentHealthUI();
-            SetMaxHealthUI();
-        }
-
-        private void SetCurrentHealthUI()
+        private void UpdateCurrentHealthUI()
         {
             healthBarText.text = CurrentHealth + "/" +  MaxHealth;
             healthBarSlider.value = CurrentHealth;
         }
 
-        private void SetMaxHealthUI()
+        private void UpdateMaxHealthUI()
         {
             healthBarText.text = CurrentHealth + "/" +  MaxHealth;
             healthBarSlider.maxValue = MaxHealth;

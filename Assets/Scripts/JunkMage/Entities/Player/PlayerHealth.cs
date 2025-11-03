@@ -12,7 +12,8 @@ namespace JunkMage.Entities.Player
         private PlayerMovement movement;
         private EntityEventDispatcher dispatcher;
         
-        public event Action OnSetCurrentHealth;
+        public event Action OnCurrentHealthChanged;
+        public event Action OnDeath;
 
         private float currentHealth;
         public float CurrentHealth
@@ -20,20 +21,19 @@ namespace JunkMage.Entities.Player
             get => currentHealth;
             private set
             {
-                currentHealth = value;
-
-                OnSetCurrentHealth?.Invoke();
-                
-                if (CurrentHealth <= 0)
+                if (!Mathf.Approximately(currentHealth, value))
                 {
-                    Die();
+                    currentHealth = value;
+                    OnCurrentHealthChanged?.Invoke();
+                
+                    if (currentHealth <= 0)
+                    {
+                        Die();
+                    }
                 }
             }
         
         }
-
-        public event System.Action OnDeath;
-        public event System.Action<float> OnHealthChanged;
 
         void Awake()
         {
